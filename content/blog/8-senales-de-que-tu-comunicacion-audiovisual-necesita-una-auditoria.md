@@ -1,23 +1,41 @@
 ---
-title: "8 señales de que tu comunicación audiovisual necesita una auditoría"
+title: 9 señales de que tu comunicación audiovisual necesita una auditoría
 slug: 8-senales-de-que-tu-comunicacion-audiovisual-necesita-una-auditoria
 pilar: auditoria
 publico: cliente
 fecha: 2026-06-21
-lectura: "6 min de lectura"
-meta_title: "8 señales de que tu comunicación audiovisual necesita una auditoría | Viconik"
-meta_desc: "Produces vídeo pero no puedes medir su impacto, el gasto crece sin resultados proporcionales, hay debate interno sin datos. Ocho situaciones que justifican un diagnóstico externo."
-deck: "No todas las empresas necesitan una auditoría audiovisual ahora mismo. Pero hay ocho situaciones concretas en las que seguir produciendo sin diagnóstico previo es garantía de malgastar el presupuesto."
-excerpt: "No todas las empresas necesitan una auditoría audiovisual ahora mismo. Pero hay ocho situaciones concretas en las que seguir produciendo sin diagnóstico previo es garantía de malgastar el presupuesto."
+lectura: 6 min de lectura
+meta_title: 9 señales de que tu comunicación audiovisual necesita una auditoría
+meta_desc: Produces vídeo pero no puedes medir su impacto, el gasto crece sin
+  resultados proporcionales, hay debate interno sin datos.
+deck: No todas las empresas necesitan una auditoría audiovisual ahora mismo.
+  Pero hay ocho situaciones concretas en las que seguir produciendo sin
+  diagnóstico previo es garantía de malgastar el presupuesto.
+excerpt: No todas las empresas necesitan una auditoría audiovisual ahora mismo.
+  Pero hay ocho situaciones concretas en las que seguir produciendo sin
+  diagnóstico previo es garantía de malgastar el presupuesto.
 faqs:
-  - pregunta: "¿Con qué frecuencia debería hacer una auditoría audiovisual?"
-    respuesta: "La primera auditoría establece la línea base. A partir de ahí, una revisión anual es suficiente para la mayoría de empresas, complementada con el seguimiento continuo de métricas clave. Si hay un cambio significativo de estrategia, de proveedor o de posicionamiento de marca, una auditoría puntual en ese momento tiene más valor que esperar al ciclo anual."
-  - pregunta: "¿Tiene sentido hacer una auditoría si solo producimos 2-3 vídeos al año?"
-    respuesta: "Sí, especialmente si esos 2–3 vídeos representan una inversión significativa. Con poco volumen, cada pieza tiene más peso en el resultado global y el coste de hacerlo mal es mayor. La auditoría en este caso se centra en maximizar el impacto de lo que ya existe y en diseñar los próximos vídeos con criterio."
-  - pregunta: "¿La auditoría incluye recomendaciones sobre qué producir a continuación?"
-    respuesta: "Sí. El informe de auditoría siempre incluye un plan de acción priorizado: qué cambiar primero, qué producir en los próximos tres meses y qué no producir hasta resolver los problemas identificados. Las recomendaciones son específicas para la situación y los recursos de cada empresa."
-cta_q: "¿Reconoces alguna de estas señales en tu empresa?"
-cta_btn: "Solicitar diagnóstico gratuito de 30 min"
+  - pregunta: ¿Con qué frecuencia debería hacer una auditoría audiovisual?
+    respuesta: La primera auditoría establece la línea base. A partir de ahí, una
+      revisión anual es suficiente para la mayoría de empresas, complementada
+      con el seguimiento continuo de métricas clave. Si hay un cambio
+      significativo de estrategia, de proveedor o de posicionamiento de marca,
+      una auditoría puntual en ese momento tiene más valor que esperar al ciclo
+      anual.
+  - pregunta: ¿Tiene sentido hacer una auditoría si solo producimos 2-3 vídeos al año?
+    respuesta: Sí, especialmente si esos 2–3 vídeos representan una inversión
+      significativa. Con poco volumen, cada pieza tiene más peso en el resultado
+      global y el coste de hacerlo mal es mayor. La auditoría en este caso se
+      centra en maximizar el impacto de lo que ya existe y en diseñar los
+      próximos vídeos con criterio.
+  - pregunta: ¿La auditoría incluye recomendaciones sobre qué producir a continuación?
+    respuesta: "Sí. El informe de auditoría siempre incluye un plan de acción
+      priorizado: qué cambiar primero, qué producir en los próximos tres meses y
+      qué no producir hasta resolver los problemas identificados. Las
+      recomendaciones son específicas para la situación y los recursos de cada
+      empresa."
+cta_q: ¿Reconoces alguna de estas señales en tu empresa?
+cta_btn: Solicitar diagnóstico gratuito de 30 min
 related:
   - post: que-es-una-auditoria-audiovisual-y-para-que-sirve
   - post: diagnostico-rapido-vs-auditoria-completa
