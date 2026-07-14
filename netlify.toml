@@ -1,0 +1,73 @@
+# ──────────────────────────────────────────────────────────────────
+# Netlify config — Viconik
+# Protección server-side de /interno/ con Netlify Identity + roles
+# + Build automático del blog (Markdown → HTML) en cada deploy
+# ──────────────────────────────────────────────────────────────────
+
+[build]
+  command = "npm install && node build.js"
+  publish = "."
+
+# ── REDIRECTS SERVER-SIDE (se evalúan antes de servir el archivo) ─
+#
+# Cómo funcionan los redirects con conditions en Netlify:
+# - Si el usuario tiene el JWT con el rol indicado → la regla SE APLICA
+# - Si el usuario NO tiene el rol → la regla se IGNORA y Netlify sigue
+#   con la siguiente regla de la lista
+#
+# Por eso el orden es CRÍTICO:
+# Regla 1 (con rol admin): si tienes el rol → sirve el archivo (200)
+# Regla 2 (sin condición): cualquiera que llegue aquí no tiene el rol → login (302)
+# ──────────────────────────────────────────────────────────────────
+
+# Regla 1: usuario CON rol admin → sirve el archivo de /interno/* (incluye /interno/admin/)
+[[redirects]]
+  from   = "/interno/*"
+  to     = "/interno/:splat"
+  status = 200
+  force  = false
+  conditions = {Role = ["admin"]}
+
+# Regla 2: cualquier otro (sin sesión o sin rol admin) → página de login
+[[redirects]]
+  from   = "/interno/*"
+  to     = "/"
+  status = 302
+  force  = true
+
+# ── HEADERS ───────────────────────────────────────────────────────
+# CSP ampliada respecto al original para permitir:
+#   - identity.netlify.com  → widget de login (Netlify Identity)
+#   - unpkg.com              → bundle de Decap CMS (editor del blog)
+# Solo afecta a script-src; el resto de restricciones se mantienen.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    Content-Security-Policy = "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://identity.netlify.com https://unpkg.com; connect-src 'self' https://*.netlify.com https://api.github.com; img-src 'self' data: https:; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+
+[[headers]]
+  for = "/interno/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    Content-Security-Policy = "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://identity.netlify.com https://unpkg.com; connect-src 'self' https://*.netlify.com https://api.github.com; img-src 'self' data: https:; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+
+[[headers]]
+  for = "/content/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Content-Type = "application/xml; charset=utf-8"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"

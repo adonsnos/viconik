@@ -1,0 +1,152 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Se activa desde el propio panel: botón "Editorial workflow" opcional.
+# Deja en false para que publicar sea inmediato (deploy directo al guardar).
+publish_mode: simple
+
+media_folder: "content/uploads"
+public_folder: "/uploads"
+
+locale: "es"
+
+collections:
+  - name: "blog"
+    label: "Blog"
+    label_singular: "Artículo"
+    folder: "content/blog"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    identifier_field: "title"
+    summary: "{{title}} — {{pilar}} — {{fecha}}"
+    sortable_fields: ["fecha", "title", "pilar"]
+    view_filters:
+      - label: "Auditoría"
+        field: pilar
+        pattern: "auditoria"
+      - label: "Técnica"
+        field: pilar
+        pattern: "tecnica"
+      - label: "Estrategia"
+        field: pilar
+        pattern: "estrategia"
+      - label: "Producción"
+        field: pilar
+        pattern: "produccion"
+      - label: "Criterio Viconik"
+        field: pilar
+        pattern: "criterio"
+    fields:
+      - { label: "Título", name: "title", widget: "string" }
+      - label: "URL del artículo (slug)"
+        name: "slug"
+        widget: "string"
+        hint: "Solo minúsculas, números y guiones. No lo cambies una vez publicado o se rompe el enlace."
+        pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', "Solo minúsculas, números y guiones, sin espacios ni tildes"]
+
+      - label: "Pilar temático"
+        name: "pilar"
+        widget: "select"
+        options:
+          - { label: "Auditoría y diagnóstico", value: "auditoria" }
+          - { label: "Técnica audiovisual", value: "tecnica" }
+          - { label: "Estrategia y ROI", value: "estrategia" }
+          - { label: "Producción y operativa", value: "produccion" }
+          - { label: "Criterio Viconik", value: "criterio" }
+
+      - label: "Público"
+        name: "publico"
+        widget: "select"
+        options:
+          - { label: "Directores de marketing / cliente", value: "cliente" }
+          - { label: "Equipos técnicos / sector", value: "sector" }
+          - { label: "Ambos públicos", value: "ambos" }
+
+      - { label: "Fecha de publicación", name: "fecha", widget: "date", format: "YYYY-MM-DD" }
+      - label: "Tiempo de lectura"
+        name: "lectura"
+        widget: "string"
+        default: "7 min de lectura"
+        hint: "Formato: '7 min de lectura'"
+
+      - label: "Meta título (SEO, máx. 60 caracteres)"
+        name: "meta_title"
+        widget: "string"
+        pattern: ['^.{10,70}$', "Entre 10 y 70 caracteres"]
+      - label: "Meta descripción (SEO, máx. 155 caracteres)"
+        name: "meta_desc"
+        widget: "text"
+        pattern: ['^.{20,160}$', "Entre 20 y 160 caracteres"]
+
+      - label: "Entradilla (deck)"
+        name: "deck"
+        widget: "text"
+        hint: "El párrafo destacado justo debajo del título. 1-3 frases."
+
+      - label: "Extracto para la tarjeta del índice"
+        name: "excerpt"
+        widget: "text"
+        hint: "Aparece en la tarjeta del listado del blog. 1-2 frases, distinto del deck si quieres variar."
+
+      - label: "Cuerpo del artículo"
+        name: "body"
+        widget: "markdown"
+        hint: "Usa ## para subtítulos (H2) y ### para subsecciones (H3). Las citas destacadas con > se convierten en el bloque de criterio."
+
+      - label: "Preguntas frecuentes (FAQ / AEO)"
+        name: "faqs"
+        widget: "list"
+        collapsed: true
+        summary: "{{fields.pregunta}}"
+        fields:
+          - { label: "Pregunta", name: "pregunta", widget: "string" }
+          - { label: "Respuesta", name: "respuesta", widget: "text" }
+
+      - label: "Llamada a la acción — pregunta"
+        name: "cta_q"
+        widget: "string"
+        default: "¿Quieres que revisemos tu situación actual?"
+      - label: "Llamada a la acción — texto del botón"
+        name: "cta_btn"
+        widget: "string"
+        default: "Solicitar diagnóstico"
+
+      - label: "Artículos relacionados"
+        name: "related"
+        widget: "list"
+        collapsed: true
+        min: 0
+        max: 3
+        summary: "{{fields.post}}"
+        fields:
+          - label: "Artículo"
+            name: "post"
+            widget: "relation"
+            collection: "blog"
+            search_fields: ["title"]
+            value_field: "slug"
+            display_fields: ["title"]
+
+  - name: "landing"
+    label: "Portada — destacados del blog"
+    label_singular: "Destacado"
+    files:
+      - label: "Módulo 'Desde el blog' de la portada"
+        name: "blog_destacados"
+        file: "content/landing/blog_destacados.yml"
+        fields:
+          - label: "Artículos destacados en portada (máx. 3)"
+            name: "destacados"
+            widget: "list"
+            min: 1
+            max: 3
+            fields:
+              - label: "Artículo"
+                name: "post"
+                widget: "relation"
+                collection: "blog"
+                search_fields: ["title"]
+                value_field: "slug"
+                display_fields: ["title"]

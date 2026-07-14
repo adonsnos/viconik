@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Viconik — Panel de contenidos</title>
+  <link rel="icon" href="data:," />
+  <style>
+    body { font-family: -apple-system, sans-serif; background: #111010; color: #EDEBE7; }
+  </style>
+</head>
+<body>
+  <!-- Netlify Identity widget: gestiona el login del panel -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Decap CMS (antes Netlify CMS) -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    // Redirige el flujo de invitación/confirmación de Identity al panel
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/interno/admin/";
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>

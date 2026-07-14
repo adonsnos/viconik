@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contacto | Viconik</title>
+<meta content="Cuéntanos en qué estás trabajando. Respondemos en menos de 24 horas con una valoración inicial sin compromiso." name="description"/>
+<link href="https://viconik.com/contacto/" rel="canonical"/>
+<meta content="noindex, nofollow" name="robots"/>
+<meta content="website" property="og:type"/>
+<meta content="Viconik" property="og:site_name"/>
+<meta content="Contacto — Viconik" property="og:title"/>
+<meta content="Cuéntanos en qué estás trabajando. Respondemos en menos de 24 horas." property="og:description"/>
+<meta content="https://viconik.com/contacto/" property="og:url"/>
+<meta content="es_ES" property="og:locale"/>
+<meta content="https://viconik.com/og-image.png" property="og:image"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="https://viconik.com/og-image.png" name="twitter:image"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&amp;family=DM+Mono:wght@400;500&amp;family=Playfair+Display:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --k: #111010; --w: #EDEBE7; --g: #8a8780; --l: #C8C5BF; --b: #E5E3DE;
+  --brd: rgba(17,16,16,.1);
+  --mono: 'DM Mono', monospace; --bebas: 'Bebas Neue', sans-serif;
+  --serif: 'Playfair Display', serif; --sans: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--w); color: var(--k); font-family: var(--sans); line-height: 1.65; overflow-x: hidden; font-size: 17px; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: .9rem 3.5rem; background: rgba(237,235,231,.97); backdrop-filter: blur(20px); border-bottom: 1px solid var(--brd); transition: box-shadow .3s; }
+nav.scrolled { box-shadow: 0 2px 28px rgba(17,16,16,.07); }
+.nav-logo { display: flex; align-items: center; gap: .65rem; }
+.nav-logo svg { height: 22px; width: auto; display: block; }
+.nav-logo-text { font-family: var(--serif); font-size: 1.15rem; letter-spacing: .01em; color: var(--k); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--g); position: relative; transition: color .2s; }
+.nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 1.5px; background: var(--k); transform: scaleX(0); transform-origin: left; transition: transform .25s cubic-bezier(.2,0,.15,1); }
+.nav-links a:hover { color: var(--k); }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-cta { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; background: var(--k); color: var(--w); padding: .55rem 1.4rem; border: 1.5px solid var(--k); transition: all .2s; }
+.nav-cta:hover { background: transparent; color: var(--k); }
+.nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 4px; }
+.nav-toggle span { display: block; width: 100%; height: 2px; background: var(--k); transition: transform .25s, opacity .25s; }
+.nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* BREADCRUMB */
+.breadcrumb { padding: 7rem 3.5rem 0; font-size: 14px; color: var(--g); font-family: var(--mono); }
+.breadcrumb a { color: var(--g); transition: color .2s; }
+.breadcrumb a:hover { color: var(--k); }
+.breadcrumb .sep { margin: 0 .75rem; }
+
+/* CONTACT HERO */
+.contact-hero { padding: 3.5rem 3.5rem 0; max-width: 1100px; margin: 0 auto; }
+.eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--l); margin-bottom: 1rem; }
+.contact-hero h1 { font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.1; letter-spacing: .01em; margin-bottom: 1rem; }
+.contact-hero h1 em { font-style: italic; color: var(--g); }
+.contact-hero p { font-size: 1rem; color: var(--g); line-height: 1.75; max-width: 480px; }
+
+/* CONTACT GRID */
+.contact-grid { display: grid; grid-template-columns: 320px 1fr; gap: 4rem; max-width: 1100px; margin: 3.5rem auto 5rem; padding: 0 3.5rem; align-items: start; }
+
+.contact-detail { display: flex; flex-direction: column; gap: 1.1rem; margin-top: 2rem; }
+.contact-row { display: flex; align-items: baseline; gap: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--brd); }
+.contact-row dt { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--l); width: 70px; flex-shrink: 0; }
+.contact-row dd { font-size: .95rem; color: var(--k); }
+.contact-row a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--brd); padding-bottom: 1px; transition: border-color .2s, color .2s; }
+.contact-row a:hover { color: var(--g); border-color: var(--g); }
+
+/* FORM */
+.contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
+.field-group { display: flex; flex-direction: column; gap: .5rem; }
+.field-group label { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--g); }
+.field-group input, .field-group textarea, .field-group select {
+  background: var(--w); border: 1.5px solid var(--brd); color: var(--k);
+  font-family: var(--sans); font-size: .92rem; font-weight: 300;
+  padding: .85rem 1rem; outline: none; transition: border-color .2s;
+  -webkit-appearance: none; appearance: none; border-radius: 0;
+}
+.field-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8780' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 1rem center; cursor: pointer;
+}
+.field-group input::placeholder, .field-group textarea::placeholder { color: var(--l); }
+.field-group input:focus, .field-group textarea:focus, .field-group select:focus { border-color: var(--k); }
+.field-group textarea { min-height: 130px; resize: vertical; line-height: 1.6; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.hp { display: none !important; visibility: hidden; position: absolute; left: -9999px; }
+.btn-submit {
+  background: var(--k); color: var(--w); font-family: var(--mono); font-size: 12px;
+  letter-spacing: .1em; text-transform: uppercase; border: 1.5px solid var(--k);
+  padding: 1rem 2rem; cursor: pointer; transition: background .2s, color .2s;
+  margin-top: .4rem; align-self: flex-start;
+}
+.btn-submit:hover { background: transparent; color: var(--k); }
+.form-note { font-family: var(--mono); font-size: 10px; color: var(--l); margin-top: .5rem; letter-spacing: .04em; }
+
+
+
+/* ── FOOTER ── */
+footer { background: var(--k); color: rgba(237,235,231,.45); border-top: 1px solid rgba(237,235,231,.08); }
+.footer-inner { max-width: 1100px; margin: 0 auto; padding: 4rem 3.5rem 2rem; }
+.footer-top { display: grid; grid-template-columns: 260px 1fr; gap: 4rem; padding-bottom: 3rem; border-bottom: 1px solid rgba(237,235,231,.08); margin-bottom: 2rem; }
+.footer-brand-col { display: flex; flex-direction: column; gap: .65rem; }
+.footer-logo { display: flex; align-items: center; gap: .55rem; text-decoration: none; }
+.footer-logo svg { height: 22px; width: auto; display: block; flex-shrink: 0; }
+.footer-wordmark { font-family: var(--serif); font-size: 1.4rem; letter-spacing: .01em; color: rgba(237,235,231,.85); line-height: 1; }
+.footer-descriptor { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: rgba(237,235,231,.28); line-height: 1.6; }
+.footer-email { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: rgba(237,235,231,.38); text-decoration: none; transition: color .2s; margin-top: .35rem; }
+.footer-email:hover { color: rgba(237,235,231,.8); }
+.footer-nav { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; }
+.footer-nav-col { display: flex; flex-direction: column; gap: .55rem; }
+.footer-nav-label { font-family: var(--mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: rgba(237,235,231,.22); margin-bottom: .3rem; }
+.footer-nav-col a { font-family: var(--mono); font-size: 11px; letter-spacing: .05em; color: rgba(237,235,231,.38); text-decoration: none; transition: color .2s; }
+.footer-nav-col a:hover { color: rgba(237,235,231,.8); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.footer-legal { font-family: var(--mono); font-size: 10px; letter-spacing: .07em; color: rgba(237,235,231,.18); }
+.footer-tagline-bottom { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: rgba(237,235,231,.13); }
+@media(max-width: 900px) { .footer-top { grid-template-columns: 1fr; gap: 2.5rem; } .footer-nav { grid-template-columns: 1fr 1fr; } .footer-inner { padding: 3rem 1.5rem 1.5rem; } }
+@media(max-width: 600px) { .footer-nav { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; align-items: flex-start; } }
+</style>
+</head>
+<body>
+<nav id="mainnav">
+<a aria-label="Viconik — inicio" class="nav-logo" href="/interno/">
+<svg aria-hidden="true" fill="none" viewbox="0 0 653 357" xmlns="http://www.w3.org/2000/svg"><path d="M503.37,181.6c51.02,14.35,67.89,50.72,94.59,92.55l34.52,54.08c.52.82.79,3.25.49,3.98-.37.92-2.41,2.28-3.49,2.28l-76.04.06c-36.28.03-54.62-23.27-71.39-51.6l-27.19-45.94c-8.99-15.18-18.17-29.32-28.1-43.79-5.27-6.59-12.09-11.42-20.93-12.04-18.07-1.26-35.83-1.5-54.55-.53,24.41,17.78,48.77,35.93,66.97,58.09,15.85,19.49,25.39,42.82,26.43,68.15.33,7.97.19,15.03.12,23.13-.02,1.94-2.75,4.56-4.94,4.57h-100.28c-2.48.01-4.96-1.85-4.96-4.76l.1-311.63c0-3.59,2.33-5.22,5.36-5.22h99.9c2.35,0,5.16,1.44,5.18,3.9.83,78.89-30.23,107.77-93.62,148.53,26.05,1.3,58.65.81,81.71-10.85,14.22-6.8,24.58-17.5,31.59-31.6,11.18-22.47,32.19-64.83,46.24-83.83,12.53-16.95,31.65-26.07,52.94-26.11l64.04-.12c1.97,0,5.57,2.42,4.41,4.47-10.87,19.18-22.26,37.01-35.1,54.93-37.95,52.96-93.26,84.89-157.07,95.92l-14.65,3.6,42.96,3.67c11.81,1.01,23.32,2.89,34.76,6.1Z" fill="#111010"></path><path d="M320.36,13.05c2.89,0,4.5,2.7,3.65,4.97l-29.03,77.94-55.57,150.35-30.75,84.03c-.79,2.15-3.42,4.05-5.57,4.05h-61.17c-1.73,0-4.42-1.77-5.02-3.43l-33.54-92.38-42.94-116.02L21.48,18.78c-.33-.89-.23-3,.05-3.71.35-.88,2.38-2.09,3.54-2.09l105.93-.03c2.36,0,4.93,1.36,5.58,3.66l17.7,62.33,48.48,166.17c3.29,11.28,6.55,21.17,10.6,32.28l27.15-73.9,15.96-43.14c-27.66-26.33-51.64-48.01-53.92-88-1.09-19.11,2.14-37.57,9.27-55.33.89-2.22,3.79-4.05,6.2-4.04l102.35.07Z" fill="#111010"></path></svg>
+<span class="nav-logo-text">Viconik</span>
+</a>
+<ul class="nav-links">
+<li><a href="/interno/#servicios">Servicios</a></li>
+<li><a href="/interno/#metodologia">Metodología</a></li>
+<li><a href="/interno/#proceso">Proceso</a></li>
+<li><a href="/interno/blog/">Blog</a></li>
+<li><a href="/interno/casos/">Casos</a></li>
+<li><a href="/interno/cursos/">Formación</a></li>
+</ul>
+<a class="nav-cta" href="/interno/contacto/">Contactar</a>
+<button aria-expanded="false" aria-label="Abrir menú" class="nav-toggle">
+<span></span><span></span><span></span>
+</button>
+</nav>
+<div class="breadcrumb">
+<a href="/interno/">Inicio</a>
+<span class="sep">/</span>
+<span>Contacto</span>
+</div>
+<div class="contact-hero">
+<p class="eyebrow">Contacto</p>
+<h1>Hablemos de tu <em>proyecto</em></h1>
+<p>Cuéntanos en qué estás trabajando. Respondemos en menos de 24 horas con una valoración inicial sin compromiso.</p>
+</div>
+<div class="contact-grid">
+<div>
+<dl class="contact-detail">
+<div class="contact-row">
+<dt>Email</dt>
+<dd><a href="mailto:hola@viconik.com">hola@viconik.com</a></dd>
+</div>
+<div class="contact-row">
+<dt>Estudio</dt>
+<dd>España</dd>
+</div>
+<div class="contact-row">
+<dt>Respuesta</dt>
+<dd>Menos de 24 horas</dd>
+</div>
+</dl>
+</div>
+<form action="/interno/gracias/" class="contact-form" data-netlify="true" method="POST" name="contacto" netlify-honeypot="bot-field">
+<input name="form-name" type="hidden" value="contacto"/>
+<input name="origen" type="hidden" value="pagina-contacto"/>
+<div class="hp"><label>No rellenar: <input name="bot-field"/></label></div>
+<div class="form-row">
+<div class="field-group">
+<label for="name">Nombre</label>
+<input id="name" name="nombre" placeholder="Tu nombre" required="" type="text"/>
+</div>
+<div class="field-group">
+<label for="company">Empresa</label>
+<input id="company" name="empresa" placeholder="Tu empresa" type="text"/>
+</div>
+</div>
+<div class="field-group">
+<label for="email">Email</label>
+<input id="email" name="email" placeholder="tu@email.com" required="" type="email"/>
+</div>
+<div class="field-group">
+<label for="service">Tipo de proyecto</label>
+<select id="service" name="servicio">
+<option disabled="" selected="" value="">Selecciona un área</option>
+<option value="auditoria-completa">Auditoría de comunicación audiovisual</option>
+<option value="pipeline">Auditoría técnica de pipeline</option>
+<option value="estrategia">Estrategia creativa</option>
+<option value="consultoria">Consultoría técnica y creativa</option>
+<option value="formacion">Formación</option>
+<option value="no-se">No lo tengo claro aún</option>
+</select>
+</div>
+<div class="field-group">
+<label for="message">Cuéntanos</label>
+<textarea id="message" name="mensaje" placeholder="¿En qué estás trabajando? ¿Cuál es el reto?"></textarea>
+</div>
+<button class="btn-submit" type="submit">Enviar mensaje →</button>
+<p class="form-note">Al enviar este formulario aceptas nuestra <a href="/interno/privacidad/" style="color:var(--g);text-decoration:underline">Política de Privacidad</a>. Respondemos en menos de 24 horas.</p>
+</form>
+</div>
+<footer>
+<div class="footer-inner">
+<div class="footer-top">
+<div class="footer-brand-col">
+<a aria-label="Viconik — inicio" class="footer-logo" href="/interno/">
+<svg aria-hidden="true" fill="none" viewbox="0 0 653 357" xmlns="http://www.w3.org/2000/svg"><path d="M503.37,181.6c51.02,14.35,67.89,50.72,94.59,92.55l34.52,54.08c.52.82.79,3.25.49,3.98-.37.92-2.41,2.28-3.49,2.28l-76.04.06c-36.28.03-54.62-23.27-71.39-51.6l-27.19-45.94c-8.99-15.18-18.17-29.32-28.1-43.79-5.27-6.59-12.09-11.42-20.93-12.04-18.07-1.26-35.83-1.5-54.55-.53,24.41,17.78,48.77,35.93,66.97,58.09,15.85,19.49,25.39,42.82,26.43,68.15.33,7.97.19,15.03.12,23.13-.02,1.94-2.75,4.56-4.94,4.57h-100.28c-2.48.01-4.96-1.85-4.96-4.76l.1-311.63c0-3.59,2.33-5.22,5.36-5.22h99.9c2.35,0,5.16,1.44,5.18,3.9.83,78.89-30.23,107.77-93.62,148.53,26.05,1.3,58.65.81,81.71-10.85,14.22-6.8,24.58-17.5,31.59-31.6,11.18-22.47,32.19-64.83,46.24-83.83,12.53-16.95,31.65-26.07,52.94-26.11l64.04-.12c1.97,0,5.57,2.42,4.41,4.47-10.87,19.18-22.26,37.01-35.1,54.93-37.95,52.96-93.26,84.89-157.07,95.92l-14.65,3.6,42.96,3.67c11.81,1.01,23.32,2.89,34.76,6.1Z" fill="#EDEBE7"></path><path d="M320.36,13.05c2.89,0,4.5,2.7,3.65,4.97l-29.03,77.94-55.57,150.35-30.75,84.03c-.79,2.15-3.42,4.05-5.57,4.05h-61.17c-1.73,0-4.42-1.77-5.02-3.43l-33.54-92.38-42.94-116.02L21.48,18.78c-.33-.89-.23-3,.05-3.71.35-.88,2.38-2.09,3.54-2.09l105.93-.03c2.36,0,4.93,1.36,5.58,3.66l17.7,62.33,48.48,166.17c3.29,11.28,6.55,21.17,10.6,32.28l27.15-73.9,15.96-43.14c-27.66-26.33-51.64-48.01-53.92-88-1.09-19.11,2.14-37.57,9.27-55.33.89-2.22,3.79-4.05,6.2-4.04l102.35.07Z" fill="#EDEBE7"></path></svg>
+<span class="footer-wordmark">Viconik</span>
+</a>
+<span class="footer-descriptor">Consultoría de Comunicación Audiovisual</span>
+<a class="footer-email" href="mailto:hola@viconik.com">hola@viconik.com</a>
+</div>
+<div class="footer-nav">
+<div class="footer-nav-col">
+<span class="footer-nav-label">Servicios</span>
+<a href="/interno/#servicios">Consultoría técnica y creativa</a>
+<a href="/interno/#servicios">Auditoría de comunicación</a>
+<a href="/interno/#servicios">Auditoría de pipeline</a>
+<a href="/interno/#servicios">Estrategia creativa</a>
+<a href="/interno/cursos/">Formación</a>
+</div>
+<div class="footer-nav-col">
+<span class="footer-nav-label">Contenido</span>
+<a href="/interno/blog/">Blog</a>
+<a href="/interno/casos/">Casos de éxito</a>
+<a href="/interno/cursos/">Cursos</a>
+</div>
+<div class="footer-nav-col">
+<span class="footer-nav-label">Contacto</span>
+<a href="/interno/contacto/">Formulario de contacto</a>
+<a href="mailto:hola@viconik.com">hola@viconik.com</a>
+</div>
+</div>
+</div>
+<div class="footer-bottom">
+<span class="footer-legal">© Viconik 2026 · Todos los derechos reservados · <a href="/interno/privacidad/" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Privacidad</a> · <a href="/interno/aviso-legal/" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Aviso legal</a></span>
+<span class="footer-tagline-bottom">Auditoría · Estrategia · Formación</span>
+</div>
+</div>
+</footer>
+<script>
+window.addEventListener('scroll', () => {
+  document.getElementById('mainnav').classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+document.querySelectorAll('.nav-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const links = document.querySelector('.nav-links');
+    const isOpen = btn.classList.toggle('open');
+    links.classList.toggle('open');
+    btn.setAttribute('aria-expanded', isOpen);
+  });
+});
+</script>
+</body>
+</html>

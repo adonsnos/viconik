@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viconik</title>
+<meta name="robots" content="noindex, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --k: #0a0a0a;
+  --w: #f4f1ea;
+  --g: rgba(244,241,234,.5);
+  --brd: rgba(244,241,234,.15);
+  --mono: 'DM Mono', monospace;
+  --serif: 'Playfair Display', serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--k); color: var(--w);
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 2rem;
+  font-family: var(--serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── WRAP ── */
+.wrap {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2.5rem; text-align: center; width: 100%; max-width: 340px;
+  opacity: 0; animation: fadein 1s .1s ease forwards;
+}
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── LOGO ── */
+.mark { width: 72px; height: auto; }
+.mark path { fill: var(--w); }
+.wordmark { font-size: 1.9rem; font-weight: 600; letter-spacing: .01em; }
+
+/* ── FORMULARIO MANUAL ── */
+/* Usamos un form propio en vez del widget de Identity para tener control
+   total sobre el diseño. Bajo el capó llama a la API de Netlify Identity. */
+.login-form {
+  display: flex; flex-direction: column; gap: 1rem; width: 100%;
+}
+.login-form input {
+  background: rgba(244,241,234,.06); border: 1.5px solid var(--brd);
+  color: var(--w); font-family: var(--mono); font-size: 12px;
+  letter-spacing: .04em; padding: 1rem 1.25rem;
+  outline: none; transition: border-color .2s;
+  -webkit-appearance: none; border-radius: 0;
+}
+.login-form input::placeholder { color: rgba(244,241,234,.3); }
+.login-form input:focus { border-color: rgba(244,241,234,.55); }
+.login-form button {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+  text-transform: uppercase; background: var(--w); color: var(--k);
+  border: 1.5px solid var(--w); padding: 1rem; cursor: pointer;
+  transition: opacity .2s; margin-top: .25rem;
+}
+.login-form button:hover { opacity: .85; }
+.login-form button:disabled { opacity: .5; cursor: default; }
+
+/* ── MENSAJES ── */
+.msg {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
+  line-height: 1.6; min-height: 1.6em;
+}
+.msg.error { color: #e07070; }
+.msg.ok    { color: #70c870; }
+
+/* ── RECUPERAR ── */
+.recover-link {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+  color: rgba(244,241,234,.35); text-decoration: underline;
+  text-underline-offset: 3px; cursor: pointer; background: none;
+  border: none; transition: color .2s;
+}
+.recover-link:hover { color: rgba(244,241,234,.7); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <svg class="mark" viewBox="0 0 653 357" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M503.37,181.6c51.02,14.35,67.89,50.72,94.59,92.55l34.52,54.08c.52.82.79,3.25.49,3.98-.37.92-2.41,2.28-3.49,2.28l-76.04.06c-36.28.03-54.62-23.27-71.39-51.6l-27.19-45.94c-8.99-15.18-18.17-29.32-28.1-43.79-5.27-6.59-12.09-11.42-20.93-12.04-18.07-1.26-35.83-1.5-54.55-.53,24.41,17.78,48.77,35.93,66.97,58.09,15.85,19.49,25.39,42.82,26.43,68.15.33,7.97.19,15.03.12,23.13-.02,1.94-2.75,4.56-4.94,4.57h-100.28c-2.48.01-4.96-1.85-4.96-4.76l.1-311.63c0-3.59,2.33-5.22,5.36-5.22h99.9c2.35,0,5.16,1.44,5.18,3.9.83,78.89-30.23,107.77-93.62,148.53,26.05,1.3,58.65.81,81.71-10.85,14.22-6.8,24.58-17.5,31.59-31.6,11.18-22.47,32.19-64.83,46.24-83.83,12.53-16.95,31.65-26.07,52.94-26.11l64.04-.12c1.97,0,5.57,2.42,4.41,4.47-10.87,19.18-22.26,37.01-35.1,54.93-37.95,52.96-93.26,84.89-157.07,95.92l-14.65,3.6,42.96,3.67c11.81,1.01,23.32,2.89,34.76,6.1Z" fill="#f4f1ea"/>
+    <path d="M320.36,13.05c2.89,0,4.5,2.7,3.65,4.97l-29.03,77.94-55.57,150.35-30.75,84.03c-.79,2.15-3.42,4.05-5.57,4.05h-61.17c-1.73,0-4.42-1.77-5.02-3.43l-33.54-92.38-42.94-116.02L21.48,18.78c-.33-.89-.23-3,.05-3.71.35-.88,2.38-2.09,3.54-2.09l105.93-.03c2.36,0,4.93,1.36,5.58,3.66l17.7,62.33,48.48,166.17c3.29,11.28,6.55,21.17,10.6,32.28l27.15-73.9,15.96-43.14c-27.66-26.33-51.64-48.01-53.92-88-1.09-19.11,2.14-37.57,9.27-55.33.89-2.22,3.79-4.05,6.2-4.04l102.35.07Z" fill="#f4f1ea"/>
+  </svg>
+
+  <h1 class="wordmark">Viconik</h1>
+
+  <form class="login-form" id="loginForm" novalidate>
+    <input type="email" id="email" placeholder="Email" autocomplete="email" required>
+    <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password" required>
+    <p class="msg" id="msg"></p>
+    <button type="submit" id="submitBtn">Entrar</button>
+  </form>
+
+  <button class="recover-link" id="recoverBtn" type="button">¿Olvidaste la contraseña?</button>
+</div>
+
+<script>
+(function () {
+  var API  = '/.netlify/identity';
+  var DEST = '/interno/';
+
+  var form      = document.getElementById('loginForm');
+  var emailEl   = document.getElementById('email');
+  var passEl    = document.getElementById('password');
+  var msgEl     = document.getElementById('msg');
+  var submitBtn = document.getElementById('submitBtn');
+  var recoverBtn= document.getElementById('recoverBtn');
+
+  /* ── Limpiar sesión anterior al cargar el formulario ─────────────
+     Si hay un JWT caducado en localStorage o en cookie, lo borramos
+     antes de que el usuario intente hacer login. Sin esto, los restos
+     de una sesión anterior interfieren con el nuevo intento. */
+  function clearOldSession() {
+    try { localStorage.removeItem('gotrue.user'); } catch(e) {}
+    // Borrar cookie nf_jwt poniéndola caducada
+    document.cookie = 'nf_jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+  }
+
+  /* ── Decodificar el payload del JWT (sin verificar firma) ────────
+     Nos permite leer los campos del token — en concreto app_metadata.roles —
+     para confirmar que Netlify incluye el rol "admin" antes de redirigir. */
+  function decodeJWT(token) {
+    try {
+      var payload = token.split('.')[1];
+      // Base64url → Base64 estándar
+      var b64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      return JSON.parse(atob(b64));
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function hasAdminRole(token) {
+    var payload = decodeJWT(token);
+    if (!payload) return false;
+    var roles = (payload.app_metadata && payload.app_metadata.roles) || [];
+    return roles.indexOf('admin') > -1;
+  }
+
+  /* ── Guardar sesión ───────────────────────────────────────────────
+     - Cookie nf_jwt con 7 días de vida. El access_token caduca en 1h,
+       pero el refresh_token dura mucho más. Guardamos ambos en
+       localStorage para poder renovar el access_token sin re-login.
+     - Al renovar, se actualiza la cookie nf_jwt con el nuevo token. */
+  function saveSession(data) {
+    // Cookie dura 7 días — suficiente para sesiones de trabajo normales
+    var sevenDays = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
+    document.cookie = 'nf_jwt=' + data.access_token
+      + '; path=/; expires=' + sevenDays
+      + '; SameSite=Lax; Secure';
+    try {
+      localStorage.setItem('gotrue.user', JSON.stringify({
+        access_token:  data.access_token,
+        token_type:    'bearer',
+        expires_in:    data.expires_in,
+        refresh_token: data.refresh_token,
+        expires_at:    Date.now() + data.expires_in * 1000,
+        user: data
+      }));
+    } catch(e) {}
+  }
+
+  /* ── Renovar el access_token con el refresh_token ─────────────────
+     Se llama automáticamente cuando el token está a punto de caducar.
+     Netlify Identity acepta grant_type=refresh_token en /token.       */
+  function refreshSession() {
+    try {
+      var stored = JSON.parse(localStorage.getItem('gotrue.user') || 'null');
+      if (!stored || !stored.refresh_token) return;
+      fetch(API + '/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(stored.refresh_token)
+      })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(data) {
+        if (data && data.access_token) {
+          saveSession(data);
+        }
+      })
+      .catch(function() {});
+    } catch(e) {}
+  }
+
+  /* ── Programar refresh automático ─────────────────────────────────
+     Renueva el token 5 minutos antes de que caduque (access_token
+     dura 3600s → renovar a los ~55 minutos). Se llama después del
+     login exitoso para mantener la sesión activa durante el trabajo. */
+  function scheduleRefresh(expiresIn) {
+    var delay = Math.max((expiresIn - 300) * 1000, 10000); // mín. 10s
+    setTimeout(function() {
+      refreshSession();
+      // Volver a programar para que se renueve indefinidamente
+      scheduleRefresh(expiresIn);
+    }, delay);
+  }
+
+  /* ── POST a la API de Netlify Identity ───────────────────────── */
+  function apiPost(endpoint, body) {
+    return fetch(API + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function(r) {
+      return r.json().then(function(data) {
+        if (!r.ok) throw new Error(data.error_description || data.msg || 'Error ' + r.status);
+        return data;
+      });
+    });
+  }
+
+  function setMsg(text, type) {
+    msgEl.textContent = text;
+    msgEl.className = 'msg' + (type ? ' ' + type : '');
+  }
+
+  function setLoading(on) {
+    submitBtn.disabled = on;
+    submitBtn.textContent = on ? 'Un momento…' : (
+      form.dataset.mode === 'invite'   ? 'Fijar contraseña →' :
+      form.dataset.mode === 'recovery' ? 'Guardar nueva contraseña →' :
+      'Entrar'
+    );
+  }
+
+  /* ── Tokens de invitación / recuperación en el hash de la URL ── */
+  function checkHash() {
+    var hash = window.location.hash || '';
+
+    var inviteMatch = hash.match(/invite_token=([^&]+)/);
+    if (inviteMatch) {
+      submitBtn.textContent   = 'Fijar contraseña →';
+      passEl.placeholder      = 'Elige una contraseña';
+      form.dataset.mode       = 'invite';
+      form.dataset.token      = inviteMatch[1];
+      emailEl.style.display   = 'none';
+      setMsg('Bienvenido. Elige una contraseña para activar tu cuenta.', '');
+      return;
+    }
+
+    var recoveryMatch = hash.match(/recovery_token=([^&]+)/);
+    if (recoveryMatch) {
+      submitBtn.textContent   = 'Guardar nueva contraseña →';
+      passEl.placeholder      = 'Nueva contraseña';
+      form.dataset.mode       = 'recovery';
+      form.dataset.token      = recoveryMatch[1];
+      emailEl.style.display   = 'none';
+      setMsg('Introduce tu nueva contraseña.', '');
+      return;
+    }
+  }
+
+  /* ── Redirección después del login ───────────────────────────────
+     Forzamos la cookie antes de redirigir con un pequeño delay para
+     garantizar que el navegador la ha registrado. */
+  function redirectAfterLogin(data) {
+    saveSession(data);
+
+    // Verificar que el JWT contiene el rol admin
+    if (!hasAdminRole(data.access_token)) {
+      setLoading(false);
+      setMsg('Tu usuario no tiene permisos de acceso. Contacta con el administrador.', 'error');
+      return;
+    }
+
+    // Activar refresh automático para mantener la sesión viva
+    scheduleRefresh(data.expires_in || 3600);
+
+    // Pequeño delay para asegurar que la cookie se grabó antes del redirect
+    setTimeout(function() {
+      window.location.href = DEST;
+    }, 150);
+  }
+
+  /* ── Submit ───────────────────────────────────────────────────── */
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var mode  = form.dataset.mode  || 'login';
+    var token = form.dataset.token || '';
+    var pass  = passEl.value.trim();
+    if (!pass) { setMsg('Introduce tu contraseña.', 'error'); return; }
+
+    setLoading(true);
+    setMsg('');
+
+    if (mode === 'invite') {
+      apiPost('/verify', { token: token, password: pass, type: 'signup' })
+        .then(redirectAfterLogin)
+        .catch(function(err) {
+          setLoading(false);
+          setMsg(err.message === 'User not found'
+            ? 'Token inválido o caducado. Solicita un nuevo enlace de invitación.'
+            : err.message, 'error');
+        });
+
+    } else if (mode === 'recovery') {
+      apiPost('/verify', { token: token, password: pass, type: 'recovery' })
+        .then(redirectAfterLogin)
+        .catch(function(err) {
+          setLoading(false);
+          setMsg(err.message, 'error');
+        });
+
+    } else {
+      var email = emailEl.value.trim();
+      if (!email) { setLoading(false); setMsg('Introduce tu email.', 'error'); return; }
+
+      apiPost('/token', { grant_type: 'password', username: email, password: pass })
+        .then(redirectAfterLogin)
+        .catch(function(err) {
+          setLoading(false);
+          var msg = err.message;
+          if (msg.indexOf('invalid_grant') > -1 || msg.indexOf('400') > -1) {
+            msg = 'Email o contraseña incorrectos.';
+          }
+          setMsg(msg, 'error');
+        });
+    }
+  });
+
+  /* ── Recuperar contraseña ─────────────────────────────────────── */
+  recoverBtn.addEventListener('click', function() {
+    var email = emailEl.value.trim();
+    if (!email) { setMsg('Introduce primero tu email.', 'error'); return; }
+    setMsg('');
+    recoverBtn.disabled = true;
+    apiPost('/recover', { email: email })
+      .then(function() {
+        setMsg('Email de recuperación enviado. Revisa tu bandeja.', 'ok');
+        recoverBtn.disabled = false;
+      })
+      .catch(function(err) {
+        setMsg(err.message, 'error');
+        recoverBtn.disabled = false;
+      });
+  });
+
+  /* ── Al cargar: comprobar sesión existente, limpiar si caducó ──────
+     Si hay un token activo en localStorage que todavía no ha caducado
+     (o está a punto de caducar), renovarlo y redirigir sin pedir login.
+     Si ha caducado del todo, limpiar para partir de cero.              */
+  function checkExistingSession() {
+    try {
+      var stored = JSON.parse(localStorage.getItem('gotrue.user') || 'null');
+      if (!stored || !stored.access_token) { clearOldSession(); return; }
+
+      var now = Date.now();
+      var expiresAt = stored.expires_at || 0;
+
+      // Si queda más de 2 minutos de vida → redirigir directamente
+      if (expiresAt - now > 120000 && hasAdminRole(stored.access_token)) {
+        // Refrescar la cookie por si acaso y redirigir
+        var sevenDays = new Date(now + 7 * 24 * 60 * 60 * 1000).toUTCString();
+        document.cookie = 'nf_jwt=' + stored.access_token
+          + '; path=/; expires=' + sevenDays + '; SameSite=Lax; Secure';
+        window.location.href = DEST;
+        return;
+      }
+
+      // Si tiene refresh_token, intentar renovar silenciosamente
+      if (stored.refresh_token) {
+        fetch(API + '/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(stored.refresh_token)
+        })
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(data) {
+          if (data && data.access_token && hasAdminRole(data.access_token)) {
+            saveSession(data);
+            window.location.href = DEST;
+          } else {
+            clearOldSession();
+          }
+        })
+        .catch(function() { clearOldSession(); });
+        return;
+      }
+
+      // Sin refresh_token válido → limpiar
+      clearOldSession();
+    } catch(e) {
+      clearOldSession();
+    }
+  }
+
+  /* ── Al cargar: revisar sesión existente y hash ────────── */
+  checkExistingSession();
+  checkHash();
+})();
+</script>
+
+</body>
+</html>
