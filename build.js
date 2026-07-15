@@ -317,8 +317,23 @@ ${JS}
 
 function formatFechaEs(iso) {
   const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-  const [y, m, d] = (iso || "2026-01-01").split("-").map(Number);
+  const [y, m, d] = toISODate(iso).split("-").map(Number);
   return `${d} de ${meses[m - 1]}, ${y}`;
+}
+
+/* ── Normaliza una fecha a "YYYY-MM-DD" en texto ─────────────────
+   gray-matter (vía js-yaml) convierte automáticamente los valores
+   de frontmatter con pinta de fecha SIN COMILLAS (fecha: 2026-06-23)
+   en objetos Date de JS, no en strings. Sin esta normalización,
+   cualquier .split("-") sobre p.fecha revienta el build.          */
+function toISODate(v) {
+  if (v instanceof Date) {
+    const y = v.getUTCFullYear();
+    const m = String(v.getUTCMonth() + 1).padStart(2, "0");
+    const d = String(v.getUTCDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+  return String(v || "2026-01-01").slice(0, 10);
 }
 
 // ─────────────────────────────────────────────────────────
@@ -483,7 +498,7 @@ function main() {
   const posts = files.map((f) => {
     const raw = fs.readFileSync(path.join(CONTENT_DIR, f), "utf8");
     const { data, content } = matter(raw);
-    return { ...data, bodyMd: content };
+    return { ...data, fecha: toISODate(data.fecha), bodyMd: content };
   });
 
   const bySlug = {};
