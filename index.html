@@ -138,10 +138,36 @@ body {
      Si hay un JWT caducado en localStorage o en cookie, lo borramos
      antes de que el usuario intente hacer login. Sin esto, los restos
      de una sesión anterior interfieren con el nuevo intento. */
+
+  /* ── Variantes de Domain para nf_jwt ──────────────────────────────
+     El widget oficial de Netlify Identity (usado en /interno/admin/
+     para el CMS) gestiona su PROPIA cookie nf_jwt, y puede fijarla
+     con un Domain explícito (p. ej. Domain=viconik.com). Nuestro
+     login manual, si escribe la cookie sin especificar Domain,
+     crea una cookie "host-only" DISTINTA aunque se llame igual —
+     conviven las dos, el navegador manda ambas, y no hay garantía
+     de cuál lee Netlify en el edge. Para evitarlo, cualquier
+     escritura o borrado de nf_jwt se aplica a TODAS las variantes
+     de Domain plausibles, así solo puede quedar una cookie real. */
+  function cookieDomainVariants() {
+    var host = window.location.hostname;
+    var variants = [''];              // sin Domain (host-only)
+    if (host) {
+      variants.push('; Domain=' + host);
+      var parts = host.split('.');
+      if (parts.length >= 2) {
+        variants.push('; Domain=.' + parts.slice(-2).join('.'));
+      }
+    }
+    return variants;
+  }
+
   function clearOldSession() {
     try { localStorage.removeItem('gotrue.user'); } catch(e) {}
-    // Borrar cookie nf_jwt poniéndola caducada
-    document.cookie = 'nf_jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+    cookieDomainVariants().forEach(function(domainAttr) {
+      document.cookie = 'nf_jwt=; path=/' + domainAttr
+        + '; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+    });
   }
 
   /* ── Decodificar el payload del JWT (sin verificar firma) ────────
@@ -174,6 +200,13 @@ body {
   function saveSession(data) {
     // Cookie dura 7 días — suficiente para sesiones de trabajo normales
     var sevenDays = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
+    // Primero limpiamos cualquier variante previa (evita duplicados con
+    // el Domain que pueda haber usado el widget oficial de Identity)
+    cookieDomainVariants().forEach(function(domainAttr) {
+      document.cookie = 'nf_jwt=; path=/' + domainAttr
+        + '; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+    });
+    // Ahora fijamos la única cookie válida, host-only (sin Domain)
     document.cookie = 'nf_jwt=' + data.access_token
       + '; path=/; expires=' + sevenDays
       + '; SameSite=Lax; Secure';
