@@ -383,50 +383,53 @@ body {
   });
 
   /* ── Al cargar: comprobar sesión existente, limpiar si caducó ──────
-     Si hay un token activo en localStorage que todavía no ha caducado
-     (o está a punto de caducar), renovarlo y redirigir sin pedir login.
-     Si ha caducado del todo, limpiar para partir de cero.              */
+     Siempre se valida contra el servidor (endpoint /token con
+     refresh_token) antes de redirigir. No hay atajo que confíe solo
+     en datos guardados en el navegador: un token que localStorage
+     considera "todavía válido" pero que el servidor (o la condición
+     de rol que evalúa Netlify en el edge) rechaza, provocaría un
+     bucle de redirecciones infinito entre login e /interno/.
+     El cortafuegos de bucle (loop guard) es una segunda protección
+     por si, aun así, algo volviera a redirigir en círculo.          */
   function checkExistingSession() {
+    // Cortafuegos: si ya intentamos un auto-login hace menos de 5s,
+    // no lo intentamos de nuevo. Rompe cualquier bucle de raíz.
+    var LOOP_KEY = 'viconik_auto_redirect_attempt';
+    try {
+      var lastAttempt = Number(sessionStorage.getItem(LOOP_KEY) || 0);
+      if (Date.now() - lastAttempt < 5000) {
+        clearOldSession();
+        setMsg('No se pudo verificar tu sesión automáticamente. Inicia sesión de nuevo.', 'error');
+        return;
+      }
+    } catch (e) {}
+
     try {
       var stored = JSON.parse(localStorage.getItem('gotrue.user') || 'null');
-      if (!stored || !stored.access_token) { clearOldSession(); return; }
+      if (!stored || !stored.refresh_token) { clearOldSession(); return; }
 
-      var now = Date.now();
-      var expiresAt = stored.expires_at || 0;
+      // Única vía de auto-login: pedir un token nuevo al servidor.
+      // Si el servidor lo concede Y ese token tiene rol admin,
+      // redirigimos. En cualquier otro caso, limpiamos y mostramos
+      // el formulario de login normal — nunca redirigimos "a ciegas".
+      try { sessionStorage.setItem(LOOP_KEY, String(Date.now())); } catch (e) {}
 
-      // Si queda más de 2 minutos de vida → redirigir directamente
-      if (expiresAt - now > 120000 && hasAdminRole(stored.access_token)) {
-        // Refrescar la cookie por si acaso y redirigir
-        var sevenDays = new Date(now + 7 * 24 * 60 * 60 * 1000).toUTCString();
-        document.cookie = 'nf_jwt=' + stored.access_token
-          + '; path=/; expires=' + sevenDays + '; SameSite=Lax; Secure';
-        window.location.href = DEST;
-        return;
-      }
-
-      // Si tiene refresh_token, intentar renovar silenciosamente
-      if (stored.refresh_token) {
-        fetch(API + '/token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(stored.refresh_token)
-        })
-        .then(function(r) { return r.ok ? r.json() : null; })
-        .then(function(data) {
-          if (data && data.access_token && hasAdminRole(data.access_token)) {
-            saveSession(data);
-            window.location.href = DEST;
-          } else {
-            clearOldSession();
-          }
-        })
-        .catch(function() { clearOldSession(); });
-        return;
-      }
-
-      // Sin refresh_token válido → limpiar
-      clearOldSession();
-    } catch(e) {
+      fetch(API + '/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(stored.refresh_token)
+      })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(data) {
+        if (data && data.access_token && hasAdminRole(data.access_token)) {
+          saveSession(data);
+          window.location.href = DEST;
+        } else {
+          clearOldSession();
+        }
+      })
+      .catch(function() { clearOldSession(); });
+    } catch (e) {
       clearOldSession();
     }
   }
