@@ -42,14 +42,6 @@ related:
 ---
 Una auditoría audiovisual no siempre es urgente. Pero hay señales concretas que indican que el momento de hacerla ha llegado —o que ya ha pasado. Este artículo describe ocho situaciones en las que una empresa necesita un diagnóstico externo antes de tomar decisiones sobre su inversión audiovisual.
 
-
-
-![asd](/uploads/dore_adose_a_close-up_waveform_visualization_showing_two_audi_b95c0eac-2c65-4c1b-ad98-5a4d590a2b7f_0-2.png "asd")
-
-
-
-
-
 ## 1. Produces vídeo regularmente pero no puedes demostrar su impacto
 
 Si llevas más de seis meses publicando contenido audiovisual y no puedes responder con datos a la pregunta "¿qué ha generado este vídeo para el negocio?", hay un problema de medición que una auditoría puede resolver. El problema puede estar en las métricas que se siguen (métricas de vanidad en lugar de métricas de resultado), en la ausencia de objetivos definidos por vídeo, o en la falta de integración entre los datos de la plataforma y los datos de CRM o web.
