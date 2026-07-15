@@ -6,7 +6,7 @@ backend:
 # Deja en false para que publicar sea inmediato (deploy directo al guardar).
 publish_mode: simple
 
-media_folder: "content/uploads"
+media_folder: "uploads"
 public_folder: "/uploads"
 
 locale: "es"
