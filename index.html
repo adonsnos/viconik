@@ -207,12 +207,30 @@ body {
     }, delay);
   }
 
-  /* ── POST a la API de Netlify Identity ───────────────────────── */
+  /* ── POST a la API de Netlify Identity (endpoints tipo /verify, /recover) ── */
   function apiPost(endpoint, body) {
     return fetch(API + endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
+    }).then(function(r) {
+      return r.json().then(function(data) {
+        if (!r.ok) throw new Error(data.error_description || data.msg || 'Error ' + r.status);
+        return data;
+      });
+    });
+  }
+
+  /* ── POST específico para /token ─────────────────────────────────
+     El endpoint /token de Netlify Identity (GoTrue) sigue el estándar
+     OAuth2 y exige application/x-www-form-urlencoded, NO JSON. Enviar
+     JSON aquí hace que el servidor no lea username/password y siempre
+     responda "credenciales inválidas", sean cuales sean.            */
+  function apiPostForm(endpoint, formBody) {
+    return fetch(API + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formBody
     }).then(function(r) {
       return r.json().then(function(data) {
         if (!r.ok) throw new Error(data.error_description || data.msg || 'Error ' + r.status);
@@ -317,7 +335,7 @@ body {
       var email = emailEl.value.trim();
       if (!email) { setLoading(false); setMsg('Introduce tu email.', 'error'); return; }
 
-      apiPost('/token', { grant_type: 'password', username: email, password: pass })
+      apiPostForm('/token', 'grant_type=password&username=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(pass))
         .then(redirectAfterLogin)
         .catch(function(err) {
           setLoading(false);
