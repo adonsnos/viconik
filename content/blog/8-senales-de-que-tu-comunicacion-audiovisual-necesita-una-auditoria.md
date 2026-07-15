@@ -1,5 +1,5 @@
 ---
-title: 9 señales de que tu comunicación audiovisual necesita una auditoría
+title: 8 señales de que tu comunicación audiovisual necesita una auditoría
 slug: 8-senales-de-que-tu-comunicacion-audiovisual-necesita-una-auditoria
 pilar: auditoria
 publico: cliente
