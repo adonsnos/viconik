@@ -40,44 +40,43 @@ related:
   - post: que-es-una-auditoria-audiovisual-y-para-que-sirve
   - post: diagnostico-rapido-vs-auditoria-completa
 ---
-
 Una auditoría audiovisual no siempre es urgente. Pero hay señales concretas que indican que el momento de hacerla ha llegado —o que ya ha pasado. Este artículo describe ocho situaciones en las que una empresa necesita un diagnóstico externo antes de tomar decisiones sobre su inversión audiovisual.
+
+
+
+![asd](/uploads/dore_adose_a_close-up_waveform_visualization_showing_two_audi_b95c0eac-2c65-4c1b-ad98-5a4d590a2b7f_0-2.png "asd")
+
+
+
 
 
 ## 1. Produces vídeo regularmente pero no puedes demostrar su impacto
 
 Si llevas más de seis meses publicando contenido audiovisual y no puedes responder con datos a la pregunta "¿qué ha generado este vídeo para el negocio?", hay un problema de medición que una auditoría puede resolver. El problema puede estar en las métricas que se siguen (métricas de vanidad en lugar de métricas de resultado), en la ausencia de objetivos definidos por vídeo, o en la falta de integración entre los datos de la plataforma y los datos de CRM o web.
 
-
 ## 2. El gasto en producción ha crecido pero los resultados no
 
 Aumentar el presupuesto de producción sin un diagnóstico previo es uno de los errores más frecuentes en comunicación audiovisual corporativa. Más presupuesto produce mejor calidad técnica, pero no necesariamente mejor estrategia. Si los resultados no han mejorado proporcionalmente al gasto, el problema raramente es presupuestario: es de estrategia, de distribución o de medición.
-
 
 ## 3. Tienes la sensación de que "el vídeo no funciona" pero no sabes por qué
 
 La intuición de que algo no está funcionando es más fiable de lo que parece. Pero actuar sobre esa intuición sin datos produce cambios en la dirección equivocada: cambiar la estética cuando el problema es el targeting, cambiar el formato cuando el problema es el audio, cambiar la productora cuando el problema es la estrategia de distribución. Una auditoría convierte la intuición en diagnóstico accionable.
 
-
 ## 4. Diferentes equipos tienen opiniones distintas sobre qué producir y ninguno tiene datos
 
 Cuando el debate sobre qué tipo de vídeo hacer, en qué canal publicarlo y con qué frecuencia se resuelve por consenso político en lugar de por datos, el resultado es contenido de compromiso que no sirve bien a ningún objetivo. Una auditoría proporciona el criterio objetivo que zanja el debate: no con opiniones, sino con evidencia de qué ha funcionado, qué no, y por qué.
-
 
 ## 5. Vas a cambiar de proveedor audiovisual y no tienes criterio para evaluar propuestas
 
 Sin un diagnóstico previo de qué está fallando en la producción actual, es imposible saber qué pedir a un nuevo proveedor. ¿El problema es la calidad técnica? ¿El enfoque creativo? ¿La comprensión del negocio? Una auditoría identifica exactamente en qué está fallando el proceso actual, lo que permite escribir un brief preciso para el nuevo proveedor y evaluar sus propuestas con criterio.
 
-
 ## 6. Tienes un presupuesto nuevo para audiovisual y no sabes cómo distribuirlo
 
 Cuando llega presupuesto nuevo para comunicación audiovisual —por crecimiento de la empresa, por un cambio de estrategia o por una nueva directiva— la tentación es producir más de lo mismo. Una auditoría previa permite identificar dónde está el mayor potencial de retorno: ¿en producir más contenido? ¿en mejorar la distribución del que ya existe? ¿en invertir en un formato diferente? ¿en mejorar la calidad técnica de las piezas actuales?
 
-
 ## 7. Un competidor está generando más engagement con menos producción visible
 
 Cuando un competidor con recursos aparentemente similares o menores está obteniendo mejores resultados en sus canales audiovisuales, hay algo en su estrategia, formato o distribución que merece análisis. Una auditoría con benchmarking competitivo identifica exactamente qué está haciendo diferente y si es replicable.
-
 
 ## 8. Hay una persona nueva responsable de comunicación o marketing
 
