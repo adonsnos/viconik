@@ -310,6 +310,9 @@ body {
       return;
     }
 
+    // Login manual correcto: no venimos de un bucle, reseteamos el contador
+    try { sessionStorage.removeItem('viconik_redirect_count'); } catch (e) {}
+
     // Activar refresh automático para mantener la sesión viva
     scheduleRefresh(data.expires_in || 3600);
 
@@ -391,28 +394,36 @@ body {
      bucle de redirecciones infinito entre login e /interno/.
      El cortafuegos de bucle (loop guard) es una segunda protección
      por si, aun así, algo volviera a redirigir en círculo.          */
+  /* ── Al cargar: comprobar sesión existente, limpiar si caducó ──────
+     Siempre se valida contra el servidor (endpoint /token con
+     refresh_token) antes de redirigir. No hay atajo que confíe solo
+     en datos guardados en el navegador.
+     El cortafuegos de bucle cuenta SOLO las veces que este código ha
+     redirigido de verdad (window.location.href = DEST), nunca las
+     recargas manuales de la página. Así, recargar tú mismo mientras
+     pruebas no dispara el aviso — solo lo hace un bucle real donde
+     redirigimos y volvemos a caer aquí sin haber entrado.           */
   function checkExistingSession() {
-    // Cortafuegos: si ya intentamos un auto-login hace menos de 5s,
-    // no lo intentamos de nuevo. Rompe cualquier bucle de raíz.
-    var LOOP_KEY = 'viconik_auto_redirect_attempt';
-    try {
-      var lastAttempt = Number(sessionStorage.getItem(LOOP_KEY) || 0);
-      if (Date.now() - lastAttempt < 5000) {
-        clearOldSession();
-        setMsg('No se pudo verificar tu sesión automáticamente. Inicia sesión de nuevo.', 'error');
-        return;
-      }
-    } catch (e) {}
+    var LOOP_KEY = 'viconik_redirect_count';
+    var attempts = 0;
+    try { attempts = Number(sessionStorage.getItem(LOOP_KEY) || 0); } catch (e) {}
+
+    if (attempts >= 2) {
+      // Ya redirigimos 2 veces y hemos vuelto aquí: es un bucle real.
+      try { sessionStorage.removeItem(LOOP_KEY); } catch (e) {}
+      clearOldSession();
+      setMsg('No se pudo verificar tu sesión automáticamente. Inicia sesión de nuevo.', 'error');
+      return;
+    }
 
     try {
       var stored = JSON.parse(localStorage.getItem('gotrue.user') || 'null');
-      if (!stored || !stored.refresh_token) { clearOldSession(); return; }
-
-      // Única vía de auto-login: pedir un token nuevo al servidor.
-      // Si el servidor lo concede Y ese token tiene rol admin,
-      // redirigimos. En cualquier otro caso, limpiamos y mostramos
-      // el formulario de login normal — nunca redirigimos "a ciegas".
-      try { sessionStorage.setItem(LOOP_KEY, String(Date.now())); } catch (e) {}
+      if (!stored || !stored.refresh_token) {
+        // No hay sesión que validar: no es un bucle, es un login normal.
+        try { sessionStorage.removeItem(LOOP_KEY); } catch (e) {}
+        clearOldSession();
+        return;
+      }
 
       fetch(API + '/token', {
         method: 'POST',
@@ -423,13 +434,21 @@ body {
       .then(function(data) {
         if (data && data.access_token && hasAdminRole(data.access_token)) {
           saveSession(data);
+          // Solo se incrementa el contador justo antes de redirigir de
+          // verdad: esto es lo único que puede generar un bucle.
+          try { sessionStorage.setItem(LOOP_KEY, String(attempts + 1)); } catch (e) {}
           window.location.href = DEST;
         } else {
+          try { sessionStorage.removeItem(LOOP_KEY); } catch (e) {}
           clearOldSession();
         }
       })
-      .catch(function() { clearOldSession(); });
+      .catch(function() {
+        try { sessionStorage.removeItem(LOOP_KEY); } catch (e) {}
+        clearOldSession();
+      });
     } catch (e) {
+      try { sessionStorage.removeItem(LOOP_KEY); } catch (e) {}
       clearOldSession();
     }
   }
