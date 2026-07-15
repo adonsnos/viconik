@@ -108,7 +108,24 @@ body {
 <script>
 (function () {
   var API  = '/.netlify/identity';
+
+  /* ── Destino tras el login ────────────────────────────────────────
+     Si la petición original a /interno/algo fue rebotada aquí por no
+     tener sesión válida en ese momento, netlify.toml añade
+     ?redirect=/interno/algo. Lo recuperamos para no perder siempre
+     al usuario en /interno/ cuando en realidad quería ir más adentro
+     (p. ej. /interno/admin/). Se valida que sea una ruta interna
+     propia, nunca una URL externa, para evitar open redirects.      */
   var DEST = '/interno/';
+  (function () {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var r = params.get('redirect');
+      if (r && /^\/interno\/[a-zA-Z0-9\-_/]*$/.test(r)) {
+        DEST = r;
+      }
+    } catch (e) {}
+  })();
 
   var form      = document.getElementById('loginForm');
   var emailEl   = document.getElementById('email');

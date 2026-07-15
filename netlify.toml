@@ -28,10 +28,12 @@
   force  = false
   conditions = {Role = ["admin"]}
 
-# Regla 2: cualquier otro (sin sesión o sin rol admin) → página de login
+# Regla 2: cualquier otro (sin sesión o sin rol admin) → login,
+# pasando la ruta que quería visitar como parámetro ?redirect= para
+# poder llevarle ahí una vez inicie sesión correctamente.
 [[redirects]]
   from   = "/interno/*"
-  to     = "/"
+  to     = "/?redirect=/interno/:splat"
   status = 302
   force  = true
 
