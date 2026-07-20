@@ -1,105 +1,156 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verificador de Subtítulos</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Viconik · Verificador de Subtítulos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root{
-  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
-  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B; --good:#5EEAD4; --bad:#E85D5D; --warn:#F2A93B;
-  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+:root {
+  --k: #111010; --w: #EDEBE7; --g: #8a8780; --l: #C8C5BF; --b: #E5E3DE;
+  --brd: rgba(17,16,16,.1);
+  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  --bebas: 'Bebas Neue', sans-serif; --serif: 'Playfair Display', serif;
 }
-*{box-sizing:border-box;}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:40px 20px;}
-.wrap{max-width:1000px;margin:0 auto;}
-.sprockets{display:flex;gap:6px;margin-bottom:22px;}
-.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;flex-wrap:wrap;gap:16px;}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
-h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;}
-.sub{color:var(--text-dim);font-size:14px;margin-top:8px;max-width:60ch;line-height:1.5;}
-.toolbar{display:flex;gap:10px;}
-.btn{background:var(--accent);color:#161206;border:none;padding:10px 16px;border-radius:8px;font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase;}
-.btn.secondary{background:var(--panel-2);color:var(--text);border:1px solid var(--border);}
-.controls{display:flex;gap:20px;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:18px;flex-wrap:wrap;}
-.controls .f{display:flex;align-items:center;gap:8px;}
-.controls label{font-family:var(--mono);font-size:11px;color:var(--text-dim);}
-.controls input[type=number]{width:60px;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:6px;font-family:var(--mono);}
-.summary{display:flex;gap:16px;font-family:var(--mono);font-size:11.5px;}
-.summary span.n{color:var(--accent);font-weight:700;}
-.drop{border:2px dashed var(--border);border-radius:10px;padding:30px;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:13px;cursor:pointer;margin-bottom:18px;}
-.drop:hover{border-color:var(--accent);color:var(--accent);}
-table{width:100%;border-collapse:collapse;}
-th{text-align:left;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim);padding:8px 6px;border-bottom:1px solid var(--border);}
-td{padding:8px 6px;border-bottom:1px solid var(--panel-2);vertical-align:top;}
-tr.bad{background:rgba(232,93,93,0.08);}
-tr.warn{background:rgba(242,169,59,0.06);}
-.idx{font-family:var(--mono);color:var(--text-dim);width:36px;}
-.tc{font-family:var(--mono);font-size:11px;color:var(--text-dim);width:180px;}
-.txt{font-size:13px;}
-.txt textarea{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:5px;font-family:var(--sans);font-size:12.5px;resize:vertical;min-height:36px;}
-.cps{font-family:var(--mono);font-weight:700;width:70px;text-align:right;}
-.cps.ok{color:var(--good);}
-.cps.warn{color:var(--warn);}
-.cps.bad{color:var(--bad);}
-.empty{text-align:center;color:var(--text-dim);padding:40px;font-family:var(--mono);font-size:13px;}
-footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:28px;font-family:var(--mono);}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--w); color:var(--k); font-family:var(--sans); line-height:1.65; overflow-x:hidden; font-size:18px; }
+a { color:inherit; text-decoration:none; }
+nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:.85rem 3.5rem; background:rgba(237,235,231,.96); backdrop-filter:blur(16px); border-bottom:1px solid var(--brd); }
+.nav-logo { display:flex; align-items:center; gap:.6rem; font-family:var(--serif); font-size:1.2rem; letter-spacing:.02em; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:14px; color:var(--g); transition:color .2s; }
+.nav-links a:hover { color:var(--k); }
+.nav-cta { font-family:var(--mono); font-size:12px; letter-spacing:.08em; background:var(--k); color:var(--w); padding:.5rem 1.25rem; transition:opacity .2s; }
+.nav-cta:hover { opacity:.72; }
+.tools-container { max-width:1200px; margin:0 auto; padding:7rem 2rem 4rem; }
+.tool-section { margin-bottom:3rem; }
+.tool-header { margin-bottom:2rem; border-bottom:1px solid var(--brd); padding-bottom:1rem; }
+.tool-header .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--g); margin-bottom:.5rem; display:flex; align-items:center; gap:.75rem; }
+.tool-header .eyebrow::before { content:''; width:32px; height:1px; background:var(--l); }
+.tool-header h2 { font-family:var(--bebas); font-size:clamp(2.2rem,4vw,3.2rem); letter-spacing:.02em; line-height:1.1; color:var(--k); margin-top:.25rem; }
+.panel { background:#fff; border:1px solid var(--brd); padding:2rem; transition:box-shadow .2s; }
+.panel:hover { box-shadow:0 12px 22px -12px rgba(0,0,0,.08); }
+.panel-title { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--g); margin-bottom:1.5rem; padding-bottom:.75rem; border-bottom:1px solid var(--brd); display:flex; align-items:center; gap:.75rem; }
+.panel-title i { color:var(--k); font-size:14px; }
+.two-col-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
+@media (max-width:1000px){ .two-col-grid{ grid-template-columns:1fr; gap:1.5rem; } }
+.param-group { display:flex; flex-direction:column; gap:1.2rem; }
+.param-row { display:flex; flex-direction:column; gap:.3rem; }
+.param-label { font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--g); letter-spacing:.05em; display:flex; align-items:center; gap:6px; }
+.inline-row { display:flex; gap:.5rem; align-items:center; }
+.inline-row input, .inline-row select { flex:1; }
+select, input[type="number"], input[type="text"], input[type="date"], textarea {
+  width:100%; padding:.65rem .9rem; background:#fff; border:1px solid var(--brd); border-radius:0;
+  font-family:var(--sans); font-size:14px; color:var(--k); transition:border .15s;
+}
+textarea { resize:vertical; min-height:70px; font-family:var(--sans); }
+select:focus, input:focus, textarea:focus { outline:none; border-color:var(--k); }
+.preset-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.3rem; }
+.preset-chip { font-family:var(--mono); font-size:10px; padding:.4rem .8rem; border:1px solid var(--brd); background:var(--b); color:var(--k); cursor:pointer; transition:all .15s; text-transform:uppercase; letter-spacing:.05em; }
+.preset-chip:hover, .preset-chip.active { background:var(--k); color:var(--w); border-color:var(--k); }
+.badge { font-family:var(--mono); font-size:9px; padding:3px 8px; background:var(--w); border:1px solid var(--brd); color:var(--g); text-transform:uppercase; }
+.table-wrapper { overflow-x:auto; border:1px solid var(--brd); background:#fff; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead tr { background:var(--k); color:var(--w); }
+th { font-family:var(--mono); font-size:10px; letter-spacing:.06em; font-weight:400; text-transform:uppercase; padding:.9rem 1rem; text-align:left; }
+td { padding:.7rem 1rem; border-bottom:1px solid var(--brd); color:var(--k); }
+td input, td textarea, td select { font-size:12.5px; padding:.4rem .5rem; }
+tbody tr:hover td { background:var(--b); }
+.btn-group { display:flex; gap:.75rem; flex-wrap:wrap; }
+.btn { padding:.7rem 1.1rem; border:1px solid var(--k); background:var(--k); color:var(--w); font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; cursor:pointer; transition:opacity .2s; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn:hover { opacity:.78; }
+.btn-secondary { background:transparent; color:var(--k); border:1px solid var(--brd); }
+.btn-secondary:hover { background:var(--b); opacity:1; }
+.info-box { background:var(--k); color:var(--w); padding:1.25rem; margin-top:1.5rem; display:flex; gap:1rem; align-items:flex-start; font-size:12px; line-height:1.6; }
+.info-box i { color:var(--l); font-size:1.2rem; }
+.hidden { display:none !important; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+.detail-item { background:#fff; border:1px solid var(--brd); padding:.8rem; text-align:left; }
+.detail-item .label-sm { font-family:var(--mono); font-size:9px; color:var(--g); text-transform:uppercase; }
+.detail-item .value-md { font-family:var(--mono); font-size:1.2rem; font-weight:500; margin-top:.2rem; }
+.row-del { background:none; border:none; color:var(--g); cursor:pointer; font-size:16px; }
+.row-del:hover { color:#a83232; }
+.add-row-btn { margin-top:.75rem; background:var(--b); border:1px dashed var(--brd); color:var(--g); padding:.7rem; width:100%; cursor:pointer; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; }
+.add-row-btn:hover { border-color:var(--k); color:var(--k); }
+footer { padding:1.5rem 3.5rem; border-top:1px solid var(--brd); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--g); }
+footer a { color:var(--g); transition:color .2s; }
+footer a:hover { color:var(--k); }
+@media print {
+  nav, footer, .btn, .add-row-btn, .row-del, .no-print { display:none !important; }
+  body { background:#fff; font-size:12px; }
+  .tools-container { padding:1rem; max-width:100%; }
+  .panel { box-shadow:none; break-inside:avoid; }
+}
+@media (max-width:960px) {
+  nav { padding:.85rem 1.5rem; }
+  .nav-links { display:none; }
+  .tools-container { padding:6rem 1.5rem 3rem; }
+  .panel { padding:1.5rem; }
+  footer { padding:1.25rem 1.5rem; flex-direction:column; text-align:center; }
+}
 </style>
-</head>
-<body>
-<div class="wrap">
-  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-  <header>
-    <div>
-      <p class="eyebrow">Utilidad de producción</p>
-      <h1>Verificador de Subtítulos</h1>
-      <p class="sub">Carga un .srt y comprueba la velocidad de lectura (CPS) de cada línea contra el límite recomendado.</p>
-    </div>
-    <div class="toolbar">
-      <button class="btn secondary" id="uploadBtn">Cargar .SRT</button>
-      <input type="file" id="fileInput" accept=".srt" style="display:none">
-      <button class="btn" id="exportBtn">Exportar .SRT</button>
-    </div>
-  </header>
+</head><body>
+<nav>
+  <a href="index.html" class="nav-logo">Viconik</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Todas las herramientas</a></li>
+    <li><a href="viconik_calculators.html">Calculadoras</a></li>
+  </ul>
+  <a href="index.html" class="nav-cta">← Índice</a>
+</nav>
+<main class="tools-container">
+<style>
+.sub-drop { border:2px dashed var(--brd); padding:2rem; text-align:center; color:var(--g); font-family:var(--mono); font-size:13px; cursor:pointer; background:#fff; }
+.sub-drop:hover { border-color:var(--k); color:var(--k); }
+.sub-controls { display:flex; gap:1.5rem; align-items:center; background:#fff; border:1px solid var(--brd); padding:1rem 1.25rem; margin-bottom:1.25rem; flex-wrap:wrap; }
+.sub-controls .f { display:flex; align-items:center; gap:8px; }
+.sub-controls input[type=number] { width:70px; }
+.sub-summary { display:flex; gap:16px; font-family:var(--mono); font-size:11.5px; }
+.sub-summary .n { color:var(--k); font-weight:700; }
+tr.bad td { background:rgba(168,50,50,.06); }
+tr.warn td { background:rgba(242,169,59,.08); }
+td.cps { font-family:var(--mono); font-weight:700; width:70px; text-align:right; }
+td.cps.ok { color:#2f6b4f; } td.cps.warn { color:#b07a1f; } td.cps.bad { color:#a83232; }
+.sub-tc { font-family:var(--mono); font-size:11px; color:var(--g); width:170px; }
+td textarea { width:100%; min-height:36px; font-size:12.5px; }
+</style>
 
-  <div class="controls">
-    <div class="f"><label>Límite CPS recomendado</label><input type="number" id="cpsLimit" value="17" step="1"></div>
-    <div class="summary" id="summary"></div>
+<section class="tool-section">
+  <div class="tool-header">
+    <div class="eyebrow">Herramienta profesional</div>
+    <h2>Verificador de Subtítulos</h2>
+    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Carga un .srt y comprueba la velocidad de lectura (CPS) de cada línea contra el límite recomendado.</p>
   </div>
 
-  <div id="content">
-    <div class="drop" id="drop">Arrastra un archivo .srt aquí, o pulsa "Cargar .SRT"</div>
+  <div class="btn-group" style="margin-bottom:1rem;">
+    <button class="btn btn-secondary" id="uploadBtn"><i class="fas fa-upload"></i> Cargar .SRT</button>
+    <input type="file" id="fileInput" accept=".srt" style="display:none">
+    <button class="btn" id="exportBtn"><i class="fas fa-download"></i> Exportar .SRT</button>
   </div>
-</div>
-<footer>Procesamiento 100% local — el archivo no se envía a ningún servidor</footer>
+
+  <div class="sub-controls">
+    <div class="f"><label class="param-label" style="margin:0;">Límite CPS</label><input type="number" id="cpsLimit" value="17" step="1"></div>
+    <div class="sub-summary" id="summary"></div>
+  </div>
+
+  <div id="content"><div class="sub-drop" id="drop">Arrastra un archivo .srt aquí, o pulsa "Cargar .SRT"</div></div>
+</section>
 
 <script>
 let entries = [];
-
 const fileInput = document.getElementById('fileInput');
 document.getElementById('uploadBtn').addEventListener('click', ()=>fileInput.click());
 fileInput.addEventListener('change', e=>{ if(e.target.files[0]) readFile(e.target.files[0]); });
-
 document.addEventListener('dragover', e=>e.preventDefault());
-document.addEventListener('drop', e=>{
-  e.preventDefault();
-  if(e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]);
-});
-
+document.addEventListener('drop', e=>{ e.preventDefault(); if(e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]); });
 function readFile(file){
   const reader = new FileReader();
   reader.onload = ()=>{ entries = parseSrt(reader.result); render(); };
   reader.readAsText(file);
 }
-
-function tcToMs(tc){
-  const m = tc.match(/(\d+):(\d+):(\d+)[,.](\d+)/);
-  if(!m) return 0;
-  return (+m[1]*3600+ +m[2]*60+ +m[3])*1000 + +m[4];
-}
+function tcToMs(tc){ const m = tc.match(/(\d+):(\d+):(\d+)[,.](\d+)/); if(!m) return 0; return (+m[1]*3600+ +m[2]*60+ +m[3])*1000 + +m[4]; }
 function msToTc(ms){
   ms = Math.max(0,Math.round(ms));
   const h = Math.floor(ms/3600000); ms%=3600000;
@@ -108,68 +159,47 @@ function msToTc(ms){
   const p = (n,l=2)=>String(n).padStart(l,'0');
   return `${p(h)}:${p(m)}:${p(s)},${p(msr,3)}`;
 }
-
 function parseSrt(text){
   const blocks = text.replace(/\r/g,'').split(/\n\n+/).filter(b=>b.trim());
   return blocks.map((b,i)=>{
     const lines = b.split('\n');
     let idx = i+1, tcLine, textLines;
-    if(/^\d+$/.test(lines[0].trim())){
-      idx = parseInt(lines[0]); tcLine = lines[1]; textLines = lines.slice(2);
-    } else {
-      tcLine = lines[0]; textLines = lines.slice(1);
-    }
+    if(/^\d+$/.test(lines[0].trim())){ idx = parseInt(lines[0]); tcLine = lines[1]; textLines = lines.slice(2); }
+    else { tcLine = lines[0]; textLines = lines.slice(1); }
     const m = tcLine.match(/(.+)-->(.+)/);
     const start = m ? tcToMs(m[1].trim()) : 0;
     const end = m ? tcToMs(m[2].trim()) : 1000;
     return {idx, start, end, text: textLines.join('\n')};
   }).filter(e=>e.text!==undefined);
 }
-
-function charCount(text){
-  return text.replace(/\n/g,' ').replace(/<[^>]*>/g,'').trim().length;
-}
-
+function charCount(text){ return text.replace(/\n/g,' ').replace(/<[^>]*>/g,'').trim().length; }
 function render(){
   const content = document.getElementById('content');
-  if(!entries.length){ content.innerHTML = '<div class="drop" id="drop">Arrastra un archivo .srt aquí, o pulsa "Cargar .SRT"</div>'; return; }
+  if(!entries.length){ content.innerHTML = '<div class="sub-drop" id="drop">Arrastra un archivo .srt aquí, o pulsa "Cargar .SRT"</div>'; return; }
   const limit = parseFloat(document.getElementById('cpsLimit').value)||17;
-
   let bad=0, warn=0;
   const rows = entries.map((e,i)=>{
     const dur = (e.end-e.start)/1000;
     const chars = charCount(e.text);
     const cps = dur>0 ? chars/dur : 0;
     let cls = 'ok';
-    if(cps > limit) { cls='bad'; bad++; }
-    else if(cps > limit*0.85) { cls='warn'; warn++; }
+    if(cps > limit) { cls='bad'; bad++; } else if(cps > limit*0.85) { cls='warn'; warn++; }
     return `<tr class="${cls==='bad'?'bad':cls==='warn'?'warn':''}">
-      <td class="idx">${e.idx}</td>
-      <td class="tc">${msToTc(e.start)}<br>${msToTc(e.end)}<br>(${dur.toFixed(2)}s)</td>
-      <td class="txt"><textarea data-i="${i}">${e.text}</textarea></td>
+      <td style="font-family:var(--mono); color:var(--g); width:36px;">${e.idx}</td>
+      <td class="sub-tc">${msToTc(e.start)}<br>${msToTc(e.end)}<br>(${dur.toFixed(2)}s)</td>
+      <td><textarea data-i="${i}">${e.text}</textarea></td>
       <td class="cps ${cls}">${cps.toFixed(1)}</td>
     </tr>`;
   }).join('');
-
-  content.innerHTML = `
-    <table>
-      <thead><tr><th>#</th><th>Tiempo</th><th>Texto</th><th>CPS</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  `;
+  content.innerHTML = `<div class="table-wrapper"><table><thead><tr><th>#</th><th>Tiempo</th><th>Texto</th><th>CPS</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   content.querySelectorAll('textarea').forEach(ta=>{
-    ta.addEventListener('input', e=>{
-      entries[+e.target.dataset.i].text = e.target.value;
-      renderSummaryOnly();
-    });
+    ta.addEventListener('input', e=>{ entries[+e.target.dataset.i].text = e.target.value; renderSummaryOnly(); });
   });
-
   document.getElementById('summary').innerHTML =
     `<span><span class="n">${entries.length}</span> líneas</span>
-     <span style="color:var(--warn)"><span class="n">${warn}</span> cerca del límite</span>
-     <span style="color:var(--bad)"><span class="n">${bad}</span> exceden el límite</span>`;
+     <span style="color:#b07a1f"><span class="n">${warn}</span> cerca del límite</span>
+     <span style="color:#a83232"><span class="n">${bad}</span> exceden el límite</span>`;
 }
-
 function renderSummaryOnly(){
   const limit = parseFloat(document.getElementById('cpsLimit').value)||17;
   let bad=0, warn=0;
@@ -179,12 +209,10 @@ function renderSummaryOnly(){
   });
   document.getElementById('summary').innerHTML =
     `<span><span class="n">${entries.length}</span> líneas</span>
-     <span style="color:var(--warn)"><span class="n">${warn}</span> cerca del límite</span>
-     <span style="color:var(--bad)"><span class="n">${bad}</span> exceden el límite</span>`;
+     <span style="color:#b07a1f"><span class="n">${warn}</span> cerca del límite</span>
+     <span style="color:#a83232"><span class="n">${bad}</span> exceden el límite</span>`;
 }
-
 document.getElementById('cpsLimit').addEventListener('input', render);
-
 document.getElementById('exportBtn').addEventListener('click', ()=>{
   if(!entries.length) return;
   const srt = entries.map((e,i)=>`${i+1}\n${msToTc(e.start)} --> ${msToTc(e.end)}\n${e.text}`).join('\n\n');
@@ -195,5 +223,9 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
   link.click();
 });
 </script>
-</body>
-</html>
+</main>
+<footer>
+  <span>Viconik · Herramientas profesionales de producción audiovisual</span>
+  <a href="index.html">Volver al índice de herramientas</a>
+</footer>
+</body></html>

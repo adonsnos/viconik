@@ -1,142 +1,194 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Planificador de Rodaje</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Viconik · Planificador de Rodaje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root{
-  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
-  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B;
-  --c-intday:#EDEDED; --c-intnight:#8FB8E8; --c-extday:#F2E27A; --c-extnight:#8CE0A8;
-  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+:root {
+  --k: #111010; --w: #EDEBE7; --g: #8a8780; --l: #C8C5BF; --b: #E5E3DE;
+  --brd: rgba(17,16,16,.1);
+  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  --bebas: 'Bebas Neue', sans-serif; --serif: 'Playfair Display', serif;
 }
-*{box-sizing:border-box;}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:40px 20px;}
-.wrap{max-width:1200px;margin:0 auto;}
-.sprockets{display:flex;gap:6px;margin-bottom:22px;}
-.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:16px;}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
-h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;}
-.sub{color:var(--text-dim);font-size:14px;margin-top:8px;max-width:60ch;line-height:1.5;}
-.toolbar{display:flex;gap:10px;}
-.btn{background:var(--accent);color:#161206;border:none;padding:10px 16px;border-radius:8px;font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase;}
-.btn.secondary{background:var(--panel-2);color:var(--text);border:1px solid var(--border);}
-.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;font-family:var(--mono);font-size:11px;color:var(--text-dim);}
-.legend div{display:flex;align-items:center;gap:6px;}
-.dot{width:10px;height:10px;border-radius:2px;}
-.new-scene{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
-.f{display:flex;flex-direction:column;gap:6px;}
-.f label{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);}
-.f input, .f select{background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:6px;font-family:var(--mono);font-size:12.5px;}
-.f.grow{flex:1;min-width:140px;}
-.board{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;}
-.column{min-width:250px;flex-shrink:0;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px;}
-.column-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--panel-2);}
-.column-head h3{font-size:12.5px;margin:0;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;}
-.column-head .total{font-family:var(--mono);font-size:10.5px;color:var(--text-dim);}
-.column-body{min-height:80px;display:flex;flex-direction:column;gap:8px;}
-.strip{border-radius:6px;padding:9px 10px;color:#111;cursor:grab;font-size:12px;position:relative;}
-.strip.dragging{opacity:.4;}
-.strip .top{display:flex;justify-content:space-between;font-family:var(--mono);font-weight:700;font-size:11px;}
-.strip .desc{margin-top:3px;font-size:11.5px;line-height:1.3;}
-.strip .meta{margin-top:4px;font-family:var(--mono);font-size:9.5px;opacity:.7;}
-.strip .del{position:absolute;top:6px;right:8px;background:none;border:none;font-size:13px;cursor:pointer;color:#111;opacity:.5;}
-.strip .del:hover{opacity:1;}
-.add-day-btn{min-width:140px;flex-shrink:0;border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-family:var(--mono);font-size:12px;cursor:pointer;}
-.add-day-btn:hover{border-color:var(--accent);color:var(--accent);}
-footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:28px;font-family:var(--mono);}
-@media print{
-  .new-scene,.toolbar,.strip .del,.add-day-btn{display:none !important;}
-  body{background:#fff;color:#000;}
-  .board{overflow:visible;flex-wrap:wrap;}
-  .column{background:#fff;border-color:#ccc;break-inside:avoid;}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--w); color:var(--k); font-family:var(--sans); line-height:1.65; overflow-x:hidden; font-size:18px; }
+a { color:inherit; text-decoration:none; }
+nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:.85rem 3.5rem; background:rgba(237,235,231,.96); backdrop-filter:blur(16px); border-bottom:1px solid var(--brd); }
+.nav-logo { display:flex; align-items:center; gap:.6rem; font-family:var(--serif); font-size:1.2rem; letter-spacing:.02em; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:14px; color:var(--g); transition:color .2s; }
+.nav-links a:hover { color:var(--k); }
+.nav-cta { font-family:var(--mono); font-size:12px; letter-spacing:.08em; background:var(--k); color:var(--w); padding:.5rem 1.25rem; transition:opacity .2s; }
+.nav-cta:hover { opacity:.72; }
+.tools-container { max-width:1200px; margin:0 auto; padding:7rem 2rem 4rem; }
+.tool-section { margin-bottom:3rem; }
+.tool-header { margin-bottom:2rem; border-bottom:1px solid var(--brd); padding-bottom:1rem; }
+.tool-header .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--g); margin-bottom:.5rem; display:flex; align-items:center; gap:.75rem; }
+.tool-header .eyebrow::before { content:''; width:32px; height:1px; background:var(--l); }
+.tool-header h2 { font-family:var(--bebas); font-size:clamp(2.2rem,4vw,3.2rem); letter-spacing:.02em; line-height:1.1; color:var(--k); margin-top:.25rem; }
+.panel { background:#fff; border:1px solid var(--brd); padding:2rem; transition:box-shadow .2s; }
+.panel:hover { box-shadow:0 12px 22px -12px rgba(0,0,0,.08); }
+.panel-title { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--g); margin-bottom:1.5rem; padding-bottom:.75rem; border-bottom:1px solid var(--brd); display:flex; align-items:center; gap:.75rem; }
+.panel-title i { color:var(--k); font-size:14px; }
+.two-col-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
+@media (max-width:1000px){ .two-col-grid{ grid-template-columns:1fr; gap:1.5rem; } }
+.param-group { display:flex; flex-direction:column; gap:1.2rem; }
+.param-row { display:flex; flex-direction:column; gap:.3rem; }
+.param-label { font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--g); letter-spacing:.05em; display:flex; align-items:center; gap:6px; }
+.inline-row { display:flex; gap:.5rem; align-items:center; }
+.inline-row input, .inline-row select { flex:1; }
+select, input[type="number"], input[type="text"], input[type="date"], textarea {
+  width:100%; padding:.65rem .9rem; background:#fff; border:1px solid var(--brd); border-radius:0;
+  font-family:var(--sans); font-size:14px; color:var(--k); transition:border .15s;
+}
+textarea { resize:vertical; min-height:70px; font-family:var(--sans); }
+select:focus, input:focus, textarea:focus { outline:none; border-color:var(--k); }
+.preset-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.3rem; }
+.preset-chip { font-family:var(--mono); font-size:10px; padding:.4rem .8rem; border:1px solid var(--brd); background:var(--b); color:var(--k); cursor:pointer; transition:all .15s; text-transform:uppercase; letter-spacing:.05em; }
+.preset-chip:hover, .preset-chip.active { background:var(--k); color:var(--w); border-color:var(--k); }
+.badge { font-family:var(--mono); font-size:9px; padding:3px 8px; background:var(--w); border:1px solid var(--brd); color:var(--g); text-transform:uppercase; }
+.table-wrapper { overflow-x:auto; border:1px solid var(--brd); background:#fff; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead tr { background:var(--k); color:var(--w); }
+th { font-family:var(--mono); font-size:10px; letter-spacing:.06em; font-weight:400; text-transform:uppercase; padding:.9rem 1rem; text-align:left; }
+td { padding:.7rem 1rem; border-bottom:1px solid var(--brd); color:var(--k); }
+td input, td textarea, td select { font-size:12.5px; padding:.4rem .5rem; }
+tbody tr:hover td { background:var(--b); }
+.btn-group { display:flex; gap:.75rem; flex-wrap:wrap; }
+.btn { padding:.7rem 1.1rem; border:1px solid var(--k); background:var(--k); color:var(--w); font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; cursor:pointer; transition:opacity .2s; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn:hover { opacity:.78; }
+.btn-secondary { background:transparent; color:var(--k); border:1px solid var(--brd); }
+.btn-secondary:hover { background:var(--b); opacity:1; }
+.info-box { background:var(--k); color:var(--w); padding:1.25rem; margin-top:1.5rem; display:flex; gap:1rem; align-items:flex-start; font-size:12px; line-height:1.6; }
+.info-box i { color:var(--l); font-size:1.2rem; }
+.hidden { display:none !important; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+.detail-item { background:#fff; border:1px solid var(--brd); padding:.8rem; text-align:left; }
+.detail-item .label-sm { font-family:var(--mono); font-size:9px; color:var(--g); text-transform:uppercase; }
+.detail-item .value-md { font-family:var(--mono); font-size:1.2rem; font-weight:500; margin-top:.2rem; }
+.row-del { background:none; border:none; color:var(--g); cursor:pointer; font-size:16px; }
+.row-del:hover { color:#a83232; }
+.add-row-btn { margin-top:.75rem; background:var(--b); border:1px dashed var(--brd); color:var(--g); padding:.7rem; width:100%; cursor:pointer; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; }
+.add-row-btn:hover { border-color:var(--k); color:var(--k); }
+footer { padding:1.5rem 3.5rem; border-top:1px solid var(--brd); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--g); }
+footer a { color:var(--g); transition:color .2s; }
+footer a:hover { color:var(--k); }
+@media print {
+  nav, footer, .btn, .add-row-btn, .row-del, .no-print { display:none !important; }
+  body { background:#fff; font-size:12px; }
+  .tools-container { padding:1rem; max-width:100%; }
+  .panel { box-shadow:none; break-inside:avoid; }
+}
+@media (max-width:960px) {
+  nav { padding:.85rem 1.5rem; }
+  .nav-links { display:none; }
+  .tools-container { padding:6rem 1.5rem 3rem; }
+  .panel { padding:1.5rem; }
+  footer { padding:1.25rem 1.5rem; flex-direction:column; text-align:center; }
 }
 </style>
-</head>
-<body>
-<div class="wrap">
-  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-  <header>
-    <div>
-      <p class="eyebrow">Utilidad de producción</p>
-      <h1>Planificador de Rodaje</h1>
-      <p class="sub">Desglosa escenas y repártelas entre jornadas arrastrando las tarjetas. Estilo stripboard clásico de AD.</p>
-    </div>
-    <div class="toolbar">
-      <button class="btn secondary" id="printBtn">Imprimir</button>
-    </div>
-  </header>
+</head><body>
+<nav>
+  <a href="index.html" class="nav-logo">Viconik</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Todas las herramientas</a></li>
+    <li><a href="viconik_calculators.html">Calculadoras</a></li>
+  </ul>
+  <a href="index.html" class="nav-cta">← Índice</a>
+</nav>
+<main class="tools-container">
+<style>
+:root { --c-intday:#EDEDED; --c-intnight:#8FB8E8; --c-extday:#F2E27A; --c-extnight:#8CE0A8; }
+.legend2 { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:1.5rem; font-family:var(--mono); font-size:11px; color:var(--g); }
+.legend2 div { display:flex; align-items:center; gap:6px; }
+.dot { width:10px; height:10px; border:1px solid var(--brd); }
+.new-scene { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+.new-scene .f { display:flex; flex-direction:column; gap:6px; }
+.new-scene .f label { font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--g); letter-spacing:.05em; }
+.new-scene .f.grow { flex:1; min-width:140px; }
+.board { display:flex; gap:14px; overflow-x:auto; padding-bottom:10px; margin-top:1.5rem; }
+.column { min-width:250px; flex-shrink:0; background:#fff; border:1px solid var(--brd); padding:12px; }
+.column-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--brd); }
+.column-head h3 { font-size:12.5px; margin:0; font-family:var(--mono); text-transform:uppercase; letter-spacing:.05em; }
+.column-head .total { font-family:var(--mono); font-size:10.5px; color:var(--g); }
+.column-body { min-height:80px; display:flex; flex-direction:column; gap:8px; }
+.strip { border:1px solid rgba(17,16,16,.2); padding:9px 10px; color:#111; cursor:grab; font-size:12px; position:relative; }
+.strip.dragging { opacity:.4; }
+.strip .top { display:flex; justify-content:space-between; font-family:var(--mono); font-weight:700; font-size:11px; }
+.strip .desc { margin-top:3px; font-size:11.5px; line-height:1.3; }
+.strip .meta { margin-top:4px; font-family:var(--mono); font-size:9.5px; opacity:.7; }
+.strip .del { position:absolute; top:6px; right:8px; background:none; border:none; font-size:13px; cursor:pointer; color:#111; opacity:.5; }
+.strip .del:hover { opacity:1; }
+.add-day-btn { min-width:140px; flex-shrink:0; border:2px dashed var(--brd); display:flex; align-items:center; justify-content:center; color:var(--g); font-family:var(--mono); font-size:12px; cursor:pointer; }
+.add-day-btn:hover { border-color:var(--k); color:var(--k); }
+@media print { .new-scene,.board .add-day-btn,.strip .del { display:none !important; } .board { overflow:visible; flex-wrap:wrap; } .column { break-inside:avoid; } }
+</style>
 
-  <div class="legend">
+<section class="tool-section">
+  <div class="tool-header">
+    <div class="eyebrow">Herramienta profesional</div>
+    <h2>Planificador de Rodaje</h2>
+    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Desglosa escenas y repártelas entre jornadas arrastrando las tarjetas. Estilo stripboard clásico de AD.</p>
+  </div>
+
+  <div class="legend2">
     <div><span class="dot" style="background:var(--c-intday)"></span>INT · DÍA</div>
     <div><span class="dot" style="background:var(--c-intnight)"></span>INT · NOCHE</div>
     <div><span class="dot" style="background:var(--c-extday)"></span>EXT · DÍA</div>
     <div><span class="dot" style="background:var(--c-extnight)"></span>EXT · NOCHE</div>
   </div>
 
-  <div class="new-scene">
-    <div class="f"><label>Escena</label><input type="text" id="nScene" style="width:60px" placeholder="1"></div>
-    <div class="f"><label>Int/Ext</label><select id="nIntExt"><option value="INT">INT</option><option value="EXT">EXT</option></select></div>
-    <div class="f"><label>Día/Noche</label><select id="nDayNight"><option value="DÍA">DÍA</option><option value="NOCHE">NOCHE</option></select></div>
-    <div class="f grow"><label>Localización</label><input type="text" id="nLoc" placeholder="Oficina, planta 3"></div>
-    <div class="f grow"><label>Descripción</label><input type="text" id="nDesc" placeholder="Entrevista a CEO"></div>
-    <div class="f"><label>Páginas/min est.</label><input type="text" id="nDur" style="width:80px" placeholder="1/8"></div>
-    <div class="f"><label>Reparto</label><input type="text" id="nCast" style="width:80px" placeholder="1,2"></div>
-    <button class="btn" id="addSceneBtn">+ Añadir escena</button>
+  <div class="panel">
+    <div class="panel-title"><i class="fas fa-plus"></i> Añadir escena</div>
+    <div class="new-scene">
+      <div class="f"><label>Escena</label><input type="text" id="nScene" style="width:60px" placeholder="1"></div>
+      <div class="f"><label>Int/Ext</label><select id="nIntExt"><option value="INT">INT</option><option value="EXT">EXT</option></select></div>
+      <div class="f"><label>Día/Noche</label><select id="nDayNight"><option value="DÍA">DÍA</option><option value="NOCHE">NOCHE</option></select></div>
+      <div class="f grow"><label>Localización</label><input type="text" id="nLoc" placeholder="Oficina, planta 3"></div>
+      <div class="f grow"><label>Descripción</label><input type="text" id="nDesc" placeholder="Entrevista a CEO"></div>
+      <div class="f"><label>Páginas/min est.</label><input type="text" id="nDur" style="width:80px" placeholder="1/8"></div>
+      <div class="f"><label>Reparto</label><input type="text" id="nCast" style="width:80px" placeholder="1,2"></div>
+      <button class="btn" id="addSceneBtn">+ Añadir</button>
+    </div>
   </div>
 
   <div class="board" id="board"></div>
-</div>
-<footer>Los datos se guardan solo en esta sesión — imprime antes de cerrar</footer>
+
+  <div class="btn-group" style="margin-top:1.5rem;">
+    <button class="btn btn-secondary" id="printBtn"><i class="fas fa-print"></i> Imprimir</button>
+  </div>
+</section>
 
 <script>
-const COLORS = {
-  'INT-DÍA': 'var(--c-intday)', 'INT-NOCHE': 'var(--c-intnight)',
-  'EXT-DÍA': 'var(--c-extday)', 'EXT-NOCHE': 'var(--c-extnight)',
-};
+const COLORS = { 'INT-DÍA': 'var(--c-intday)', 'INT-NOCHE': 'var(--c-intnight)', 'EXT-DÍA': 'var(--c-extday)', 'EXT-NOCHE': 'var(--c-extnight)' };
 const board = document.getElementById('board');
 let dayCount = 0;
-
 function addDay(){
   dayCount++;
   const col = document.createElement('div');
-  col.className = 'column';
-  col.dataset.day = dayCount;
-  col.innerHTML = `
-    <div class="column-head"><h3>Día ${dayCount}</h3><span class="total">0 escenas</span></div>
-    <div class="column-body" data-day="${dayCount}"></div>
-  `;
+  col.className = 'column'; col.dataset.day = dayCount;
+  col.innerHTML = `<div class="column-head"><h3>Día ${dayCount}</h3><span class="total">0 escenas</span></div><div class="column-body" data-day="${dayCount}"></div>`;
   board.insertBefore(col, document.getElementById('addDayBtn'));
   setupDropzone(col.querySelector('.column-body'));
 }
-
 function addUnassignedIfMissing(){
   if(document.querySelector('.column[data-day="unassigned"]')) return;
   const col = document.createElement('div');
-  col.className = 'column';
-  col.dataset.day = 'unassigned';
-  col.innerHTML = `
-    <div class="column-head"><h3>Sin asignar</h3><span class="total">0 escenas</span></div>
-    <div class="column-body" data-day="unassigned"></div>
-  `;
+  col.className = 'column'; col.dataset.day = 'unassigned';
+  col.innerHTML = `<div class="column-head"><h3>Sin asignar</h3><span class="total">0 escenas</span></div><div class="column-body" data-day="unassigned"></div>`;
   board.insertBefore(col, board.firstChild);
   setupDropzone(col.querySelector('.column-body'));
 }
-
 const addDayBtn = document.createElement('div');
-addDayBtn.className = 'add-day-btn';
-addDayBtn.id = 'addDayBtn';
-addDayBtn.textContent = '+ Añadir jornada';
+addDayBtn.className = 'add-day-btn'; addDayBtn.id = 'addDayBtn'; addDayBtn.textContent = '+ Añadir jornada';
 addDayBtn.addEventListener('click', addDay);
-
 addUnassignedIfMissing();
 board.appendChild(addDayBtn);
 addDay();
-
 let dragSrc = null;
 function setupDropzone(zone){
   zone.addEventListener('dragover', e=>{
@@ -155,33 +207,24 @@ function getDragAfter(zone, y){
     return closest;
   }, {offset:-Infinity}).element;
 }
-
 function addScene(data){
   const strip = document.createElement('div');
-  strip.className = 'strip';
-  strip.draggable = true;
+  strip.className = 'strip'; strip.draggable = true;
   const key = `${data.intext}-${data.daynight}`;
   strip.style.background = COLORS[key] || '#ccc';
-  strip.innerHTML = `
-    <button class="del">×</button>
-    <div class="top"><span>ESC. ${data.scene}</span><span>${data.intext}/${data.daynight}</span></div>
-    <div class="desc">${data.desc || '(sin descripción)'} — ${data.loc || ''}</div>
-    <div class="meta">${data.dur ? data.dur+' · ' : ''}${data.cast ? 'Reparto: '+data.cast : ''}</div>
-  `;
+  strip.innerHTML = `<button class="del">×</button><div class="top"><span>ESC. ${data.scene}</span><span>${data.intext}/${data.daynight}</span></div><div class="desc">${data.desc || '(sin descripción)'} — ${data.loc || ''}</div><div class="meta">${data.dur ? data.dur+' · ' : ''}${data.cast ? 'Reparto: '+data.cast : ''}</div>`;
   strip.addEventListener('dragstart', ()=>{ dragSrc = strip; strip.classList.add('dragging'); });
   strip.addEventListener('dragend', ()=>{ strip.classList.remove('dragging'); updateTotals(); });
   strip.querySelector('.del').addEventListener('click', ()=>{ strip.remove(); updateTotals(); });
   document.querySelector('.column-body[data-day="unassigned"]').appendChild(strip);
   updateTotals();
 }
-
 function updateTotals(){
   document.querySelectorAll('.column').forEach(col=>{
     const count = col.querySelectorAll('.strip').length;
     col.querySelector('.total').textContent = `${count} escena${count!==1?'s':''}`;
   });
 }
-
 document.getElementById('addSceneBtn').addEventListener('click',()=>{
   const scene = document.getElementById('nScene').value || '?';
   const intext = document.getElementById('nIntExt').value;
@@ -193,8 +236,11 @@ document.getElementById('addSceneBtn').addEventListener('click',()=>{
   addScene({scene,intext,daynight,loc,desc,dur,cast});
   ['nScene','nLoc','nDesc','nDur','nCast'].forEach(id=>document.getElementById(id).value='');
 });
-
 document.getElementById('printBtn').addEventListener('click',()=>window.print());
 </script>
-</body>
-</html>
+</main>
+<footer>
+  <span>Viconik · Herramientas profesionales de producción audiovisual</span>
+  <a href="index.html">Volver al índice de herramientas</a>
+</footer>
+</body></html>

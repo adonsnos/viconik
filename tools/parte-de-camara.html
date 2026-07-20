@@ -1,110 +1,161 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Parte de Cámara</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Viconik · Parte de Cámara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root{
-  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
-  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B; --good:#5EEAD4; --bad:#E85D5D;
-  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+:root {
+  --k: #111010; --w: #EDEBE7; --g: #8a8780; --l: #C8C5BF; --b: #E5E3DE;
+  --brd: rgba(17,16,16,.1);
+  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  --bebas: 'Bebas Neue', sans-serif; --serif: 'Playfair Display', serif;
 }
-*{box-sizing:border-box;}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:40px 20px;}
-.wrap{max-width:1180px;margin:0 auto;}
-.sprockets{display:flex;gap:6px;margin-bottom:22px;}
-.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:16px;}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
-h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;}
-.sub{color:var(--text-dim);font-size:14px;margin-top:8px;}
-.toolbar{display:flex;gap:10px;}
-.btn{background:var(--accent);color:#161206;border:none;padding:11px 18px;border-radius:8px;font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.05em;cursor:pointer;text-transform:uppercase;}
-.btn.secondary{background:var(--panel-2);color:var(--text);border:1px solid var(--border);}
-.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:20px;}
-.meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-.field label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
-.field input{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:9px 10px;border-radius:6px;font-family:var(--mono);font-size:13px;}
-table{width:100%;border-collapse:collapse;margin-top:4px;}
-thead th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);padding:8px 6px;border-bottom:1px solid var(--border);}
-tbody td{padding:5px 6px;border-bottom:1px solid var(--panel-2);}
-tbody input, tbody textarea{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:7px 8px;border-radius:5px;font-family:var(--mono);font-size:12.5px;}
-tbody input[type=text].desc{font-family:var(--sans);}
-.take-status{display:flex;gap:4px;}
-.status-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--panel-2);color:var(--text-dim);font-family:var(--mono);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.status-btn.ok.active{background:var(--good);color:#0D2A26;border-color:var(--good);}
-.status-btn.ng.active{background:var(--bad);color:#2A0D0D;border-color:var(--bad);}
-.row-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;}
-.row-del:hover{color:var(--bad);}
-.add-row-btn{margin-top:12px;background:var(--panel-2);border:1px dashed var(--border);color:var(--text-dim);padding:9px;width:100%;border-radius:7px;font-family:var(--mono);font-size:12.5px;cursor:pointer;}
-.add-row-btn:hover{border-color:var(--accent);color:var(--accent);}
-footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:28px;font-family:var(--mono);}
-@media print{
-  body{background:#fff;color:#000;padding:0;}
-  .toolbar,.add-row-btn,.row-del{display:none !important;}
-  .sprockets{display:none;}
-  .panel{border-color:#ccc;background:#fff;}
-  .field input, tbody input, tbody textarea{background:#fff;border-color:#ccc;color:#000;}
-  thead th{color:#555;}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--w); color:var(--k); font-family:var(--sans); line-height:1.65; overflow-x:hidden; font-size:18px; }
+a { color:inherit; text-decoration:none; }
+nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:.85rem 3.5rem; background:rgba(237,235,231,.96); backdrop-filter:blur(16px); border-bottom:1px solid var(--brd); }
+.nav-logo { display:flex; align-items:center; gap:.6rem; font-family:var(--serif); font-size:1.2rem; letter-spacing:.02em; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:14px; color:var(--g); transition:color .2s; }
+.nav-links a:hover { color:var(--k); }
+.nav-cta { font-family:var(--mono); font-size:12px; letter-spacing:.08em; background:var(--k); color:var(--w); padding:.5rem 1.25rem; transition:opacity .2s; }
+.nav-cta:hover { opacity:.72; }
+.tools-container { max-width:1200px; margin:0 auto; padding:7rem 2rem 4rem; }
+.tool-section { margin-bottom:3rem; }
+.tool-header { margin-bottom:2rem; border-bottom:1px solid var(--brd); padding-bottom:1rem; }
+.tool-header .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--g); margin-bottom:.5rem; display:flex; align-items:center; gap:.75rem; }
+.tool-header .eyebrow::before { content:''; width:32px; height:1px; background:var(--l); }
+.tool-header h2 { font-family:var(--bebas); font-size:clamp(2.2rem,4vw,3.2rem); letter-spacing:.02em; line-height:1.1; color:var(--k); margin-top:.25rem; }
+.panel { background:#fff; border:1px solid var(--brd); padding:2rem; transition:box-shadow .2s; }
+.panel:hover { box-shadow:0 12px 22px -12px rgba(0,0,0,.08); }
+.panel-title { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--g); margin-bottom:1.5rem; padding-bottom:.75rem; border-bottom:1px solid var(--brd); display:flex; align-items:center; gap:.75rem; }
+.panel-title i { color:var(--k); font-size:14px; }
+.two-col-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
+@media (max-width:1000px){ .two-col-grid{ grid-template-columns:1fr; gap:1.5rem; } }
+.param-group { display:flex; flex-direction:column; gap:1.2rem; }
+.param-row { display:flex; flex-direction:column; gap:.3rem; }
+.param-label { font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--g); letter-spacing:.05em; display:flex; align-items:center; gap:6px; }
+.inline-row { display:flex; gap:.5rem; align-items:center; }
+.inline-row input, .inline-row select { flex:1; }
+select, input[type="number"], input[type="text"], input[type="date"], textarea {
+  width:100%; padding:.65rem .9rem; background:#fff; border:1px solid var(--brd); border-radius:0;
+  font-family:var(--sans); font-size:14px; color:var(--k); transition:border .15s;
 }
-@media(max-width:900px){.meta-grid{grid-template-columns:1fr 1fr;}}
+textarea { resize:vertical; min-height:70px; font-family:var(--sans); }
+select:focus, input:focus, textarea:focus { outline:none; border-color:var(--k); }
+.preset-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.3rem; }
+.preset-chip { font-family:var(--mono); font-size:10px; padding:.4rem .8rem; border:1px solid var(--brd); background:var(--b); color:var(--k); cursor:pointer; transition:all .15s; text-transform:uppercase; letter-spacing:.05em; }
+.preset-chip:hover, .preset-chip.active { background:var(--k); color:var(--w); border-color:var(--k); }
+.badge { font-family:var(--mono); font-size:9px; padding:3px 8px; background:var(--w); border:1px solid var(--brd); color:var(--g); text-transform:uppercase; }
+.table-wrapper { overflow-x:auto; border:1px solid var(--brd); background:#fff; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead tr { background:var(--k); color:var(--w); }
+th { font-family:var(--mono); font-size:10px; letter-spacing:.06em; font-weight:400; text-transform:uppercase; padding:.9rem 1rem; text-align:left; }
+td { padding:.7rem 1rem; border-bottom:1px solid var(--brd); color:var(--k); }
+td input, td textarea, td select { font-size:12.5px; padding:.4rem .5rem; }
+tbody tr:hover td { background:var(--b); }
+.btn-group { display:flex; gap:.75rem; flex-wrap:wrap; }
+.btn { padding:.7rem 1.1rem; border:1px solid var(--k); background:var(--k); color:var(--w); font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; cursor:pointer; transition:opacity .2s; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn:hover { opacity:.78; }
+.btn-secondary { background:transparent; color:var(--k); border:1px solid var(--brd); }
+.btn-secondary:hover { background:var(--b); opacity:1; }
+.info-box { background:var(--k); color:var(--w); padding:1.25rem; margin-top:1.5rem; display:flex; gap:1rem; align-items:flex-start; font-size:12px; line-height:1.6; }
+.info-box i { color:var(--l); font-size:1.2rem; }
+.hidden { display:none !important; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+.detail-item { background:#fff; border:1px solid var(--brd); padding:.8rem; text-align:left; }
+.detail-item .label-sm { font-family:var(--mono); font-size:9px; color:var(--g); text-transform:uppercase; }
+.detail-item .value-md { font-family:var(--mono); font-size:1.2rem; font-weight:500; margin-top:.2rem; }
+.row-del { background:none; border:none; color:var(--g); cursor:pointer; font-size:16px; }
+.row-del:hover { color:#a83232; }
+.add-row-btn { margin-top:.75rem; background:var(--b); border:1px dashed var(--brd); color:var(--g); padding:.7rem; width:100%; cursor:pointer; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; }
+.add-row-btn:hover { border-color:var(--k); color:var(--k); }
+footer { padding:1.5rem 3.5rem; border-top:1px solid var(--brd); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--g); }
+footer a { color:var(--g); transition:color .2s; }
+footer a:hover { color:var(--k); }
+@media print {
+  nav, footer, .btn, .add-row-btn, .row-del, .no-print { display:none !important; }
+  body { background:#fff; font-size:12px; }
+  .tools-container { padding:1rem; max-width:100%; }
+  .panel { box-shadow:none; break-inside:avoid; }
+}
+@media (max-width:960px) {
+  nav { padding:.85rem 1.5rem; }
+  .nav-links { display:none; }
+  .tools-container { padding:6rem 1.5rem 3rem; }
+  .panel { padding:1.5rem; }
+  footer { padding:1.25rem 1.5rem; flex-direction:column; text-align:center; }
+}
 </style>
-</head>
-<body>
-<div class="wrap">
-  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-  <header>
-    <div>
-      <p class="eyebrow">Utilidad de producción</p>
-      <h1>Parte de Cámara</h1>
-      <p class="sub">Registro de tomas por jornada de rodaje — escena, toma, timecode, lente y estado.</p>
-    </div>
-    <div class="toolbar">
-      <button class="btn secondary" id="csvBtn">Exportar CSV</button>
-      <button class="btn secondary" id="printBtn">Imprimir</button>
-    </div>
-  </header>
+</head><body>
+<nav>
+  <a href="index.html" class="nav-logo">Viconik</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Todas las herramientas</a></li>
+    <li><a href="viconik_calculators.html">Calculadoras</a></li>
+  </ul>
+  <a href="index.html" class="nav-cta">← Índice</a>
+</nav>
+<main class="tools-container">
+<style>
+.status-pill { display:inline-flex; gap:4px; }
+.status-btn { width:30px; height:26px; border:1px solid var(--brd); background:#fff; color:var(--g); font-family:var(--mono); font-size:10px; cursor:pointer; }
+.status-btn.ok.active { background:#2f6b4f; color:#fff; border-color:#2f6b4f; }
+.status-btn.ng.active { background:#a83232; color:#fff; border-color:#a83232; }
+</style>
 
-  <div class="panel">
-    <div class="meta-grid">
-      <div class="field"><label>Producción</label><input type="text" id="prod"></div>
-      <div class="field"><label>Fecha</label><input type="text" id="date" placeholder="DD/MM/AAAA"></div>
-      <div class="field"><label>Cámara</label><input type="text" id="cam" placeholder="Modelo / nº"></div>
-      <div class="field"><label>Operador</label><input type="text" id="op"></div>
-      <div class="field"><label>Tarjeta / rollo</label><input type="text" id="card"></div>
-      <div class="field"><label>Formato / fps</label><input type="text" id="fmt" placeholder="ej. 4K ProRes 25fps"></div>
-      <div class="field"><label>DIT / asistente</label><input type="text" id="dit"></div>
-      <div class="field"><label>Jornada</label><input type="text" id="day" placeholder="ej. 2 de 5"></div>
+<section class="tool-section">
+  <div class="tool-header">
+    <div class="eyebrow">Herramienta profesional</div>
+    <h2>Parte de Cámara</h2>
+    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Registro de tomas por jornada de rodaje — escena, toma, timecode, lente y estado.</p>
+  </div>
+
+  <div class="panel" style="margin-bottom:1.5rem;">
+    <div class="panel-title"><i class="fas fa-clapperboard"></i> Datos generales</div>
+    <div class="two-col-grid" style="gap:1rem;">
+      <div class="param-group">
+        <div class="param-row"><label class="param-label">Producción</label><input type="text" id="prod"></div>
+        <div class="param-row"><label class="param-label">Fecha</label><input type="text" id="date" placeholder="DD/MM/AAAA"></div>
+        <div class="param-row"><label class="param-label">Cámara</label><input type="text" id="cam" placeholder="Modelo / nº"></div>
+        <div class="param-row"><label class="param-label">Operador</label><input type="text" id="op"></div>
+      </div>
+      <div class="param-group">
+        <div class="param-row"><label class="param-label">Tarjeta / rollo</label><input type="text" id="card"></div>
+        <div class="param-row"><label class="param-label">Formato / fps</label><input type="text" id="fmt" placeholder="ej. 4K ProRes 25fps"></div>
+        <div class="param-row"><label class="param-label">DIT / asistente</label><input type="text" id="dit"></div>
+        <div class="param-row"><label class="param-label">Jornada</label><input type="text" id="day" placeholder="ej. 2 de 5"></div>
+      </div>
     </div>
   </div>
 
   <div class="panel">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:60px">Esc.</th>
-          <th style="width:60px">Toma</th>
-          <th style="width:90px">TC In</th>
-          <th style="width:90px">TC Out</th>
-          <th style="width:80px">Lente</th>
-          <th>Descripción / notas</th>
-          <th style="width:70px">Estado</th>
-          <th style="width:30px"></th>
-        </tr>
-      </thead>
-      <tbody id="rows"></tbody>
-    </table>
+    <div class="panel-title"><i class="fas fa-list"></i> Registro de tomas</div>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr>
+          <th style="width:50px">Esc.</th><th style="width:50px">Toma</th><th style="width:80px">TC In</th>
+          <th style="width:80px">TC Out</th><th style="width:70px">Lente</th><th>Descripción / notas</th>
+          <th style="width:70px">Estado</th><th style="width:30px"></th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
     <button class="add-row-btn" id="addRow">+ Añadir toma</button>
   </div>
-</div>
-<footer>Los datos se guardan solo en esta sesión — exporta el CSV o imprime al final de la jornada</footer>
+
+  <div class="btn-group" style="margin-top:1.5rem;">
+    <button class="btn btn-secondary" id="csvBtn"><i class="fas fa-file-csv"></i> Exportar CSV</button>
+    <button class="btn" id="printBtn"><i class="fas fa-print"></i> Imprimir</button>
+  </div>
+</section>
 
 <script>
 const rows = document.getElementById('rows');
-
 function newRow(){
   const tr = document.createElement('tr');
   tr.innerHTML = `
@@ -114,12 +165,7 @@ function newRow(){
     <td><input type="text" class="tcout" placeholder="00:00:00:00"></td>
     <td><input type="text" class="lens"></td>
     <td><input type="text" class="desc"></td>
-    <td>
-      <div class="take-status">
-        <button type="button" class="status-btn ok">OK</button>
-        <button type="button" class="status-btn ng">NG</button>
-      </div>
-    </td>
+    <td><div class="status-pill"><button type="button" class="status-btn ok">OK</button><button type="button" class="status-btn ng">NG</button></div></td>
     <td><button class="row-del">×</button></td>
   `;
   tr.querySelectorAll('.status-btn').forEach(btn=>{
@@ -130,25 +176,19 @@ function newRow(){
     });
   });
   tr.querySelector('.row-del').addEventListener('click',()=>tr.remove());
-  return tr;
+  rows.appendChild(tr);
 }
-
-document.getElementById('addRow').addEventListener('click',()=>rows.appendChild(newRow()));
+document.getElementById('addRow').addEventListener('click',()=>newRow());
 document.getElementById('printBtn').addEventListener('click',()=>window.print());
-
 document.getElementById('csvBtn').addEventListener('click',()=>{
   const header = ['Escena','Toma','TC In','TC Out','Lente','Descripción','Estado'];
   const lines = [header.join(';')];
   rows.querySelectorAll('tr').forEach(tr=>{
     const status = tr.querySelector('.status-btn.ok.active') ? 'OK' : (tr.querySelector('.status-btn.ng.active') ? 'NG' : '');
     const vals = [
-      tr.querySelector('.scene').value,
-      tr.querySelector('.take').value,
-      tr.querySelector('.tcin').value,
-      tr.querySelector('.tcout').value,
-      tr.querySelector('.lens').value,
-      tr.querySelector('.desc').value.replace(/;/g,','),
-      status
+      tr.querySelector('.scene').value, tr.querySelector('.take').value,
+      tr.querySelector('.tcin').value, tr.querySelector('.tcout').value,
+      tr.querySelector('.lens').value, tr.querySelector('.desc').value.replace(/;/g,','), status
     ];
     lines.push(vals.join(';'));
   });
@@ -160,8 +200,11 @@ document.getElementById('csvBtn').addEventListener('click',()=>{
   link.download = `parte-camara-${document.getElementById('date').value||'jornada'}.csv`;
   link.click();
 });
-
-for(let i=0;i<8;i++) rows.appendChild(newRow());
+for(let i=0;i<8;i++) newRow();
 </script>
-</body>
-</html>
+</main>
+<footer>
+  <span>Viconik · Herramientas profesionales de producción audiovisual</span>
+  <a href="index.html">Volver al índice de herramientas</a>
+</footer>
+</body></html>

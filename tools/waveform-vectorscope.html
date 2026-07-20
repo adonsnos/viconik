@@ -1,132 +1,184 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Waveform y Vectorscopio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Viconik · Waveform y Vectorscopio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root{
-  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
-  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B;
-  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+:root {
+  --k: #111010; --w: #EDEBE7; --g: #8a8780; --l: #C8C5BF; --b: #E5E3DE;
+  --brd: rgba(17,16,16,.1);
+  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  --bebas: 'Bebas Neue', sans-serif; --serif: 'Playfair Display', serif;
 }
-*{box-sizing:border-box;}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:40px 20px;}
-.wrap{max-width:1080px;margin:0 auto;}
-.sprockets{display:flex;gap:6px;margin-bottom:22px;}
-.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:16px;}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
-h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;}
-.sub{color:var(--text-dim);font-size:14px;margin-top:8px;line-height:1.5;max-width:60ch;}
-.btn{background:var(--accent);color:#161206;border:none;padding:11px 18px;border-radius:8px;font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.05em;cursor:pointer;text-transform:uppercase;}
-.drop{border:2px dashed var(--border);border-radius:10px;padding:40px;text-align:center;color:var(--text-dim);font-family:var(--mono);font-size:13px;cursor:pointer;margin-bottom:20px;}
-.drop:hover{border-color:var(--accent);color:var(--accent);}
-.drop.has-image{padding:0;border-style:solid;overflow:hidden;}
-.drop img{width:100%;display:block;max-height:360px;object-fit:contain;background:#000;}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:18px;}
-.panel h2{font-size:12.5px;margin:0 0 14px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);}
-canvas.scope{width:100%;background:#000;border-radius:6px;border:1px solid var(--border);}
-.controls{display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap;}
-.controls label{font-family:var(--mono);font-size:11px;color:var(--text-dim);}
-.controls input[type=range]{accent-color:var(--accent);}
-.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-family:var(--mono);font-size:10.5px;color:var(--text-dim);}
-.legend div{display:flex;align-items:center;gap:5px;}
-.dot{width:8px;height:8px;border-radius:2px;}
-.note{font-size:12px;color:var(--text-dim);margin-top:10px;line-height:1.5;}
-footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:28px;font-family:var(--mono);}
-@media(max-width:760px){.grid2{grid-template-columns:1fr;}}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--w); color:var(--k); font-family:var(--sans); line-height:1.65; overflow-x:hidden; font-size:18px; }
+a { color:inherit; text-decoration:none; }
+nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:.85rem 3.5rem; background:rgba(237,235,231,.96); backdrop-filter:blur(16px); border-bottom:1px solid var(--brd); }
+.nav-logo { display:flex; align-items:center; gap:.6rem; font-family:var(--serif); font-size:1.2rem; letter-spacing:.02em; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:14px; color:var(--g); transition:color .2s; }
+.nav-links a:hover { color:var(--k); }
+.nav-cta { font-family:var(--mono); font-size:12px; letter-spacing:.08em; background:var(--k); color:var(--w); padding:.5rem 1.25rem; transition:opacity .2s; }
+.nav-cta:hover { opacity:.72; }
+.tools-container { max-width:1200px; margin:0 auto; padding:7rem 2rem 4rem; }
+.tool-section { margin-bottom:3rem; }
+.tool-header { margin-bottom:2rem; border-bottom:1px solid var(--brd); padding-bottom:1rem; }
+.tool-header .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--g); margin-bottom:.5rem; display:flex; align-items:center; gap:.75rem; }
+.tool-header .eyebrow::before { content:''; width:32px; height:1px; background:var(--l); }
+.tool-header h2 { font-family:var(--bebas); font-size:clamp(2.2rem,4vw,3.2rem); letter-spacing:.02em; line-height:1.1; color:var(--k); margin-top:.25rem; }
+.panel { background:#fff; border:1px solid var(--brd); padding:2rem; transition:box-shadow .2s; }
+.panel:hover { box-shadow:0 12px 22px -12px rgba(0,0,0,.08); }
+.panel-title { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--g); margin-bottom:1.5rem; padding-bottom:.75rem; border-bottom:1px solid var(--brd); display:flex; align-items:center; gap:.75rem; }
+.panel-title i { color:var(--k); font-size:14px; }
+.two-col-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
+@media (max-width:1000px){ .two-col-grid{ grid-template-columns:1fr; gap:1.5rem; } }
+.param-group { display:flex; flex-direction:column; gap:1.2rem; }
+.param-row { display:flex; flex-direction:column; gap:.3rem; }
+.param-label { font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--g); letter-spacing:.05em; display:flex; align-items:center; gap:6px; }
+.inline-row { display:flex; gap:.5rem; align-items:center; }
+.inline-row input, .inline-row select { flex:1; }
+select, input[type="number"], input[type="text"], input[type="date"], textarea {
+  width:100%; padding:.65rem .9rem; background:#fff; border:1px solid var(--brd); border-radius:0;
+  font-family:var(--sans); font-size:14px; color:var(--k); transition:border .15s;
+}
+textarea { resize:vertical; min-height:70px; font-family:var(--sans); }
+select:focus, input:focus, textarea:focus { outline:none; border-color:var(--k); }
+.preset-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.3rem; }
+.preset-chip { font-family:var(--mono); font-size:10px; padding:.4rem .8rem; border:1px solid var(--brd); background:var(--b); color:var(--k); cursor:pointer; transition:all .15s; text-transform:uppercase; letter-spacing:.05em; }
+.preset-chip:hover, .preset-chip.active { background:var(--k); color:var(--w); border-color:var(--k); }
+.badge { font-family:var(--mono); font-size:9px; padding:3px 8px; background:var(--w); border:1px solid var(--brd); color:var(--g); text-transform:uppercase; }
+.table-wrapper { overflow-x:auto; border:1px solid var(--brd); background:#fff; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead tr { background:var(--k); color:var(--w); }
+th { font-family:var(--mono); font-size:10px; letter-spacing:.06em; font-weight:400; text-transform:uppercase; padding:.9rem 1rem; text-align:left; }
+td { padding:.7rem 1rem; border-bottom:1px solid var(--brd); color:var(--k); }
+td input, td textarea, td select { font-size:12.5px; padding:.4rem .5rem; }
+tbody tr:hover td { background:var(--b); }
+.btn-group { display:flex; gap:.75rem; flex-wrap:wrap; }
+.btn { padding:.7rem 1.1rem; border:1px solid var(--k); background:var(--k); color:var(--w); font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; cursor:pointer; transition:opacity .2s; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn:hover { opacity:.78; }
+.btn-secondary { background:transparent; color:var(--k); border:1px solid var(--brd); }
+.btn-secondary:hover { background:var(--b); opacity:1; }
+.info-box { background:var(--k); color:var(--w); padding:1.25rem; margin-top:1.5rem; display:flex; gap:1rem; align-items:flex-start; font-size:12px; line-height:1.6; }
+.info-box i { color:var(--l); font-size:1.2rem; }
+.hidden { display:none !important; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+.detail-item { background:#fff; border:1px solid var(--brd); padding:.8rem; text-align:left; }
+.detail-item .label-sm { font-family:var(--mono); font-size:9px; color:var(--g); text-transform:uppercase; }
+.detail-item .value-md { font-family:var(--mono); font-size:1.2rem; font-weight:500; margin-top:.2rem; }
+.row-del { background:none; border:none; color:var(--g); cursor:pointer; font-size:16px; }
+.row-del:hover { color:#a83232; }
+.add-row-btn { margin-top:.75rem; background:var(--b); border:1px dashed var(--brd); color:var(--g); padding:.7rem; width:100%; cursor:pointer; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; }
+.add-row-btn:hover { border-color:var(--k); color:var(--k); }
+footer { padding:1.5rem 3.5rem; border-top:1px solid var(--brd); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--g); }
+footer a { color:var(--g); transition:color .2s; }
+footer a:hover { color:var(--k); }
+@media print {
+  nav, footer, .btn, .add-row-btn, .row-del, .no-print { display:none !important; }
+  body { background:#fff; font-size:12px; }
+  .tools-container { padding:1rem; max-width:100%; }
+  .panel { box-shadow:none; break-inside:avoid; }
+}
+@media (max-width:960px) {
+  nav { padding:.85rem 1.5rem; }
+  .nav-links { display:none; }
+  .tools-container { padding:6rem 1.5rem 3rem; }
+  .panel { padding:1.5rem; }
+  footer { padding:1.25rem 1.5rem; flex-direction:column; text-align:center; }
+}
 </style>
-</head>
-<body>
-<div class="wrap">
-  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-  <header>
-    <div>
-      <p class="eyebrow">Utilidad de producción</p>
-      <h1>Waveform y Vectorscopio</h1>
-      <p class="sub">Carga un frame o fotograma de referencia y analiza su distribución de luminancia y crominancia directamente en el navegador.</p>
-    </div>
-    <button class="btn" id="uploadBtn">Cargar imagen</button>
+</head><body>
+<nav>
+  <a href="index.html" class="nav-logo">Viconik</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Todas las herramientas</a></li>
+    <li><a href="viconik_calculators.html">Calculadoras</a></li>
+  </ul>
+  <a href="index.html" class="nav-cta">← Índice</a>
+</nav>
+<main class="tools-container">
+<style>
+.wv-drop { border:2px dashed var(--brd); padding:2.5rem; text-align:center; color:var(--g); font-family:var(--mono); font-size:13px; cursor:pointer; margin-bottom:1.5rem; background:#fff; }
+.wv-drop:hover { border-color:var(--k); color:var(--k); }
+.wv-drop.has-image { padding:0; border-style:solid; overflow:hidden; }
+.wv-drop img { width:100%; display:block; max-height:340px; object-fit:contain; background:#000; }
+canvas.scope { width:100%; background:#000; border:1px solid var(--brd); }
+.wv-legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:.8rem; font-family:var(--mono); font-size:10.5px; color:var(--g); }
+.wv-legend div { display:flex; align-items:center; gap:5px; }
+.dot2 { width:8px; height:8px; }
+</style>
+
+<section class="tool-section">
+  <div class="tool-header">
+    <div class="eyebrow">Herramienta profesional</div>
+    <h2>Waveform y Vectorscopio</h2>
+    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Carga un frame o fotograma de referencia y analiza su distribución de luminancia y crominancia directamente en el navegador.</p>
+  </div>
+
+  <div class="btn-group" style="margin-bottom:1rem;">
+    <button class="btn" id="uploadBtn"><i class="fas fa-upload"></i> Cargar imagen</button>
     <input type="file" id="fileInput" accept="image/*" style="display:none">
   </div>
-  </header>
+  <div class="wv-drop" id="drop">Arrastra una imagen aquí, o pulsa "Cargar imagen"</div>
 
-  <div class="drop" id="drop">Arrastra una imagen aquí, o pulsa "Cargar imagen"</div>
-
-  <div class="controls">
-    <label>Densidad de muestreo</label>
-    <input type="range" id="density" min="1" max="6" value="2">
-    <label id="densityLabel">Media</label>
+  <div class="param-row" style="max-width:340px; margin-bottom:1.5rem;">
+    <label class="param-label">Densidad de muestreo</label>
+    <input type="range" id="density" min="1" max="6" value="2" style="accent-color:var(--k);">
+    <span class="badge" id="densityLabel" style="margin-top:4px; display:inline-block;">Media</span>
   </div>
 
-  <div class="grid2">
+  <div class="two-col-grid">
     <div class="panel">
-      <h2>Waveform (luminancia)</h2>
+      <div class="panel-title"><i class="fas fa-chart-area"></i> Waveform (luminancia)</div>
       <canvas class="scope" id="waveform" width="480" height="280"></canvas>
-      <p class="note">Eje X = posición horizontal del frame. Eje Y = nivel de luminancia (0 = negro puro, arriba = blanco puro). Útil para comprobar clipping de altas/bajas luces.</p>
+      <p style="font-size:11.5px; color:var(--g); margin-top:.8rem; line-height:1.5;">Eje X = posición horizontal. Eje Y = nivel de luminancia (0=negro, arriba=blanco). Útil para comprobar clipping.</p>
     </div>
     <div class="panel">
-      <h2>Vectorscopio (crominancia)</h2>
+      <div class="panel-title"><i class="fas fa-bullseye"></i> Vectorscopio (crominancia)</div>
       <canvas class="scope" id="vectorscope" width="440" height="440"></canvas>
-      <div class="legend" id="legend"></div>
-      <p class="note">Distancia al centro = saturación. Ángulo = matiz. Los objetivos marcados corresponden a rojo, verde, azul, cian, magenta y amarillo puros calculados desde la propia imagen.</p>
+      <div class="wv-legend" id="legend"></div>
     </div>
   </div>
-  <footer>Procesamiento 100% local — la imagen no se envía a ningún servidor</footer>
-</div>
+  <div class="info-box"><i class="fas fa-info-circle"></i><span>Procesamiento 100% local — la imagen no se envía a ningún servidor.</span></div>
+</section>
 
 <script>
 const fileInput = document.getElementById('fileInput');
 const dropEl = document.getElementById('drop');
 let currentImg = null;
-
 document.getElementById('uploadBtn').addEventListener('click',()=>fileInput.click());
 dropEl.addEventListener('click',()=>fileInput.click());
-dropEl.addEventListener('dragover', e=>{ e.preventDefault(); dropEl.style.borderColor='#F2A93B'; });
+dropEl.addEventListener('dragover', e=>{ e.preventDefault(); dropEl.style.borderColor='#111'; });
 dropEl.addEventListener('dragleave', ()=>{ dropEl.style.borderColor=''; });
-dropEl.addEventListener('drop', e=>{
-  e.preventDefault();
-  const file = e.dataTransfer.files[0];
-  if(file) loadImage(file);
-});
-fileInput.addEventListener('change', e=>{
-  const file = e.target.files[0];
-  if(file) loadImage(file);
-});
-
+dropEl.addEventListener('drop', e=>{ e.preventDefault(); const file = e.dataTransfer.files[0]; if(file) loadImage(file); });
+fileInput.addEventListener('change', e=>{ const file = e.target.files[0]; if(file) loadImage(file); });
 function loadImage(file){
   const img = new Image();
   img.onload = ()=>{
     currentImg = img;
-    dropEl.innerHTML = '';
-    dropEl.classList.add('has-image');
-    const previewImg = document.createElement('img');
-    previewImg.src = img.src;
+    dropEl.innerHTML = ''; dropEl.classList.add('has-image');
+    const previewImg = document.createElement('img'); previewImg.src = img.src;
     dropEl.appendChild(previewImg);
     analyze();
   };
   img.src = URL.createObjectURL(file);
 }
-
 document.getElementById('density').addEventListener('input', e=>{
   const labels = {1:'Máxima',2:'Alta',3:'Media',4:'Baja',5:'Mínima',6:'Muy baja'};
   document.getElementById('densityLabel').textContent = labels[e.target.value];
   analyze();
 });
-
 function getImageData(img, maxW){
   const scale = Math.min(1, maxW/img.width);
   const w = Math.round(img.width*scale), h = Math.round(img.height*scale);
   const c = document.createElement('canvas'); c.width=w; c.height=h;
-  const ctx = c.getContext('2d');
-  ctx.drawImage(img,0,0,w,h);
+  const ctx = c.getContext('2d'); ctx.drawImage(img,0,0,w,h);
   return {data: ctx.getImageData(0,0,w,h), w, h};
 }
-
 function analyze(){
   if(!currentImg) return;
   const step = parseInt(document.getElementById('density').value);
@@ -134,25 +186,20 @@ function analyze(){
   drawWaveform(data, w, h, step);
   drawVectorscope(data, w, h, step);
 }
-
 function drawWaveform(imgData, w, h, step){
   const canvas = document.getElementById('waveform');
   canvas.width = w; canvas.height = 280;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
-  // graticule
   ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth=1;
-  for(let i=0;i<=4;i++){
-    const y = (canvas.height/4)*i + 0.5;
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
-  }
+  for(let i=0;i<=4;i++){ const y = (canvas.height/4)*i + 0.5; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
   ctx.globalCompositeOperation = 'lighten';
   const px = imgData.data;
   for(let x=0; x<w; x+=step){
     for(let y=0; y<h; y+=step){
       const idx = (y*w+x)*4;
       const r=px[idx], g=px[idx+1], b=px[idx+2];
-      const luma = 0.2126*r + 0.7152*g + 0.0722*b; // 0-255
+      const luma = 0.2126*r + 0.7152*g + 0.0722*b;
       const plotY = canvas.height - (luma/255)*canvas.height;
       ctx.fillStyle = 'rgba(94,234,212,0.12)';
       ctx.fillRect(x, plotY, 1, 1);
@@ -160,63 +207,57 @@ function drawWaveform(imgData, w, h, step){
   }
   ctx.globalCompositeOperation = 'source-over';
 }
-
 function ycbcr(r,g,b){
   const y = 0.299*r+0.587*g+0.114*b;
   const cb = -0.168736*r -0.331264*g +0.5*b +128;
   const cr = 0.5*r -0.418688*g -0.081312*b +128;
   return {y,cb,cr};
 }
-
 function drawVectorscope(imgData, w, h, step){
   const canvas = document.getElementById('vectorscope');
-  const size = 440;
-  canvas.width = size; canvas.height = size;
+  const size = 440; canvas.width = size; canvas.height = size;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#000'; ctx.fillRect(0,0,size,size);
   const cx = size/2, cy = size/2, R = size*0.42;
   ctx.strokeStyle = 'rgba(255,255,255,0.15)';
   ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
   ctx.beginPath(); ctx.arc(cx,cy,R*0.5,0,Math.PI*2); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(cx-R,cy); ctx.lineTo(cx+R,cy);
-  ctx.moveTo(cx,cy-R); ctx.lineTo(cx,cy+R); ctx.stroke();
-
+  ctx.beginPath(); ctx.moveTo(cx-R,cy); ctx.lineTo(cx+R,cy); ctx.moveTo(cx,cy-R); ctx.lineTo(cx,cy+R); ctx.stroke();
   ctx.globalCompositeOperation = 'lighten';
-  const px = imgData.data;
-  const scale = R/128;
+  const px = imgData.data; const scale = R/128;
   for(let x=0; x<w; x+=step){
     for(let y=0; y<h; y+=step){
       const idx = (y*w+x)*4;
       const r=px[idx], g=px[idx+1], b=px[idx+2];
       const {cb,cr} = ycbcr(r,g,b);
-      const px_ = cx + (cb-128)*scale;
-      const py_ = cy + (cr-128)*scale;
+      const px_ = cx + (cb-128)*scale, py_ = cy + (cr-128)*scale;
       ctx.fillStyle = `rgba(${r},${g},${b},0.18)`;
       ctx.fillRect(px_, py_, 1.4, 1.4);
     }
   }
   ctx.globalCompositeOperation = 'source-over';
-
   const targets = [
     {name:'R', c:[255,0,0]}, {name:'G', c:[0,255,0]}, {name:'B', c:[0,0,255]},
     {name:'C', c:[0,255,255]}, {name:'M', c:[255,0,255]}, {name:'Y', c:[255,255,0]},
   ];
-  const legend = document.getElementById('legend');
-  legend.innerHTML = '';
+  const legend = document.getElementById('legend'); legend.innerHTML = '';
   targets.forEach(t=>{
     const {cb,cr} = ycbcr(t.c[0],t.c[1],t.c[2]);
     const px_ = cx + (cb-128)*scale, py_ = cy + (cr-128)*scale;
-    ctx.strokeStyle = `rgb(${t.c[0]},${t.c[1]},${t.c[2]})`;
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = `rgb(${t.c[0]},${t.c[1]},${t.c[2]})`; ctx.lineWidth = 1.5;
     ctx.strokeRect(px_-5, py_-5, 10, 10);
     ctx.fillStyle = `rgb(${t.c[0]},${t.c[1]},${t.c[2]})`;
-    ctx.font = "10px 'JetBrains Mono', monospace";
+    ctx.font = "10px 'DM Mono', monospace";
     ctx.fillText(t.name, px_+8, py_-8);
     const item = document.createElement('div');
-    item.innerHTML = `<span class="dot" style="background:rgb(${t.c[0]},${t.c[1]},${t.c[2]})"></span>${t.name}`;
+    item.innerHTML = `<span class="dot2" style="background:rgb(${t.c[0]},${t.c[1]},${t.c[2]})"></span>${t.name}`;
     legend.appendChild(item);
   });
 }
 </script>
-</body>
-</html>
+</main>
+<footer>
+  <span>Viconik · Herramientas profesionales de producción audiovisual</span>
+  <a href="index.html">Volver al índice de herramientas</a>
+</footer>
+</body></html>

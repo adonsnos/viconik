@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Viconik · Checklist de Entrega</title>
+<title>Viconik · Estimador de Reverberación</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
@@ -101,112 +101,123 @@ footer a:hover { color:var(--k); }
   <a href="index.html" class="nav-cta">← Índice</a>
 </nav>
 <main class="tools-container">
-<style>
-.progress-track { height:6px; background:var(--b); margin-bottom:1.5rem; }
-.progress-fill { height:100%; background:var(--k); transition:width .2s; }
-.check-item { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:.8rem 0; border-bottom:1px solid var(--brd); }
-.check-item:last-child { border-bottom:none; }
-.check-item .left { display:flex; align-items:center; gap:10px; }
-.check-item input[type=checkbox] { width:18px; height:18px; accent-color:var(--k); }
-.check-item .spec { font-family:var(--mono); font-size:11px; color:var(--g); }
-.custom-add { display:flex; gap:8px; margin-top:1rem; }
-.custom-add input { flex:1; }
-</style>
-
 <section class="tool-section">
   <div class="tool-header">
     <div class="eyebrow">Herramienta profesional</div>
-    <h2>Checklist de Entrega</h2>
-    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Specs de exportación por plataforma, con checklist marcable antes de enviar el máster.</p>
+    <h2>Estimador de Reverberación</h2>
+    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Estimación aproximada del tiempo de reverberación (RT60) de una sala mediante la fórmula de Sabine, a partir de sus dimensiones y materiales.</p>
   </div>
 
-  <div class="type-tabs" id="tabs" style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.5rem;"></div>
+  <div class="two-col-grid">
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-ruler-combined"></i> Dimensiones de la sala</div>
+      <div class="param-group">
+        <div class="inline-row">
+          <div class="param-row" style="flex:1;"><label class="param-label">Largo (m)</label><input type="number" id="dimL" value="5" step="0.1" min="0.5"></div>
+          <div class="param-row" style="flex:1;"><label class="param-label">Ancho (m)</label><input type="number" id="dimW" value="4" step="0.1" min="0.5"></div>
+          <div class="param-row" style="flex:1;"><label class="param-label">Alto (m)</label><input type="number" id="dimH" value="2.6" step="0.1" min="0.5"></div>
+        </div>
+        <div class="param-row"><label class="param-label"><i class="fas fa-square"></i> Material del suelo</label><select id="matFloor"></select></div>
+        <div class="param-row"><label class="param-label"><i class="fas fa-border-all"></i> Material de las paredes</label><select id="matWalls"></select></div>
+        <div class="param-row"><label class="param-label"><i class="fas fa-layer-group"></i> Material del techo</label><select id="matCeiling"></select></div>
+        <div class="param-row"><label class="param-label"><i class="fas fa-couch"></i> Mobiliario / ocupación</label><select id="furniture">
+          <option value="0">Vacía</option>
+          <option value="1" selected>Amueblada normal</option>
+          <option value="2">Muy amueblada / con personas</option>
+        </select></div>
+      </div>
+    </div>
 
-  <div class="panel">
-    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div id="checklistItems"></div>
-    <div class="custom-add">
-      <input type="text" id="customInput" placeholder="Añadir ítem personalizado...">
-      <button class="btn btn-secondary" id="customAddBtn">+ Añadir</button>
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-wave-square"></i> Resultado estimado</div>
+      <div class="time-result-box" style="background:var(--b); border:1px solid var(--brd); padding:1.8rem; text-align:center; margin-bottom:1.5rem;">
+        <div class="param-label">RT60 estimado (a 500 Hz)</div>
+        <div style="font-family:var(--mono); font-size:2.6rem; font-weight:500; margin:.4rem 0;" id="rt60Out">— s</div>
+        <div style="font-family:var(--mono); font-size:12px; color:var(--g);" id="rt60Verdict">—</div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="label-sm">Volumen de la sala</div><div class="value-md" id="volOut">—</div></div>
+        <div class="detail-item"><div class="label-sm">Absorción total (Sabins)</div><div class="value-md" id="absOut">—</div></div>
+      </div>
+      <div class="info-box"><i class="fas fa-info-circle"></i><span id="adviceOut">—</span></div>
     </div>
   </div>
-  <div class="btn-group" style="margin-top:1.5rem;">
-    <button class="btn btn-secondary" id="printBtn"><i class="fas fa-print"></i> Imprimir</button>
-  </div>
+
+  <div class="info-box" style="margin-top:0;"><i class="fas fa-info-circle"></i><span>Estimación simplificada mediante la <strong>fórmula de Sabine</strong> (RT60 = 0.161 × V / A) a 500 Hz, sin considerar geometría irregular, difusión ni resonancias modales. Útil como orientación rápida antes de decidir si una sala necesita tratamiento acústico para grabar diálogo.</span></div>
 </section>
 
 <script>
-const PLATFORMS = {
-  youtube: { label:'YouTube', items:[
-    {t:'Resolución', s:'1920×1080 o 3840×2160 (16:9)'}, {t:'Codec de vídeo', s:'H.264, perfil High'},
-    {t:'Contenedor', s:'MP4 / MOV'}, {t:'Bitrate recomendado', s:'35–68 Mbps (4K), 8–12 Mbps (1080p)'},
-    {t:'Frame rate', s:'Coincide con el original'}, {t:'Audio', s:'AAC-LC, 384 kbps, 48 kHz estéreo'},
-    {t:'Subtítulos', s:'SRT o VTT si aplica'}, {t:'Miniatura', s:'1280×720, <2MB'},
-  ]},
-  instagram: { label:'Instagram (Reels/Feed)', items:[
-    {t:'Resolución Reels', s:'1080×1920 (9:16)'}, {t:'Resolución Feed', s:'1080×1080 o 1080×1350'},
-    {t:'Codec', s:'H.264'}, {t:'Contenedor', s:'MP4'}, {t:'Duración máxima Reels', s:'90 s'},
-    {t:'Audio', s:'AAC, 128 kbps'}, {t:'Zona segura de texto', s:'Evitar 14% superior / 20% inferior'},
-    {t:'Subtítulos quemados', s:'Recomendado'},
-  ]},
-  tiktok: { label:'TikTok', items:[
-    {t:'Resolución', s:'1080×1920 (9:16)'}, {t:'Codec', s:'H.264 o H.265'}, {t:'Contenedor', s:'MP4 o MOV'},
-    {t:'Bitrate mínimo', s:'≥ 516 kbps'}, {t:'Duración', s:'Hasta 10 min (óptimo 21–34s)'},
-    {t:'Audio', s:'AAC, 44.1 kHz'}, {t:'Zona segura UI', s:'Margen derecho e inferior'},
-  ]},
-  broadcast: { label:'Broadcast / TV', items:[
-    {t:'Resolución', s:'1920×1080 — confirmar specs del canal'}, {t:'Codec', s:'XDCAM HD422 o ProRes 422 HQ'},
-    {t:'Contenedor', s:'MXF o MOV'}, {t:'Frame rate', s:'25fps (PAL) — confirmar región'},
-    {t:'Audio', s:'PCM 48kHz, niveles EBU R128'}, {t:'Barras de color y tono', s:'Al inicio del máster'},
-    {t:'Zona de título/acción', s:'80%/90%'},
-  ]},
-  client: { label:'Máster para cliente', items:[
-    {t:'Resolución', s:'Nativa del proyecto'}, {t:'Codec', s:'ProRes 422 HQ o DNxHR HQ'},
-    {t:'Contenedor', s:'MOV o MXF'}, {t:'Audio', s:'PCM 48kHz 24-bit'},
-    {t:'Color space', s:'Documentar (Rec.709/2020/LOG)'}, {t:'Versiones de duración', s:'Confirmar cortes'},
-    {t:'Naming', s:'Nomenclatura acordada'},
-  ]},
-};
-let current = 'youtube';
-const tabsEl = document.getElementById('tabs');
-Object.keys(PLATFORMS).forEach(key=>{
-  const btn = document.createElement('div');
-  btn.className = 'preset-chip' + (key===current?' active':'');
-  btn.textContent = PLATFORMS[key].label;
-  btn.dataset.key = key;
-  btn.addEventListener('click',()=>{ current = key; render(); });
-  tabsEl.appendChild(btn);
-});
-let customItems = {};
-function render(){
-  document.querySelectorAll('.preset-chip').forEach(t=>t.classList.toggle('active', t.dataset.key===current));
-  const container = document.getElementById('checklistItems');
-  container.innerHTML = '';
-  const items = PLATFORMS[current].items.concat(customItems[current]||[]);
-  items.forEach((item,i)=>{
-    const row = document.createElement('div');
-    row.className = 'check-item';
-    row.innerHTML = `<div class="left"><input type="checkbox" id="chk_${current}_${i}"><label for="chk_${current}_${i}">${item.t}</label></div><span class="spec">${item.s}</span>`;
-    row.querySelector('input').addEventListener('change', updateProgress);
-    container.appendChild(row);
+// Coeficientes de absorción aproximados a 500Hz
+const FLOOR_MATS = [
+  {label:'Hormigón / baldosa pulida', a:0.02},
+  {label:'Madera / parqué', a:0.10},
+  {label:'Moqueta', a:0.30},
+  {label:'Vinilo / linóleo', a:0.05},
+];
+const WALL_MATS = [
+  {label:'Pladur / yeso pintado', a:0.05},
+  {label:'Ladrillo visto', a:0.03},
+  {label:'Cristal', a:0.03},
+  {label:'Cortinas gruesas', a:0.50},
+  {label:'Panel acústico', a:0.80},
+];
+const CEIL_MATS = [
+  {label:'Yeso liso', a:0.04},
+  {label:'Techo técnico / fibra mineral', a:0.55},
+  {label:'Hormigón visto', a:0.02},
+  {label:'Panel acústico', a:0.80},
+];
+
+function fillSelect(sel, opts, def){
+  opts.forEach((o,i)=>{
+    const el = document.createElement('option'); el.value=i; el.textContent=o.label;
+    if(i===def) el.selected=true; sel.appendChild(el);
   });
-  updateProgress();
 }
-function updateProgress(){
-  const boxes = document.querySelectorAll('#checklistItems input[type=checkbox]');
-  const checked = document.querySelectorAll('#checklistItems input[type=checkbox]:checked').length;
-  const pct = boxes.length ? (checked/boxes.length)*100 : 0;
-  document.getElementById('progressFill').style.width = pct+'%';
+fillSelect(document.getElementById('matFloor'), FLOOR_MATS, 0);
+fillSelect(document.getElementById('matWalls'), WALL_MATS, 0);
+fillSelect(document.getElementById('matCeiling'), CEIL_MATS, 0);
+
+function update(){
+  const L = parseFloat(document.getElementById('dimL').value);
+  const W = parseFloat(document.getElementById('dimW').value);
+  const H = parseFloat(document.getElementById('dimH').value);
+  if(!L||!W||!H) return;
+  const V = L*W*H;
+  const floorArea = L*W, ceilArea = L*W, wallArea = 2*(L*H) + 2*(W*H);
+
+  const floorA = FLOOR_MATS[document.getElementById('matFloor').value].a;
+  const wallA = WALL_MATS[document.getElementById('matWalls').value].a;
+  const ceilA = CEIL_MATS[document.getElementById('matCeiling').value].a;
+  const furnitureFactor = parseInt(document.getElementById('furniture').value);
+  const furnitureAbs = [0, floorArea*0.08, floorArea*0.18][furnitureFactor];
+
+  const totalAbs = floorArea*floorA + ceilArea*ceilA + wallArea*wallA + furnitureAbs;
+  const rt60 = 0.161 * V / totalAbs;
+
+  document.getElementById('volOut').textContent = V.toFixed(1) + ' m³';
+  document.getElementById('absOut').textContent = totalAbs.toFixed(1) + ' Sabins';
+  document.getElementById('rt60Out').textContent = rt60.toFixed(2) + ' s';
+
+  let verdict, advice;
+  if(rt60 < 0.4){
+    verdict = 'Excelente para diálogo';
+    advice = 'Sala con reverberación baja — condiciones muy favorables para grabar diálogo limpio sin tratamiento adicional.';
+  } else if(rt60 < 0.6){
+    verdict = 'Aceptable';
+    advice = 'Reverberación moderada. Debería funcionar bien para diálogo, especialmente con micro de proximidad (lavalier o boom cercano).';
+  } else if(rt60 < 1.0){
+    verdict = 'Mejorable';
+    advice = 'Reverberación notable. Considera añadir elementos blandos (cortinas, alfombras, paneles) o mantener el micro lo más cerca posible de la fuente.';
+  } else {
+    verdict = 'Problemático para diálogo';
+    advice = 'Reverberación alta — es probable que el diálogo suene "con eco". Recomendable tratamiento acústico temporal (paneles, mantas, cortinas gruesas) antes de grabar.';
+  }
+  document.getElementById('rt60Verdict').textContent = verdict;
+  document.getElementById('adviceOut').textContent = advice;
 }
-document.getElementById('customAddBtn').addEventListener('click',()=>{
-  const input = document.getElementById('customInput');
-  if(!input.value.trim()) return;
-  customItems[current] = customItems[current] || [];
-  customItems[current].push({t: input.value.trim(), s: 'Personalizado'});
-  input.value = ''; render();
-});
-document.getElementById('printBtn').addEventListener('click',()=>window.print());
-render();
+['dimL','dimW','dimH','matFloor','matWalls','matCeiling','furniture'].forEach(id=>document.getElementById(id).addEventListener('input',update));
+update();
 </script>
 </main>
 <footer>

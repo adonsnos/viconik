@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Viconik · Checklist de Entrega</title>
+<title>Viconik · Checklist de Permisos de Rodaje</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
@@ -102,109 +102,118 @@ footer a:hover { color:var(--k); }
 </nav>
 <main class="tools-container">
 <style>
+.type-tabs { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.type-tab { font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; padding:.6rem 1rem; border:1px solid var(--brd); background:#fff; color:var(--g); cursor:pointer; }
+.type-tab.active { background:var(--k); color:var(--w); border-color:var(--k); }
 .progress-track { height:6px; background:var(--b); margin-bottom:1.5rem; }
 .progress-fill { height:100%; background:var(--k); transition:width .2s; }
-.check-item { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:.8rem 0; border-bottom:1px solid var(--brd); }
+.check-item { display:flex; gap:12px; align-items:flex-start; padding:.9rem 0; border-bottom:1px solid var(--brd); }
 .check-item:last-child { border-bottom:none; }
-.check-item .left { display:flex; align-items:center; gap:10px; }
-.check-item input[type=checkbox] { width:18px; height:18px; accent-color:var(--k); }
-.check-item .spec { font-family:var(--mono); font-size:11px; color:var(--g); }
-.custom-add { display:flex; gap:8px; margin-top:1rem; }
-.custom-add input { flex:1; }
+.check-item input[type=checkbox] { width:18px; height:18px; accent-color:var(--k); margin-top:2px; flex-shrink:0; }
+.check-item .body { flex:1; }
+.check-item .t { font-weight:500; font-size:14px; }
+.check-item .d { font-size:12.5px; color:var(--g); margin-top:2px; line-height:1.5; }
 </style>
 
 <section class="tool-section">
   <div class="tool-header">
     <div class="eyebrow">Herramienta profesional</div>
-    <h2>Checklist de Entrega</h2>
-    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Specs de exportación por plataforma, con checklist marcable antes de enviar el máster.</p>
+    <h2>Checklist de permisos de rodaje</h2>
+    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Documentación habitual a gestionar según el tipo de localización, antes de la jornada de rodaje en España.</p>
   </div>
 
-  <div class="type-tabs" id="tabs" style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.5rem;"></div>
+  <div class="type-tabs" id="typeTabs"></div>
 
   <div class="panel">
+    <div class="panel-title"><i class="fas fa-clipboard-check"></i> Documentación a verificar <span class="badge" id="progressBadge" style="margin-left:auto;">0%</span></div>
     <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div id="checklistItems"></div>
-    <div class="custom-add">
-      <input type="text" id="customInput" placeholder="Añadir ítem personalizado...">
-      <button class="btn btn-secondary" id="customAddBtn">+ Añadir</button>
-    </div>
+    <div id="checklist"></div>
   </div>
+
+  <div class="info-box"><i class="fas fa-info-circle"></i><span><strong>Esto no es asesoramiento legal.</strong> Los requisitos varían por ayuntamiento, comunidad autónoma y tipo de producción — confirma siempre con el organismo competente y, si el proyecto lo requiere, con un gestor de localizaciones o asesoría legal.</span></div>
+
   <div class="btn-group" style="margin-top:1.5rem;">
     <button class="btn btn-secondary" id="printBtn"><i class="fas fa-print"></i> Imprimir</button>
   </div>
 </section>
 
 <script>
-const PLATFORMS = {
-  youtube: { label:'YouTube', items:[
-    {t:'Resolución', s:'1920×1080 o 3840×2160 (16:9)'}, {t:'Codec de vídeo', s:'H.264, perfil High'},
-    {t:'Contenedor', s:'MP4 / MOV'}, {t:'Bitrate recomendado', s:'35–68 Mbps (4K), 8–12 Mbps (1080p)'},
-    {t:'Frame rate', s:'Coincide con el original'}, {t:'Audio', s:'AAC-LC, 384 kbps, 48 kHz estéreo'},
-    {t:'Subtítulos', s:'SRT o VTT si aplica'}, {t:'Miniatura', s:'1280×720, <2MB'},
+const TYPES = {
+  publica: { label:'Vía pública', items:[
+    {t:'Autorización municipal de rodaje', d:'Solicitud ante el ayuntamiento o la film office local, con antelación suficiente.'},
+    {t:'Seguro de responsabilidad civil', d:'Póliza que cubra daños a terceros durante el rodaje en espacio público.'},
+    {t:'Plan de corte o afectación al tráfico', d:'Si se requiere cortar calles, aceras o afectar aparcamiento.'},
+    {t:'Notificación a policía local', d:'Cuando el rodaje implique tráfico, aglomeración o vía pública relevante.'},
+    {t:'Permiso de estacionamiento de vehículos de producción', d:'Zona reservada para vehículos técnicos, catering, camerinos.'},
+    {t:'Autorización de la Demarcación de Costas', d:'Si el rodaje se realiza en playa o dominio público marítimo-terrestre.'},
   ]},
-  instagram: { label:'Instagram (Reels/Feed)', items:[
-    {t:'Resolución Reels', s:'1080×1920 (9:16)'}, {t:'Resolución Feed', s:'1080×1080 o 1080×1350'},
-    {t:'Codec', s:'H.264'}, {t:'Contenedor', s:'MP4'}, {t:'Duración máxima Reels', s:'90 s'},
-    {t:'Audio', s:'AAC, 128 kbps'}, {t:'Zona segura de texto', s:'Evitar 14% superior / 20% inferior'},
-    {t:'Subtítulos quemados', s:'Recomendado'},
+  privada: { label:'Propiedad privada', items:[
+    {t:'Autorización escrita del propietario', d:'Documento firmado que acredite el consentimiento de uso del espacio.'},
+    {t:'Contrato de alquiler de localización', d:'Con condiciones, horario, tarifa y responsabilidades claras.'},
+    {t:'Seguro de responsabilidad civil y daños a terceros', d:'Cubre desperfectos ocasionados durante el rodaje.'},
+    {t:'Comunicación a la comunidad de propietarios', d:'Si el inmueble forma parte de un edificio con vecinos.'},
+    {t:'Fianza o depósito', d:'Si el propietario lo solicita como garantía.'},
   ]},
-  tiktok: { label:'TikTok', items:[
-    {t:'Resolución', s:'1080×1920 (9:16)'}, {t:'Codec', s:'H.264 o H.265'}, {t:'Contenedor', s:'MP4 o MOV'},
-    {t:'Bitrate mínimo', s:'≥ 516 kbps'}, {t:'Duración', s:'Hasta 10 min (óptimo 21–34s)'},
-    {t:'Audio', s:'AAC, 44.1 kHz'}, {t:'Zona segura UI', s:'Margen derecho e inferior'},
+  interior: { label:'Interior comercial / oficina', items:[
+    {t:'Autorización del titular del local', d:'Comercio, oficina o establecimiento donde se rueda.'},
+    {t:'Coordinación de horario', d:'Rodaje fuera de horario de apertura si afecta a la actividad normal.'},
+    {t:'Seguro de rodaje', d:'Responsabilidad civil que cubra el espacio y sus instalaciones.'},
+    {t:'Plan de evacuación revisado', d:'Especialmente si se añade equipo, cableado o mobiliario temporal.'},
   ]},
-  broadcast: { label:'Broadcast / TV', items:[
-    {t:'Resolución', s:'1920×1080 — confirmar specs del canal'}, {t:'Codec', s:'XDCAM HD422 o ProRes 422 HQ'},
-    {t:'Contenedor', s:'MXF o MOV'}, {t:'Frame rate', s:'25fps (PAL) — confirmar región'},
-    {t:'Audio', s:'PCM 48kHz, niveles EBU R128'}, {t:'Barras de color y tono', s:'Al inicio del máster'},
-    {t:'Zona de título/acción', s:'80%/90%'},
+  dron: { label:'Dron / UAS', items:[
+    {t:'Registro de operador UAS', d:'Ante AESA, con número de operador visible en la aeronave.'},
+    {t:'Certificado de competencia del piloto', d:'A1/A3, A2 o STS según categoría de la operación.'},
+    {t:'Seguro de responsabilidad civil específico para drones', d:'Obligatorio para operaciones profesionales.'},
+    {t:'Autorización de espacio aéreo', d:'Si se vuela en zona urbana, cerca de aeropuertos o espacio restringido.'},
+    {t:'Autorización del propietario del terreno de despegue/aterrizaje', d:'Del punto de operación en tierra.'},
+    {t:'Plan de vuelo y evaluación de riesgos', d:'Documentación operacional según categoría de vuelo.'},
   ]},
-  client: { label:'Máster para cliente', items:[
-    {t:'Resolución', s:'Nativa del proyecto'}, {t:'Codec', s:'ProRes 422 HQ o DNxHR HQ'},
-    {t:'Contenedor', s:'MOV o MXF'}, {t:'Audio', s:'PCM 48kHz 24-bit'},
-    {t:'Color space', s:'Documentar (Rec.709/2020/LOG)'}, {t:'Versiones de duración', s:'Confirmar cortes'},
-    {t:'Naming', s:'Nomenclatura acordada'},
+  menores: { label:'Menores en rodaje', items:[
+    {t:'Autorización de trabajo de menores', d:'Ante la autoridad laboral autonómica competente, si el rodaje se considera actividad laboral.'},
+    {t:'Autorización de padre/madre o tutor legal', d:'Consentimiento informado y firmado.'},
+    {t:'Presencia de profesor o educador', d:'Si el rodaje coincide con horario lectivo.'},
+    {t:'Límite de horas de rodaje según edad', d:'Jornadas y descansos adaptados a la normativa de menores.'},
+    {t:'Seguro específico que cubra al menor', d:'Adicional a la póliza general de producción.'},
+  ]},
+  natural: { label:'Espacio natural protegido', items:[
+    {t:'Autorización del organismo gestor', d:'Parque nacional, natural o espacio protegido correspondiente.'},
+    {t:'Limitación de equipo permitido', d:'Algunos espacios restringen vehículos, drones o generadores.'},
+    {t:'Restricciones por temporada o fauna', d:'Épocas de veda, nidificación o cría que limitan el acceso.'},
+    {t:'Tasa o canon de rodaje', d:'Si el espacio protegido lo exige para uso comercial.'},
   ]},
 };
-let current = 'youtube';
-const tabsEl = document.getElementById('tabs');
-Object.keys(PLATFORMS).forEach(key=>{
+
+let current = 'publica';
+const tabsEl = document.getElementById('typeTabs');
+Object.keys(TYPES).forEach(key=>{
   const btn = document.createElement('div');
-  btn.className = 'preset-chip' + (key===current?' active':'');
-  btn.textContent = PLATFORMS[key].label;
+  btn.className = 'type-tab' + (key===current?' active':'');
+  btn.textContent = TYPES[key].label;
   btn.dataset.key = key;
-  btn.addEventListener('click',()=>{ current = key; render(); });
+  btn.addEventListener('click',()=>{ current=key; render(); });
   tabsEl.appendChild(btn);
 });
-let customItems = {};
+
 function render(){
-  document.querySelectorAll('.preset-chip').forEach(t=>t.classList.toggle('active', t.dataset.key===current));
-  const container = document.getElementById('checklistItems');
-  container.innerHTML = '';
-  const items = PLATFORMS[current].items.concat(customItems[current]||[]);
-  items.forEach((item,i)=>{
+  document.querySelectorAll('.type-tab').forEach(t=>t.classList.toggle('active', t.dataset.key===current));
+  const el = document.getElementById('checklist');
+  el.innerHTML = '';
+  TYPES[current].items.forEach((item,i)=>{
     const row = document.createElement('div');
     row.className = 'check-item';
-    row.innerHTML = `<div class="left"><input type="checkbox" id="chk_${current}_${i}"><label for="chk_${current}_${i}">${item.t}</label></div><span class="spec">${item.s}</span>`;
+    row.innerHTML = `<input type="checkbox" id="chk_${current}_${i}"><div class="body"><label class="t" for="chk_${current}_${i}">${item.t}</label><div class="d">${item.d}</div></div>`;
     row.querySelector('input').addEventListener('change', updateProgress);
-    container.appendChild(row);
+    el.appendChild(row);
   });
   updateProgress();
 }
 function updateProgress(){
-  const boxes = document.querySelectorAll('#checklistItems input[type=checkbox]');
-  const checked = document.querySelectorAll('#checklistItems input[type=checkbox]:checked').length;
-  const pct = boxes.length ? (checked/boxes.length)*100 : 0;
+  const boxes = document.querySelectorAll('#checklist input[type=checkbox]');
+  const checked = document.querySelectorAll('#checklist input[type=checkbox]:checked').length;
+  const pct = boxes.length ? Math.round((checked/boxes.length)*100) : 0;
   document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressBadge').textContent = pct+'%';
 }
-document.getElementById('customAddBtn').addEventListener('click',()=>{
-  const input = document.getElementById('customInput');
-  if(!input.value.trim()) return;
-  customItems[current] = customItems[current] || [];
-  customItems[current].push({t: input.value.trim(), s: 'Personalizado'});
-  input.value = ''; render();
-});
 document.getElementById('printBtn').addEventListener('click',()=>window.print());
 render();
 </script>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Viconik · Checklist de Entrega</title>
+<title>Viconik · Cesión de Derechos de Imagen</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
@@ -102,111 +102,102 @@ footer a:hover { color:var(--k); }
 </nav>
 <main class="tools-container">
 <style>
-.progress-track { height:6px; background:var(--b); margin-bottom:1.5rem; }
-.progress-fill { height:100%; background:var(--k); transition:width .2s; }
-.check-item { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:.8rem 0; border-bottom:1px solid var(--brd); }
-.check-item:last-child { border-bottom:none; }
-.check-item .left { display:flex; align-items:center; gap:10px; }
-.check-item input[type=checkbox] { width:18px; height:18px; accent-color:var(--k); }
-.check-item .spec { font-family:var(--mono); font-size:11px; color:var(--g); }
-.custom-add { display:flex; gap:8px; margin-top:1rem; }
-.custom-add input { flex:1; }
+.release-preview { background:#fff; border:1px solid var(--brd); padding:2.5rem; font-family:var(--serif); font-size:14.5px; line-height:1.8; color:var(--k); }
+.release-preview h3 { font-family:var(--bebas); font-size:1.6rem; letter-spacing:.03em; margin-bottom:1.2rem; text-align:center; }
+.release-preview p { margin-bottom:1rem; }
+.release-preview .sign-row { display:flex; justify-content:space-between; margin-top:3rem; gap:2rem; }
+.release-preview .sign-box { flex:1; border-top:1px solid var(--k); padding-top:.5rem; font-family:var(--sans); font-size:11px; text-align:center; color:var(--g); }
+.checkbox-row { display:flex; align-items:center; gap:10px; padding:.5rem 0; }
+.checkbox-row input { width:18px; height:18px; accent-color:var(--k); }
+.checkbox-row label { font-size:13.5px; }
 </style>
 
 <section class="tool-section">
   <div class="tool-header">
     <div class="eyebrow">Herramienta profesional</div>
-    <h2>Checklist de Entrega</h2>
-    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Specs de exportación por plataforma, con checklist marcable antes de enviar el máster.</p>
+    <h2>Cesión de Derechos de Imagen</h2>
+    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Genera un modelo de autorización de uso de imagen para figurantes, entrevistados o participantes en el rodaje.</p>
   </div>
 
-  <div class="type-tabs" id="tabs" style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.5rem;"></div>
-
-  <div class="panel">
-    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div id="checklistItems"></div>
-    <div class="custom-add">
-      <input type="text" id="customInput" placeholder="Añadir ítem personalizado...">
-      <button class="btn btn-secondary" id="customAddBtn">+ Añadir</button>
+  <div class="two-col-grid">
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-file-signature"></i> Datos del documento</div>
+      <div class="param-group">
+        <div class="param-row"><label class="param-label"><i class="fas fa-user"></i> Nombre completo del cedente</label><input type="text" id="fName" placeholder="Nombre y apellidos"></div>
+        <div class="param-row"><label class="param-label"><i class="fas fa-id-card"></i> DNI / NIE</label><input type="text" id="fDni" placeholder="00000000X"></div>
+        <div class="param-row"><label class="param-label"><i class="fas fa-video"></i> Producción / proyecto</label><input type="text" id="fProd" placeholder="Nombre del proyecto"></div>
+        <div class="param-row"><label class="param-label"><i class="fas fa-building"></i> Empresa productora</label><input type="text" id="fCompany" placeholder="Viconik / 297 / otra"></div>
+        <div class="param-row"><label class="param-label"><i class="fas fa-calendar"></i> Fecha</label><input type="text" id="fDate" placeholder="DD/MM/AAAA"></div>
+        <div class="param-row"><label class="param-label"><i class="fas fa-globe"></i> Ámbito territorial</label>
+          <select id="fScope">
+            <option value="mundial">Mundial</option>
+            <option value="España">España</option>
+            <option value="Unión Europea">Unión Europea</option>
+          </select>
+        </div>
+        <div class="param-row"><label class="param-label"><i class="fas fa-clock"></i> Duración de la cesión</label>
+          <select id="fDuration">
+            <option value="indefinida">Indefinida</option>
+            <option value="5 años">5 años</option>
+            <option value="3 años">3 años</option>
+            <option value="1 año">1 año</option>
+          </select>
+        </div>
+        <div class="param-row"><label class="param-label"><i class="fas fa-bullseye"></i> Finalidad de uso</label>
+          <textarea id="fPurpose" placeholder="Ej. Vídeo corporativo, contenido para redes sociales y web de la empresa">Vídeo corporativo, contenido para redes sociales y web de la empresa</textarea>
+        </div>
+        <div class="checkbox-row"><input type="checkbox" id="fMinor"><label for="fMinor">El cedente es menor de edad (autoriza el tutor legal)</label></div>
+        <div id="tutorFields" class="hidden">
+          <div class="param-row"><label class="param-label"><i class="fas fa-user-shield"></i> Nombre del padre/madre o tutor legal</label><input type="text" id="fTutor" placeholder="Nombre y apellidos"></div>
+          <div class="param-row"><label class="param-label"><i class="fas fa-id-card"></i> DNI/NIE del tutor</label><input type="text" id="fTutorDni" placeholder="00000000X"></div>
+        </div>
+      </div>
+      <div class="btn-group" style="margin-top:1.5rem;">
+        <button class="btn btn-secondary" id="printBtn"><i class="fas fa-print"></i> Imprimir / Guardar PDF</button>
+      </div>
+      <div class="info-box"><i class="fas fa-info-circle"></i><span><strong>Esto no es asesoramiento legal.</strong> Este modelo es orientativo y de uso general — revísalo con un profesional legal antes de utilizarlo en producciones comerciales o con menores.</span></div>
     </div>
-  </div>
-  <div class="btn-group" style="margin-top:1.5rem;">
-    <button class="btn btn-secondary" id="printBtn"><i class="fas fa-print"></i> Imprimir</button>
+
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-eye"></i> Vista previa del documento</div>
+      <div class="release-preview" id="preview"></div>
+    </div>
   </div>
 </section>
 
 <script>
-const PLATFORMS = {
-  youtube: { label:'YouTube', items:[
-    {t:'Resolución', s:'1920×1080 o 3840×2160 (16:9)'}, {t:'Codec de vídeo', s:'H.264, perfil High'},
-    {t:'Contenedor', s:'MP4 / MOV'}, {t:'Bitrate recomendado', s:'35–68 Mbps (4K), 8–12 Mbps (1080p)'},
-    {t:'Frame rate', s:'Coincide con el original'}, {t:'Audio', s:'AAC-LC, 384 kbps, 48 kHz estéreo'},
-    {t:'Subtítulos', s:'SRT o VTT si aplica'}, {t:'Miniatura', s:'1280×720, <2MB'},
-  ]},
-  instagram: { label:'Instagram (Reels/Feed)', items:[
-    {t:'Resolución Reels', s:'1080×1920 (9:16)'}, {t:'Resolución Feed', s:'1080×1080 o 1080×1350'},
-    {t:'Codec', s:'H.264'}, {t:'Contenedor', s:'MP4'}, {t:'Duración máxima Reels', s:'90 s'},
-    {t:'Audio', s:'AAC, 128 kbps'}, {t:'Zona segura de texto', s:'Evitar 14% superior / 20% inferior'},
-    {t:'Subtítulos quemados', s:'Recomendado'},
-  ]},
-  tiktok: { label:'TikTok', items:[
-    {t:'Resolución', s:'1080×1920 (9:16)'}, {t:'Codec', s:'H.264 o H.265'}, {t:'Contenedor', s:'MP4 o MOV'},
-    {t:'Bitrate mínimo', s:'≥ 516 kbps'}, {t:'Duración', s:'Hasta 10 min (óptimo 21–34s)'},
-    {t:'Audio', s:'AAC, 44.1 kHz'}, {t:'Zona segura UI', s:'Margen derecho e inferior'},
-  ]},
-  broadcast: { label:'Broadcast / TV', items:[
-    {t:'Resolución', s:'1920×1080 — confirmar specs del canal'}, {t:'Codec', s:'XDCAM HD422 o ProRes 422 HQ'},
-    {t:'Contenedor', s:'MXF o MOV'}, {t:'Frame rate', s:'25fps (PAL) — confirmar región'},
-    {t:'Audio', s:'PCM 48kHz, niveles EBU R128'}, {t:'Barras de color y tono', s:'Al inicio del máster'},
-    {t:'Zona de título/acción', s:'80%/90%'},
-  ]},
-  client: { label:'Máster para cliente', items:[
-    {t:'Resolución', s:'Nativa del proyecto'}, {t:'Codec', s:'ProRes 422 HQ o DNxHR HQ'},
-    {t:'Contenedor', s:'MOV o MXF'}, {t:'Audio', s:'PCM 48kHz 24-bit'},
-    {t:'Color space', s:'Documentar (Rec.709/2020/LOG)'}, {t:'Versiones de duración', s:'Confirmar cortes'},
-    {t:'Naming', s:'Nomenclatura acordada'},
-  ]},
-};
-let current = 'youtube';
-const tabsEl = document.getElementById('tabs');
-Object.keys(PLATFORMS).forEach(key=>{
-  const btn = document.createElement('div');
-  btn.className = 'preset-chip' + (key===current?' active':'');
-  btn.textContent = PLATFORMS[key].label;
-  btn.dataset.key = key;
-  btn.addEventListener('click',()=>{ current = key; render(); });
-  tabsEl.appendChild(btn);
+const ids = ['fName','fDni','fProd','fCompany','fDate','fScope','fDuration','fPurpose','fMinor','fTutor','fTutorDni'];
+ids.forEach(id=>{
+  const el = document.getElementById(id);
+  el.addEventListener(el.type==='checkbox'?'change':'input', update);
 });
-let customItems = {};
-function render(){
-  document.querySelectorAll('.preset-chip').forEach(t=>t.classList.toggle('active', t.dataset.key===current));
-  const container = document.getElementById('checklistItems');
-  container.innerHTML = '';
-  const items = PLATFORMS[current].items.concat(customItems[current]||[]);
-  items.forEach((item,i)=>{
-    const row = document.createElement('div');
-    row.className = 'check-item';
-    row.innerHTML = `<div class="left"><input type="checkbox" id="chk_${current}_${i}"><label for="chk_${current}_${i}">${item.t}</label></div><span class="spec">${item.s}</span>`;
-    row.querySelector('input').addEventListener('change', updateProgress);
-    container.appendChild(row);
-  });
-  updateProgress();
-}
-function updateProgress(){
-  const boxes = document.querySelectorAll('#checklistItems input[type=checkbox]');
-  const checked = document.querySelectorAll('#checklistItems input[type=checkbox]:checked').length;
-  const pct = boxes.length ? (checked/boxes.length)*100 : 0;
-  document.getElementById('progressFill').style.width = pct+'%';
-}
-document.getElementById('customAddBtn').addEventListener('click',()=>{
-  const input = document.getElementById('customInput');
-  if(!input.value.trim()) return;
-  customItems[current] = customItems[current] || [];
-  customItems[current].push({t: input.value.trim(), s: 'Personalizado'});
-  input.value = ''; render();
+document.getElementById('fMinor').addEventListener('change', e=>{
+  document.getElementById('tutorFields').classList.toggle('hidden', !e.target.checked);
+  update();
 });
+
+function val(id){ return document.getElementById(id).value || '________________'; }
+
+function update(){
+  const isMinor = document.getElementById('fMinor').checked;
+  const tutorClause = isMinor
+    ? `<p>Yo, <strong>${val('fTutor')}</strong>, con DNI/NIE <strong>${val('fTutorDni')}</strong>, en calidad de padre/madre o tutor legal de <strong>${val('fName')}</strong>, autorizo en su representación la presente cesión de derechos de imagen.</p>`
+    : '';
+  document.getElementById('preview').innerHTML = `
+    <h3>Autorización de Cesión de Derechos de Imagen</h3>
+    <p>En relación con la producción audiovisual <strong>«${val('fProd')}»</strong>, realizada por <strong>${val('fCompany')}</strong> con fecha <strong>${val('fDate')}</strong>:</p>
+    <p>Yo, <strong>${val('fName')}</strong>, con DNI/NIE <strong>${val('fDni')}</strong>, autorizo de forma expresa, voluntaria e informada a <strong>${val('fCompany')}</strong> a captar, reproducir, fijar y difundir mi imagen y/o voz obtenida durante el rodaje de la producción arriba indicada.</p>
+    <p>La presente cesión se otorga para la siguiente finalidad: <strong>${document.getElementById('fPurpose').value || '________________'}</strong>, con ámbito territorial <strong>${val('fScope')}</strong> y duración <strong>${val('fDuration')}</strong>.</p>
+    <p>Esta autorización no conlleva contraprestación económica alguna salvo pacto expreso por escrito entre las partes, y podrá ser revocada por el cedente conforme a la normativa vigente en materia de protección de datos y derecho a la propia imagen.</p>
+    ${tutorClause}
+    <div class="sign-row">
+      <div class="sign-box">Firma del cedente${isMinor ? ' / tutor legal' : ''}</div>
+      <div class="sign-box">Firma en representación de la productora</div>
+    </div>
+  `;
+}
 document.getElementById('printBtn').addEventListener('click',()=>window.print());
-render();
+update();
 </script>
 </main>
 <footer>

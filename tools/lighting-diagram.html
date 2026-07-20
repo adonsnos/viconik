@@ -1,87 +1,158 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diagrama de Iluminación</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Viconik · Diagrama de Iluminación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root{
-  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
-  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B;
-  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+:root {
+  --k: #111010; --w: #EDEBE7; --g: #8a8780; --l: #C8C5BF; --b: #E5E3DE;
+  --brd: rgba(17,16,16,.1);
+  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  --bebas: 'Bebas Neue', sans-serif; --serif: 'Playfair Display', serif;
 }
-*{box-sizing:border-box;}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:40px 20px;}
-.wrap{max-width:1080px;margin:0 auto;}
-.sprockets{display:flex;gap:6px;margin-bottom:22px;}
-.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;flex-wrap:wrap;gap:16px;}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
-h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;}
-.sub{color:var(--text-dim);font-size:14px;margin-top:8px;max-width:60ch;line-height:1.5;}
-.btn{background:var(--accent);color:#161206;border:none;padding:10px 16px;border-radius:8px;font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase;}
-.btn.secondary{background:var(--panel-2);color:var(--text);border:1px solid var(--border);}
-.layout{display:grid;grid-template-columns:220px 1fr 220px;gap:16px;}
-.palette,.props{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;}
-.palette h2, .props h2{font-size:11px;margin:0 0 12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);}
-.tool-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;cursor:pointer;font-size:12.5px;margin-bottom:4px;border:1px solid transparent;}
-.tool-item:hover{background:var(--panel-2);border-color:var(--border);}
-.tool-item .ic{width:16px;height:16px;border-radius:3px;flex-shrink:0;}
-.canvas-wrap{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;}
-canvas{width:100%;background:#131519;border-radius:6px;cursor:grab;touch-action:none;}
-.props .row{margin-bottom:12px;}
-.props label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
-.props input, .props select{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:6px;font-family:var(--mono);font-size:12px;}
-.props .del-btn{width:100%;background:none;border:1px solid var(--border);color:#E85D5D;padding:8px;border-radius:6px;font-family:var(--mono);font-size:11.5px;cursor:pointer;margin-top:6px;}
-.empty-hint{color:var(--text-dim);font-family:var(--mono);font-size:11.5px;text-align:center;padding:30px 0;}
-footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:28px;font-family:var(--mono);}
-@media(max-width:860px){.layout{grid-template-columns:1fr;}}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--w); color:var(--k); font-family:var(--sans); line-height:1.65; overflow-x:hidden; font-size:18px; }
+a { color:inherit; text-decoration:none; }
+nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:.85rem 3.5rem; background:rgba(237,235,231,.96); backdrop-filter:blur(16px); border-bottom:1px solid var(--brd); }
+.nav-logo { display:flex; align-items:center; gap:.6rem; font-family:var(--serif); font-size:1.2rem; letter-spacing:.02em; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:14px; color:var(--g); transition:color .2s; }
+.nav-links a:hover { color:var(--k); }
+.nav-cta { font-family:var(--mono); font-size:12px; letter-spacing:.08em; background:var(--k); color:var(--w); padding:.5rem 1.25rem; transition:opacity .2s; }
+.nav-cta:hover { opacity:.72; }
+.tools-container { max-width:1200px; margin:0 auto; padding:7rem 2rem 4rem; }
+.tool-section { margin-bottom:3rem; }
+.tool-header { margin-bottom:2rem; border-bottom:1px solid var(--brd); padding-bottom:1rem; }
+.tool-header .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--g); margin-bottom:.5rem; display:flex; align-items:center; gap:.75rem; }
+.tool-header .eyebrow::before { content:''; width:32px; height:1px; background:var(--l); }
+.tool-header h2 { font-family:var(--bebas); font-size:clamp(2.2rem,4vw,3.2rem); letter-spacing:.02em; line-height:1.1; color:var(--k); margin-top:.25rem; }
+.panel { background:#fff; border:1px solid var(--brd); padding:2rem; transition:box-shadow .2s; }
+.panel:hover { box-shadow:0 12px 22px -12px rgba(0,0,0,.08); }
+.panel-title { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--g); margin-bottom:1.5rem; padding-bottom:.75rem; border-bottom:1px solid var(--brd); display:flex; align-items:center; gap:.75rem; }
+.panel-title i { color:var(--k); font-size:14px; }
+.two-col-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
+@media (max-width:1000px){ .two-col-grid{ grid-template-columns:1fr; gap:1.5rem; } }
+.param-group { display:flex; flex-direction:column; gap:1.2rem; }
+.param-row { display:flex; flex-direction:column; gap:.3rem; }
+.param-label { font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--g); letter-spacing:.05em; display:flex; align-items:center; gap:6px; }
+.inline-row { display:flex; gap:.5rem; align-items:center; }
+.inline-row input, .inline-row select { flex:1; }
+select, input[type="number"], input[type="text"], input[type="date"], textarea {
+  width:100%; padding:.65rem .9rem; background:#fff; border:1px solid var(--brd); border-radius:0;
+  font-family:var(--sans); font-size:14px; color:var(--k); transition:border .15s;
+}
+textarea { resize:vertical; min-height:70px; font-family:var(--sans); }
+select:focus, input:focus, textarea:focus { outline:none; border-color:var(--k); }
+.preset-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.3rem; }
+.preset-chip { font-family:var(--mono); font-size:10px; padding:.4rem .8rem; border:1px solid var(--brd); background:var(--b); color:var(--k); cursor:pointer; transition:all .15s; text-transform:uppercase; letter-spacing:.05em; }
+.preset-chip:hover, .preset-chip.active { background:var(--k); color:var(--w); border-color:var(--k); }
+.badge { font-family:var(--mono); font-size:9px; padding:3px 8px; background:var(--w); border:1px solid var(--brd); color:var(--g); text-transform:uppercase; }
+.table-wrapper { overflow-x:auto; border:1px solid var(--brd); background:#fff; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead tr { background:var(--k); color:var(--w); }
+th { font-family:var(--mono); font-size:10px; letter-spacing:.06em; font-weight:400; text-transform:uppercase; padding:.9rem 1rem; text-align:left; }
+td { padding:.7rem 1rem; border-bottom:1px solid var(--brd); color:var(--k); }
+td input, td textarea, td select { font-size:12.5px; padding:.4rem .5rem; }
+tbody tr:hover td { background:var(--b); }
+.btn-group { display:flex; gap:.75rem; flex-wrap:wrap; }
+.btn { padding:.7rem 1.1rem; border:1px solid var(--k); background:var(--k); color:var(--w); font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; cursor:pointer; transition:opacity .2s; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn:hover { opacity:.78; }
+.btn-secondary { background:transparent; color:var(--k); border:1px solid var(--brd); }
+.btn-secondary:hover { background:var(--b); opacity:1; }
+.info-box { background:var(--k); color:var(--w); padding:1.25rem; margin-top:1.5rem; display:flex; gap:1rem; align-items:flex-start; font-size:12px; line-height:1.6; }
+.info-box i { color:var(--l); font-size:1.2rem; }
+.hidden { display:none !important; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+.detail-item { background:#fff; border:1px solid var(--brd); padding:.8rem; text-align:left; }
+.detail-item .label-sm { font-family:var(--mono); font-size:9px; color:var(--g); text-transform:uppercase; }
+.detail-item .value-md { font-family:var(--mono); font-size:1.2rem; font-weight:500; margin-top:.2rem; }
+.row-del { background:none; border:none; color:var(--g); cursor:pointer; font-size:16px; }
+.row-del:hover { color:#a83232; }
+.add-row-btn { margin-top:.75rem; background:var(--b); border:1px dashed var(--brd); color:var(--g); padding:.7rem; width:100%; cursor:pointer; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; }
+.add-row-btn:hover { border-color:var(--k); color:var(--k); }
+footer { padding:1.5rem 3.5rem; border-top:1px solid var(--brd); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--g); }
+footer a { color:var(--g); transition:color .2s; }
+footer a:hover { color:var(--k); }
+@media print {
+  nav, footer, .btn, .add-row-btn, .row-del, .no-print { display:none !important; }
+  body { background:#fff; font-size:12px; }
+  .tools-container { padding:1rem; max-width:100%; }
+  .panel { box-shadow:none; break-inside:avoid; }
+}
+@media (max-width:960px) {
+  nav { padding:.85rem 1.5rem; }
+  .nav-links { display:none; }
+  .tools-container { padding:6rem 1.5rem 3rem; }
+  .panel { padding:1.5rem; }
+  footer { padding:1.25rem 1.5rem; flex-direction:column; text-align:center; }
+}
 </style>
-</head>
-<body>
-<div class="wrap">
-  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-  <header>
-    <div>
-      <p class="eyebrow">Utilidad de producción</p>
-      <h1>Diagrama de Iluminación</h1>
-      <p class="sub">Planta cenital para planificar posiciones de cámara, sujeto y luces. Arrastra los elementos; el ángulo respecto al eje cámara–sujeto se calcula automáticamente.</p>
-    </div>
-    <button class="btn secondary" id="dlBtn">Descargar PNG</button>
-  </header>
+</head><body>
+<nav>
+  <a href="index.html" class="nav-logo">Viconik</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Todas las herramientas</a></li>
+    <li><a href="viconik_calculators.html">Calculadoras</a></li>
+  </ul>
+  <a href="index.html" class="nav-cta">← Índice</a>
+</nav>
+<main class="tools-container">
+<style>
+.ld-layout { display:grid; grid-template-columns:220px 1fr 220px; gap:16px; }
+.ld-tool-item { display:flex; align-items:center; gap:10px; padding:.55rem .6rem; cursor:pointer; font-size:12.5px; margin-bottom:4px; border:1px solid transparent; }
+.ld-tool-item:hover { background:var(--b); border-color:var(--brd); }
+.ld-tool-item .ic { width:16px; height:16px; flex-shrink:0; border:1px solid rgba(0,0,0,.2); }
+.ld-canvas-wrap canvas { width:100%; background:#f6f5f2; border:1px solid var(--brd); cursor:grab; touch-action:none; }
+.ld-props .del-btn { width:100%; background:none; border:1px solid var(--brd); color:#a83232; padding:.5rem; font-family:var(--mono); font-size:11.5px; cursor:pointer; margin-top:.5rem; }
+.ld-empty-hint { color:var(--g); font-family:var(--mono); font-size:11.5px; text-align:center; padding:2rem 0; }
+@media(max-width:860px){ .ld-layout{ grid-template-columns:1fr; } }
+</style>
 
-  <div class="layout">
-    <div class="palette">
-      <h2>Añadir elemento</h2>
-      <div class="tool-item" data-type="camera"><span class="ic" style="background:#5EEAD4"></span>Cámara</div>
-      <div class="tool-item" data-type="subject"><span class="ic" style="background:#F2A93B"></span>Sujeto</div>
-      <div class="tool-item" data-type="key"><span class="ic" style="background:#FFD166"></span>Luz key</div>
-      <div class="tool-item" data-type="fill"><span class="ic" style="background:#8FB8E8"></span>Luz fill</div>
-      <div class="tool-item" data-type="back"><span class="ic" style="background:#C084FC"></span>Luz back/rim</div>
-      <div class="tool-item" data-type="practical"><span class="ic" style="background:#F2E27A"></span>Práctico</div>
-      <div class="tool-item" data-type="flag"><span class="ic" style="background:#555"></span>Flag / negro</div>
-      <div class="tool-item" data-type="bounce"><span class="ic" style="background:#EEE"></span>Rebote / bounce</div>
+<section class="tool-section">
+  <div class="tool-header">
+    <div class="eyebrow">Herramienta profesional</div>
+    <h2>Diagrama de Iluminación</h2>
+    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Planta cenital para planificar posiciones de cámara, sujeto y luces. Arrastra los elementos; el ángulo respecto al eje cámara–sujeto se calcula automáticamente.</p>
+  </div>
+
+  <div class="ld-layout">
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-plus"></i> Añadir</div>
+      <div class="ld-tool-item" data-type="camera"><span class="ic" style="background:#5EEAD4"></span>Cámara</div>
+      <div class="ld-tool-item" data-type="subject"><span class="ic" style="background:#F2A93B"></span>Sujeto</div>
+      <div class="ld-tool-item" data-type="key"><span class="ic" style="background:#FFD166"></span>Luz key</div>
+      <div class="ld-tool-item" data-type="fill"><span class="ic" style="background:#8FB8E8"></span>Luz fill</div>
+      <div class="ld-tool-item" data-type="back"><span class="ic" style="background:#C084FC"></span>Luz back/rim</div>
+      <div class="ld-tool-item" data-type="practical"><span class="ic" style="background:#F2E27A"></span>Práctico</div>
+      <div class="ld-tool-item" data-type="flag"><span class="ic" style="background:#555"></span>Flag / negro</div>
+      <div class="ld-tool-item" data-type="bounce"><span class="ic" style="background:#EEE"></span>Rebote</div>
     </div>
 
-    <div class="canvas-wrap">
+    <div class="panel ld-canvas-wrap">
       <canvas id="canvas" width="640" height="500"></canvas>
     </div>
 
-    <div class="props" id="props">
-      <h2>Propiedades</h2>
-      <div class="empty-hint" id="emptyHint">Selecciona un elemento del diagrama para ver y editar sus propiedades, o añade uno nuevo desde la izquierda.</div>
-      <div id="propFields" style="display:none;">
-        <div class="row"><label>Etiqueta</label><input type="text" id="pLabel"></div>
-        <div class="row"><label>Distancia al sujeto</label><input type="text" id="pDist" readonly></div>
-        <div class="row"><label>Ángulo respecto a cámara</label><input type="text" id="pAngle" readonly></div>
+    <div class="panel ld-props" id="props">
+      <div class="panel-title"><i class="fas fa-sliders-h"></i> Propiedades</div>
+      <div class="ld-empty-hint" id="emptyHint">Selecciona un elemento del diagrama, o añade uno nuevo desde la izquierda.</div>
+      <div id="propFields" class="hidden">
+        <div class="param-row"><label class="param-label">Etiqueta</label><input type="text" id="pLabel"></div>
+        <div class="param-row"><label class="param-label">Distancia al sujeto</label><input type="text" id="pDist" readonly></div>
+        <div class="param-row"><label class="param-label">Ángulo respecto a cámara</label><input type="text" id="pAngle" readonly></div>
         <button class="del-btn" id="delBtn">Eliminar elemento</button>
       </div>
     </div>
   </div>
-</div>
-<footer>Escala orientativa — un metro equivale aproximadamente a 40px en el lienzo</footer>
+
+  <div class="btn-group" style="margin-top:1.5rem;">
+    <button class="btn btn-secondary" id="dlBtn"><i class="fas fa-download"></i> Descargar PNG</button>
+  </div>
+  <div class="info-box"><i class="fas fa-info-circle"></i><span>Escala orientativa — un metro equivale aproximadamente a 40px en el lienzo.</span></div>
+</section>
 
 <script>
 const canvas = document.getElementById('canvas');
@@ -96,76 +167,52 @@ const TYPES = {
   flag:{color:'#555555', label:'Flag', shape:'square'},
   bounce:{color:'#EEEEEE', label:'Bounce', shape:'square'},
 };
-
 let objects = [
   {id:1, type:'camera', x:320, y:420, label:'Cámara'},
   {id:2, type:'subject', x:320, y:220, label:'Sujeto'},
 ];
-let nextId = 3;
-let selected = null;
-let dragging = null;
-
+let nextId = 3, selected = null, dragging = null;
 function drawGrid(){
-  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'rgba(17,16,16,0.07)'; ctx.lineWidth = 1;
   for(let x=0;x<canvas.width;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
   for(let y=0;y<canvas.height;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
 }
-
 function drawObject(o){
   const t = TYPES[o.type];
-  ctx.save();
-  ctx.translate(o.x, o.y);
+  ctx.save(); ctx.translate(o.x, o.y);
   const isSel = selected && selected.id===o.id;
-  ctx.strokeStyle = isSel ? '#fff' : 'rgba(0,0,0,0.4)';
+  ctx.strokeStyle = isSel ? '#111' : 'rgba(17,16,16,0.4)';
   ctx.lineWidth = isSel ? 2.5 : 1.5;
   ctx.fillStyle = t.color;
-
-  if(t.shape==='circle'){
-    ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill(); ctx.stroke();
-  } else if(t.shape==='triangle'){
-    ctx.beginPath(); ctx.moveTo(0,-16); ctx.lineTo(14,12); ctx.lineTo(-14,12); ctx.closePath(); ctx.fill(); ctx.stroke();
-  } else if(t.shape==='light'){
+  if(t.shape==='circle'){ ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill(); ctx.stroke(); }
+  else if(t.shape==='triangle'){ ctx.beginPath(); ctx.moveTo(0,-16); ctx.lineTo(14,12); ctx.lineTo(-14,12); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+  else if(t.shape==='light'){
     ctx.beginPath();
-    for(let i=0;i<8;i++){
-      const ang = (Math.PI*2/8)*i;
-      const r = i%2===0 ? 15 : 8;
-      ctx[i===0?'moveTo':'lineTo'](Math.cos(ang)*r, Math.sin(ang)*r);
-    }
+    for(let i=0;i<8;i++){ const ang=(Math.PI*2/8)*i; const r=i%2===0?15:8; ctx[i===0?'moveTo':'lineTo'](Math.cos(ang)*r, Math.sin(ang)*r); }
     ctx.closePath(); ctx.fill(); ctx.stroke();
-  } else {
-    ctx.fillRect(-13,-13,26,26); ctx.strokeRect(-13,-13,26,26);
-  }
+  } else { ctx.fillRect(-13,-13,26,26); ctx.strokeRect(-13,-13,26,26); }
   ctx.restore();
-
-  ctx.fillStyle = '#ECEAE5';
-  ctx.font = "11px 'JetBrains Mono', monospace";
-  ctx.textAlign = 'center';
+  ctx.fillStyle = '#111'; ctx.font = "11px 'DM Mono', monospace"; ctx.textAlign = 'center';
   ctx.fillText(o.label, o.x, o.y+30);
 }
-
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#f6f5f2'; ctx.fillRect(0,0,canvas.width,canvas.height);
   drawGrid();
   const cam = objects.find(o=>o.type==='camera');
   const subj = objects.find(o=>o.type==='subject');
   if(cam && subj){
-    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
-    ctx.setLineDash([4,4]);
-    ctx.beginPath(); ctx.moveTo(cam.x,cam.y); ctx.lineTo(subj.x,subj.y); ctx.stroke();
-    ctx.setLineDash([]);
+    ctx.strokeStyle = 'rgba(17,16,16,0.25)'; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(cam.x,cam.y); ctx.lineTo(subj.x,subj.y); ctx.stroke(); ctx.setLineDash([]);
   }
   objects.forEach(o=>{
     if(o.type!=='camera' && o.type!=='subject' && subj){
-      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-      ctx.setLineDash([2,3]);
-      ctx.beginPath(); ctx.moveTo(o.x,o.y); ctx.lineTo(subj.x,subj.y); ctx.stroke();
-      ctx.setLineDash([]);
+      ctx.strokeStyle = 'rgba(17,16,16,0.12)'; ctx.setLineDash([2,3]);
+      ctx.beginPath(); ctx.moveTo(o.x,o.y); ctx.lineTo(subj.x,subj.y); ctx.stroke(); ctx.setLineDash([]);
     }
   });
   objects.forEach(drawObject);
 }
-
 function angleInfo(o){
   const subj = objects.find(x=>x.type==='subject');
   const cam = objects.find(x=>x.type==='camera');
@@ -178,27 +225,19 @@ function angleInfo(o){
   diff = ((diff+180)%360+360)%360-180;
   return {dist: dist.toFixed(1)+' m', angle: Math.abs(diff).toFixed(0)+'°'};
 }
-
 function hitTest(x,y){
-  for(let i=objects.length-1;i>=0;i--){
-    const o = objects[i];
-    if(Math.hypot(o.x-x,o.y-y) < 18) return o;
-  }
+  for(let i=objects.length-1;i>=0;i--){ const o = objects[i]; if(Math.hypot(o.x-x,o.y-y) < 18) return o; }
   return null;
 }
-
 function canvasPos(e){
   const r = canvas.getBoundingClientRect();
   const cx = (e.touches?e.touches[0].clientX:e.clientX) - r.left;
   const cy = (e.touches?e.touches[0].clientY:e.clientY) - r.top;
   return {x: cx*(canvas.width/r.width), y: cy*(canvas.height/r.height)};
 }
-
 canvas.addEventListener('mousedown', e=>{
-  const p = canvasPos(e);
-  const hit = hitTest(p.x,p.y);
-  selected = hit; dragging = hit;
-  updateProps(); draw();
+  const p = canvasPos(e); const hit = hitTest(p.x,p.y);
+  selected = hit; dragging = hit; updateProps(); draw();
 });
 canvas.addEventListener('mousemove', e=>{
   if(!dragging) return;
@@ -208,28 +247,23 @@ canvas.addEventListener('mousemove', e=>{
   draw(); updateProps();
 });
 window.addEventListener('mouseup', ()=>{ dragging=null; });
-
 function updateProps(){
   const fields = document.getElementById('propFields');
   const hint = document.getElementById('emptyHint');
-  if(!selected){ fields.style.display='none'; hint.style.display='block'; return; }
-  fields.style.display='block'; hint.style.display='none';
+  if(!selected){ fields.classList.add('hidden'); hint.style.display='block'; return; }
+  fields.classList.remove('hidden'); hint.style.display='none';
   document.getElementById('pLabel').value = selected.label;
   const info = angleInfo(selected);
   document.getElementById('pDist').value = info.dist;
   document.getElementById('pAngle').value = info.angle;
 }
-
-document.getElementById('pLabel').addEventListener('input', e=>{
-  if(selected){ selected.label = e.target.value; draw(); }
-});
+document.getElementById('pLabel').addEventListener('input', e=>{ if(selected){ selected.label = e.target.value; draw(); } });
 document.getElementById('delBtn').addEventListener('click', ()=>{
   if(!selected || selected.type==='camera' || selected.type==='subject') return;
   objects = objects.filter(o=>o.id!==selected.id);
   selected = null; updateProps(); draw();
 });
-
-document.querySelectorAll('.tool-item').forEach(item=>{
+document.querySelectorAll('.ld-tool-item').forEach(item=>{
   item.addEventListener('click', ()=>{
     const type = item.dataset.type;
     if((type==='camera'||type==='subject') && objects.find(o=>o.type===type)) return;
@@ -238,15 +272,17 @@ document.querySelectorAll('.tool-item').forEach(item=>{
     draw();
   });
 });
-
 document.getElementById('dlBtn').addEventListener('click', ()=>{
   const link = document.createElement('a');
   link.download = 'diagrama-iluminacion.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
 });
-
 draw();
 </script>
-</body>
-</html>
+</main>
+<footer>
+  <span>Viconik · Herramientas profesionales de producción audiovisual</span>
+  <a href="index.html">Volver al índice de herramientas</a>
+</footer>
+</body></html>
