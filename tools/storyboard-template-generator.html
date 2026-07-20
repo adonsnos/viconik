@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plantillas de Storyboard Imprimibles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
+  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B;
+  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:40px 20px;}
+.wrap{max-width:900px;margin:0 auto;}
+.sprockets{display:flex;gap:6px;margin-bottom:22px;}
+.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
+header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:16px;}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
+h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;}
+.sub{color:var(--text-dim);font-size:14px;margin-top:8px;}
+.btn{background:var(--accent);color:#161206;border:none;padding:11px 18px;border-radius:8px;font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.05em;cursor:pointer;text-transform:uppercase;}
+.controls{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:24px;display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end;}
+.field label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.field input, .field select{background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:9px 11px;border-radius:7px;font-family:var(--mono);font-size:13px;}
+.field.grow{flex:1;min-width:160px;}
+.field.grow input{width:100%;}
+
+/* A4 page preview */
+.page{
+  background:#fff;color:#111;width:210mm;min-height:297mm;margin:0 auto 30px;padding:14mm;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.08);
+}
+.page-header{display:flex;justify-content:space-between;border-bottom:2px solid #111;padding-bottom:8px;margin-bottom:14px;font-family:var(--mono);font-size:10.5px;}
+.page-header .pf{display:flex;gap:6px;}
+.page-header .pf span{color:#888;}
+.grid{display:grid;gap:10mm;}
+.frame{border:1.5px solid #111;border-radius:2px;}
+.frame .img-box{aspect-ratio:16/9;border-bottom:1px solid #111;}
+.frame .meta{padding:5px 7px;}
+.frame .meta .line{border-bottom:1px solid #ccc;height:14px;margin-bottom:4px;}
+.frame .meta .shot-label{font-family:var(--mono);font-size:9px;color:#555;margin-bottom:3px;}
+
+@media print{
+  body{background:#fff;padding:0;}
+  .controls,.btn,header .btn,.sprockets,.sub,.eyebrow,h1{display:none !important;}
+  .page{box-shadow:none;margin:0;width:auto;min-height:auto;page-break-after:always;}
+}
+@page{ size:A4; margin:0; }
+footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:10px;font-family:var(--mono);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <header>
+    <div>
+      <p class="eyebrow">Utilidad de producción</p>
+      <h1>Plantillas de Storyboard Imprimibles</h1>
+      <p class="sub">Genera hojas A4 en blanco listas para dibujar a mano antes del rodaje.</p>
+    </div>
+    <button class="btn" id="printBtn">Imprimir</button>
+  </header>
+
+  <div class="controls">
+    <div class="field">
+      <label>Planos por página</label>
+      <select id="perPage">
+        <option value="4">4</option>
+        <option value="6" selected>6</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Número de páginas</label>
+      <input type="number" id="pages" value="1" min="1" max="20" style="width:80px;">
+    </div>
+    <div class="field grow">
+      <label>Proyecto</label>
+      <input type="text" id="project" placeholder="Nombre del proyecto">
+    </div>
+    <div class="field grow">
+      <label>Escena / secuencia</label>
+      <input type="text" id="scene" placeholder="Escena 1">
+    </div>
+  </div>
+
+  <div id="pagesContainer"></div>
+</div>
+
+<script>
+const LAYOUTS = { 4:{cols:2,rows:2}, 6:{cols:2,rows:3}, 8:{cols:2,rows:4}, 9:{cols:3,rows:3} };
+
+function buildPage(pageNum, totalPages, perPage){
+  const layout = LAYOUTS[perPage];
+  const project = document.getElementById('project').value || 'Proyecto';
+  const scene = document.getElementById('scene').value || '—';
+  const page = document.createElement('div');
+  page.className = 'page';
+  page.innerHTML = `
+    <div class="page-header">
+      <div class="pf"><span>PROYECTO</span> ${project}</div>
+      <div class="pf"><span>ESCENA</span> ${scene}</div>
+      <div class="pf"><span>PÁGINA</span> ${pageNum}/${totalPages}</div>
+    </div>
+    <div class="grid" style="grid-template-columns:repeat(${layout.cols},1fr);"></div>
+  `;
+  const grid = page.querySelector('.grid');
+  const framesPerPage = layout.cols*layout.rows;
+  for(let i=0;i<framesPerPage;i++){
+    const shotNum = (pageNum-1)*framesPerPage + i + 1;
+    const frame = document.createElement('div');
+    frame.className = 'frame';
+    frame.innerHTML = `
+      <div class="img-box"></div>
+      <div class="meta">
+        <div class="shot-label">PLANO ${String(shotNum).padStart(2,'0')} — DURACIÓN: _____ — MOVIMIENTO: _______________</div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    `;
+    grid.appendChild(frame);
+  }
+  return page;
+}
+
+function render(){
+  const perPage = parseInt(document.getElementById('perPage').value);
+  const pages = parseInt(document.getElementById('pages').value)||1;
+  const container = document.getElementById('pagesContainer');
+  container.innerHTML = '';
+  for(let p=1;p<=pages;p++){
+    container.appendChild(buildPage(p, pages, perPage));
+  }
+}
+
+['perPage','pages','project','scene'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+render();
+</script>
+</body>
+</html>

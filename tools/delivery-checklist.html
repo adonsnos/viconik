@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist de Entrega</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
+  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B; --good:#5EEAD4;
+  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:40px 20px;}
+.wrap{max-width:800px;margin:0 auto;}
+.sprockets{display:flex;gap:6px;margin-bottom:22px;}
+.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
+header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;flex-wrap:wrap;gap:16px;}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
+h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;}
+.sub{color:var(--text-dim);font-size:14px;margin-top:8px;line-height:1.5;}
+.btn{background:var(--accent);color:#161206;border:none;padding:11px 18px;border-radius:8px;font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.05em;cursor:pointer;text-transform:uppercase;}
+.btn.secondary{background:var(--panel-2);color:var(--text);border:1px solid var(--border);}
+.platform-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.p-tab{padding:9px 14px;border:1px solid var(--border);border-radius:20px;font-family:var(--mono);font-size:12.5px;cursor:pointer;color:var(--text-dim);background:var(--panel-2);}
+.p-tab.active{border-color:var(--accent);color:var(--accent);background:#f2a93b14;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:20px;}
+.spec-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--panel-2);}
+.spec-item:last-child{border-bottom:none;}
+.spec-item .label{font-size:13.5px;}
+.spec-item .value{font-family:var(--mono);font-size:13px;color:var(--accent);}
+.progress{height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden;margin-bottom:20px;}
+.progress-fill{height:100%;background:var(--accent);transition:.2s;}
+.check-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--panel-2);}
+.check-row:last-child{border-bottom:none;}
+.check-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);}
+.check-row label{margin:0;font-size:13.5px;text-transform:none;letter-spacing:0;font-family:var(--sans);color:var(--text);flex:1;}
+.check-row .spec{font-family:var(--mono);font-size:11.5px;color:var(--text-dim);}
+.custom-add{display:flex;gap:8px;margin-top:14px;}
+.custom-add input{flex:1;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:7px;font-family:var(--sans);font-size:13px;}
+footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:28px;font-family:var(--mono);}
+@media print{
+  .btn,.platform-tabs,.custom-add{display:none !important;}
+  body{background:#fff;color:#000;}
+  .panel{border-color:#ccc;background:#fff;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <header>
+    <div>
+      <p class="eyebrow">Utilidad de producción</p>
+      <h1>Checklist de Entrega</h1>
+      <p class="sub">Specs de exportación por plataforma, con checklist marcable antes de enviar el máster.</p>
+    </div>
+    <button class="btn secondary" id="printBtn">Imprimir</button>
+  </header>
+
+  <div class="platform-tabs" id="tabs"></div>
+
+  <div class="panel">
+    <div class="progress"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div id="checklistItems"></div>
+    <div class="custom-add">
+      <input type="text" id="customInput" placeholder="Añadir ítem personalizado...">
+      <button class="btn secondary" id="customAddBtn">+ Añadir</button>
+    </div>
+  </div>
+</div>
+<footer>Verifica siempre las specs oficiales vigentes de cada plataforma antes de la entrega final</footer>
+
+<script>
+const PLATFORMS = {
+  youtube: { label:'YouTube', items:[
+    {t:'Resolución', s:'1920×1080 o 3840×2160 (16:9)'},
+    {t:'Codec de vídeo', s:'H.264, perfil High'},
+    {t:'Contenedor', s:'MP4 / MOV'},
+    {t:'Bitrate recomendado', s:'35–68 Mbps (4K), 8–12 Mbps (1080p)'},
+    {t:'Frame rate', s:'Coincide con el original — no interpolar'},
+    {t:'Audio', s:'AAC-LC, 384 kbps, 48 kHz estéreo'},
+    {t:'Subtítulos', s:'SRT o VTT si aplica'},
+    {t:'Miniatura', s:'1280×720, <2MB'},
+  ]},
+  instagram: { label:'Instagram (Reels/Feed)', items:[
+    {t:'Resolución Reels', s:'1080×1920 (9:16)'},
+    {t:'Resolución Feed', s:'1080×1080 o 1080×1350'},
+    {t:'Codec', s:'H.264'},
+    {t:'Contenedor', s:'MP4'},
+    {t:'Duración máxima Reels', s:'90 s'},
+    {t:'Audio', s:'AAC, 128 kbps'},
+    {t:'Zona segura de texto', s:'Evitar 14% superior / 20% inferior'},
+    {t:'Subtítulos quemados', s:'Recomendado — gran parte se ve sin sonido'},
+  ]},
+  tiktok: { label:'TikTok', items:[
+    {t:'Resolución', s:'1080×1920 (9:16)'},
+    {t:'Codec', s:'H.264 o H.265'},
+    {t:'Contenedor', s:'MP4 o MOV'},
+    {t:'Bitrate mínimo', s:'≥ 516 kbps'},
+    {t:'Duración', s:'Hasta 10 min (óptimo 21–34 s)'},
+    {t:'Audio', s:'AAC, 44.1 kHz'},
+    {t:'Zona segura UI', s:'Reservar margen derecho e inferior'},
+  ]},
+  broadcast: { label:'Broadcast / TV', items:[
+    {t:'Resolución', s:'1920×1080 (HD) — confirmar specs del canal'},
+    {t:'Codec', s:'XDCAM HD422 o ProRes 422 HQ'},
+    {t:'Contenedor', s:'MXF o MOV'},
+    {t:'Frame rate', s:'25fps (PAL) — confirmar región'},
+    {t:'Audio', s:'PCM 48kHz, niveles según normativa EBU R128'},
+    {t:'Barras de color y tono', s:'Incluir al inicio del máster'},
+    {t:'Zona de título/acción', s:'Respetar 80%/90%'},
+  ]},
+  client: { label:'Máster para cliente', items:[
+    {t:'Resolución', s:'Nativa del proyecto'},
+    {t:'Codec', s:'ProRes 422 HQ o DNxHR HQ'},
+    {t:'Contenedor', s:'MOV o MXF'},
+    {t:'Audio', s:'PCM 48kHz 24-bit, stems si se solicitan'},
+    {t:'Color space', s:'Documentar (Rec.709 / Rec.2020 / LOG)'},
+    {t:'Versiones de duración', s:'Confirmar cortes largo/corto si aplica'},
+    {t:'Naming', s:'Nomenclatura acordada con el cliente'},
+  ]},
+};
+
+let current = 'youtube';
+const tabsEl = document.getElementById('tabs');
+Object.keys(PLATFORMS).forEach(key=>{
+  const btn = document.createElement('div');
+  btn.className = 'p-tab' + (key===current?' active':'');
+  btn.textContent = PLATFORMS[key].label;
+  btn.addEventListener('click',()=>{ current = key; render(); });
+  btn.dataset.key = key;
+  tabsEl.appendChild(btn);
+});
+
+let customItems = {};
+
+function render(){
+  document.querySelectorAll('.p-tab').forEach(t=>t.classList.toggle('active', t.dataset.key===current));
+  const container = document.getElementById('checklistItems');
+  container.innerHTML = '';
+  const items = PLATFORMS[current].items.concat(customItems[current]||[]);
+  items.forEach((item,i)=>{
+    const row = document.createElement('div');
+    row.className = 'check-row';
+    row.innerHTML = `<input type="checkbox" id="chk_${current}_${i}"><label for="chk_${current}_${i}">${item.t}</label><span class="spec">${item.s}</span>`;
+    row.querySelector('input').addEventListener('change', updateProgress);
+    container.appendChild(row);
+  });
+  updateProgress();
+}
+
+function updateProgress(){
+  const boxes = document.querySelectorAll('#checklistItems input[type=checkbox]');
+  const checked = document.querySelectorAll('#checklistItems input[type=checkbox]:checked').length;
+  const pct = boxes.length ? (checked/boxes.length)*100 : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+}
+
+document.getElementById('customAddBtn').addEventListener('click',()=>{
+  const input = document.getElementById('customInput');
+  if(!input.value.trim()) return;
+  customItems[current] = customItems[current] || [];
+  customItems[current].push({t: input.value.trim(), s: 'Personalizado'});
+  input.value = '';
+  render();
+});
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+
+render();
+</script>
+</body>
+</html>

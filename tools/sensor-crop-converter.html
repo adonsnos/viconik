@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conversor de Formatos de Sensor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
+  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B;
+  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:40px 20px;}
+.wrap{max-width:760px;margin:0 auto;}
+.sprockets{display:flex;gap:6px;margin-bottom:22px;}
+.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
+header{margin-bottom:32px;}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
+h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;}
+.sub{color:var(--text-dim);font-size:14px;margin-top:8px;line-height:1.5;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:20px;}
+label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+select,input[type=number]{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:11px 12px;border-radius:7px;font-family:var(--mono);font-size:15px;outline:none;}
+select:focus,input:focus{border-color:var(--accent);}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.field{margin-bottom:16px;}
+.result-panel{background:linear-gradient(135deg,var(--panel-2),var(--panel));border:1px solid var(--accent);border-radius:10px;padding:26px;text-align:center;margin-top:6px;}
+.result-panel .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+.result-panel .v{font-family:var(--mono);font-size:34px;font-weight:700;color:var(--accent);margin:8px 0 4px;}
+table{width:100%;border-collapse:collapse;margin-top:20px;}
+th,td{text-align:left;padding:8px 6px;font-family:var(--mono);font-size:12.5px;border-bottom:1px solid var(--panel-2);}
+th{color:var(--text-dim);text-transform:uppercase;font-size:10.5px;letter-spacing:.06em;}
+footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:28px;font-family:var(--mono);}
+@media(max-width:520px){.row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <header>
+    <p class="eyebrow">Utilidad de producción</p>
+    <h1>Conversor de Formatos de Sensor</h1>
+    <p class="sub">Focal equivalente y factor de recorte (crop factor) entre distintos tamaños de sensor.</p>
+  </header>
+
+  <div class="panel">
+    <div class="row">
+      <div class="field">
+        <label>Formato de origen</label>
+        <select id="from"></select>
+      </div>
+      <div class="field">
+        <label>Formato de destino</label>
+        <select id="to"></select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Distancia focal de origen (mm)</label>
+      <input type="number" id="focal" value="35" step="1" min="1">
+    </div>
+
+    <div class="result-panel">
+      <div class="k">Focal equivalente en destino</div>
+      <div class="v" id="result">—</div>
+    </div>
+
+    <table>
+      <thead><tr><th>Formato</th><th>Dimensiones</th><th>Crop factor (vs. FF)</th></tr></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+  <footer>Crop factor calculado como diagonal Full Frame ÷ diagonal del formato</footer>
+</div>
+
+<script>
+const SENSORS = [
+  {v:'ff', label:'Full Frame', w:36, h:24},
+  {v:'s35', label:'Super 35 cine', w:24.89, h:18.66},
+  {v:'apsc_c', label:'APS-C Canon', w:22.3, h:14.9},
+  {v:'apsc_s', label:'APS-C Sony/Nikon', w:23.5, h:15.6},
+  {v:'m43', label:'Micro Four Thirds', w:17.3, h:13},
+  {v:'1inch', label:'1 pulgada', w:13.2, h:8.8},
+];
+const diagFF = Math.sqrt(36*36+24*24);
+SENSORS.forEach(s=>{ s.diag = Math.sqrt(s.w*s.w+s.h*s.h); s.crop = diagFF/s.diag; });
+
+const fromSel = document.getElementById('from'), toSel = document.getElementById('to');
+SENSORS.forEach((s,i)=>{
+  const o1 = document.createElement('option'); o1.value = s.v; o1.textContent = `${s.label} (${s.w}×${s.h}mm)`;
+  if(i===0) o1.selected = true; fromSel.appendChild(o1);
+  const o2 = document.createElement('option'); o2.value = s.v; o2.textContent = `${s.label} (${s.w}×${s.h}mm)`;
+  if(i===1) o2.selected = true; toSel.appendChild(o2);
+});
+
+const tbody = document.getElementById('tableBody');
+SENSORS.forEach(s=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${s.label}</td><td>${s.w}×${s.h} mm</td><td>${s.crop.toFixed(2)}×</td>`;
+  tbody.appendChild(tr);
+});
+
+function update(){
+  const from = SENSORS.find(s=>s.v===fromSel.value);
+  const to = SENSORS.find(s=>s.v===toSel.value);
+  const focal = parseFloat(document.getElementById('focal').value);
+  if(!focal) return;
+  const equiv = focal * from.crop / to.crop;
+  document.getElementById('result').textContent = equiv.toFixed(1) + ' mm';
+}
+[fromSel,toSel,document.getElementById('focal')].forEach(el=>el.addEventListener('input',update));
+update();
+</script>
+</body>
+</html>

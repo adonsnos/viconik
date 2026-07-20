@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de Orden de Rodaje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
+  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B;
+  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:40px 20px;}
+.wrap{max-width:980px;margin:0 auto;}
+.sprockets{display:flex;gap:6px;margin-bottom:22px;}
+.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
+header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:16px;}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
+h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;}
+.sub{color:var(--text-dim);font-size:14px;margin-top:8px;}
+.btn{background:var(--accent);color:#161206;border:none;padding:11px 18px;border-radius:8px;font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.05em;cursor:pointer;text-transform:uppercase;}
+.btn.secondary{background:var(--panel-2);color:var(--text);border:1px solid var(--border);}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:20px;}
+.panel h2{font-size:13px;margin:0 0 16px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);}
+.meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.field label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.field input, .field textarea{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:9px 10px;border-radius:6px;font-family:var(--mono);font-size:12.5px;}
+.field textarea{font-family:var(--sans);min-height:50px;resize:vertical;}
+table{width:100%;border-collapse:collapse;margin-top:4px;}
+thead th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);padding:8px 6px;border-bottom:1px solid var(--border);}
+tbody td{padding:5px 6px;border-bottom:1px solid var(--panel-2);}
+tbody input{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:7px 8px;border-radius:5px;font-family:var(--mono);font-size:12px;}
+.row-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;}
+.row-del:hover{color:#E85D5D;}
+.add-row-btn{margin-top:12px;background:var(--panel-2);border:1px dashed var(--border);color:var(--text-dim);padding:9px;width:100%;border-radius:7px;font-family:var(--mono);font-size:12.5px;cursor:pointer;}
+.add-row-btn:hover{border-color:var(--accent);color:var(--accent);}
+footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:28px;font-family:var(--mono);}
+@media print{
+  body{background:#fff;color:#000;padding:0;}
+  .btn,.add-row-btn,.row-del{display:none !important;}
+  .sprockets{display:none;}
+  .panel{border-color:#ccc;background:#fff;break-inside:avoid;}
+  .field input,.field textarea, tbody input{background:#fff;border-color:#ccc;color:#000;}
+  thead th{color:#555;}
+}
+@media(max-width:900px){.meta-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <header>
+    <div>
+      <p class="eyebrow">Utilidad de producción</p>
+      <h1>Orden de Rodaje</h1>
+      <p class="sub">Call sheet — horarios, localizaciones, equipo y contactos de la jornada.</p>
+    </div>
+    <button class="btn secondary" id="printBtn">Imprimir</button>
+  </header>
+
+  <div class="panel">
+    <h2>Datos generales</h2>
+    <div class="meta-grid">
+      <div class="field"><label>Producción</label><input type="text" id="prod"></div>
+      <div class="field"><label>Fecha</label><input type="text" id="date" placeholder="DD/MM/AAAA"></div>
+      <div class="field"><label>Jornada</label><input type="text" id="day" placeholder="ej. 1 de 3"></div>
+      <div class="field"><label>Hora de citación general</label><input type="text" id="callTime" placeholder="07:30"></div>
+      <div class="field"><label>Director</label><input type="text" id="director"></div>
+      <div class="field"><label>Productor</label><input type="text" id="producer"></div>
+      <div class="field"><label>Amanecer / anochecer</label><input type="text" id="sun" placeholder="ej. 07:15 / 21:40"></div>
+      <div class="field"><label>Previsión meteorológica</label><input type="text" id="weather" placeholder="ej. Despejado, 18°C"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Localizaciones</h2>
+    <table>
+      <thead><tr><th style="width:26%">Localización</th><th>Dirección</th><th style="width:14%">Parking</th><th style="width:10%">Contacto</th><th style="width:30px"></th></tr></thead>
+      <tbody id="locRows"></tbody>
+    </table>
+    <button class="add-row-btn" id="addLoc">+ Añadir localización</button>
+  </div>
+
+  <div class="panel">
+    <h2>Escaleta del día</h2>
+    <table>
+      <thead><tr><th style="width:70px">Hora</th><th style="width:50px">Esc.</th><th>Descripción</th><th style="width:16%">Localización</th><th style="width:16%">Reparto/equipo</th><th style="width:30px"></th></tr></thead>
+      <tbody id="scheduleRows"></tbody>
+    </table>
+    <button class="add-row-btn" id="addSchedule">+ Añadir bloque</button>
+  </div>
+
+  <div class="panel">
+    <h2>Equipo y contactos</h2>
+    <table>
+      <thead><tr><th style="width:20%">Nombre</th><th style="width:20%">Rol</th><th style="width:14%">Citación</th><th style="width:16%">Teléfono</th><th>Notas</th><th style="width:30px"></th></tr></thead>
+      <tbody id="crewRows"></tbody>
+    </table>
+    <button class="add-row-btn" id="addCrew">+ Añadir persona</button>
+  </div>
+
+  <div class="panel">
+    <h2>Notas / seguridad / contacto de emergencia</h2>
+    <div class="field"><textarea id="notes" placeholder="Hospital más cercano, alergias, permisos, notas de producción..."></textarea></div>
+  </div>
+</div>
+<footer>Los datos se guardan solo en esta sesión — imprime antes de cerrar</footer>
+
+<script>
+function makeRow(cols, tbodyId){
+  const tr = document.createElement('tr');
+  tr.innerHTML = cols.map(c=>`<td><input type="text" placeholder="${c}"></td>`).join('') + `<td><button class="row-del">×</button></td>`;
+  tr.querySelector('.row-del').addEventListener('click',()=>tr.remove());
+  document.getElementById(tbodyId).appendChild(tr);
+}
+
+document.getElementById('addLoc').addEventListener('click',()=>makeRow(['Nombre','Dirección','Sí/No','Nombre / tel.'],'locRows'));
+document.getElementById('addSchedule').addEventListener('click',()=>makeRow(['09:00','1','Descripción del plano/escena','Loc. A','Actor + equipo cámara'],'scheduleRows'));
+document.getElementById('addCrew').addEventListener('click',()=>makeRow(['Nombre','Rol','07:30','600 000 000','—'],'crewRows'));
+
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+
+for(let i=0;i<2;i++) makeRow(['Nombre','Dirección','Sí/No','Nombre / tel.'],'locRows');
+for(let i=0;i<4;i++) makeRow(['09:00','1','Descripción del plano/escena','Loc. A','Actor + equipo cámara'],'scheduleRows');
+for(let i=0;i<6;i++) makeRow(['Nombre','Rol','07:30','600 000 000','—'],'crewRows');
+</script>
+</body>
+</html>
