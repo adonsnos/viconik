@@ -49,6 +49,8 @@
   .btn.primary{ background:var(--accent); color:#171208; border-color:var(--accent); }
   .btn.primary:hover{ background:#ffc04d; }
   .btn:disabled{ opacity:.4; cursor:not-allowed; }
+  .btn.active{ background:var(--accent-dim); border-color:var(--accent); color:var(--accent); }
+  .reveal-count{ font-family:var(--mono); font-size:11px; color:var(--accent); min-width:14px; }
   .btn svg{ width:14px; height:14px; flex:none; }
   .divider{ width:1px; height:24px; background:var(--border); margin:0 4px; }
   #file-input{ display:none; }
@@ -132,6 +134,12 @@
   </div>
 
   <div class="bar-group">
+    <button class="btn" id="btn-reveal-hidden" title="Muestra temporalmente menús, modales, dropdowns, etc. que están ocultos por CSS/JS para poder seleccionarlos y editarlos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+      Ver ocultos
+    </button>
+    <span class="reveal-count" id="reveal-count"></span>
+    <div class="divider"></div>
     <div class="device-toggle" id="device-toggle">
       <button data-device="Desktop" class="active" title="Escritorio">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg>
@@ -248,6 +256,63 @@
     });
   });
 
+  // ---- Revelar elementos con estados ocultos (display:none, visibility:hidden, etc.) ----
+  // Solo toca el DOM en vivo del iframe del canvas: nunca modifica el modelo de
+  // componentes de GrapesJS, así que no afecta a lo que se exporta al descargar.
+  let revealActive = false;
+  const revealBtn = document.getElementById('btn-reveal-hidden');
+  const revealCount = document.getElementById('reveal-count');
+
+  function revealHiddenElements(){
+    const doc = editor.Canvas.getDocument();
+    const win = editor.Canvas.getWindow();
+    if(!doc || !win) return 0;
+    let count = 0;
+    doc.body.querySelectorAll('*').forEach(el=>{
+      const cs = win.getComputedStyle(el);
+      if(cs.display === 'none' || cs.visibility === 'hidden'){
+        el.setAttribute('data-was-hidden', '1');
+        el.style.setProperty('display', 'block', 'important');
+        el.style.setProperty('visibility', 'visible', 'important');
+        el.style.setProperty('opacity', '0.6', 'important');
+        el.style.setProperty('outline', '1px dashed #ffb020', 'important');
+        el.style.setProperty('outline-offset', '-1px', 'important');
+        count++;
+      }
+    });
+    return count;
+  }
+
+  function hideRevealedElements(){
+    const doc = editor.Canvas.getDocument();
+    if(!doc) return;
+    doc.body.querySelectorAll('[data-was-hidden="1"]').forEach(el=>{
+      el.style.removeProperty('display');
+      el.style.removeProperty('visibility');
+      el.style.removeProperty('opacity');
+      el.style.removeProperty('outline');
+      el.style.removeProperty('outline-offset');
+      el.removeAttribute('data-was-hidden');
+    });
+  }
+
+  function setRevealState(active){
+    revealActive = active;
+    revealBtn.classList.toggle('active', active);
+    if(active){
+      const n = revealHiddenElements();
+      revealCount.textContent = n > 0 ? n : '';
+      revealBtn.title = n > 0
+        ? `${n} elemento(s) oculto(s) revelados temporalmente (borde punteado). Haz clic en uno para editarlo.`
+        : 'No se detectaron elementos ocultos en esta vista.';
+    } else {
+      hideRevealedElements();
+      revealCount.textContent = '';
+    }
+  }
+
+  revealBtn.addEventListener('click', ()=> setRevealState(!revealActive));
+
   // ---- Undo / redo ----
   document.getElementById('btn-undo').addEventListener('click', ()=> editor.UndoManager.undo());
   document.getElementById('btn-redo').addEventListener('click', ()=> editor.UndoManager.redo());
@@ -264,6 +329,7 @@
   const downloadBtn = document.getElementById('btn-download');
 
   function loadHtmlString(htmlStr, filename){
+    setRevealState(false);
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlStr, 'text/html');
 
@@ -374,6 +440,7 @@ ${scripts}
 
   document.getElementById('btn-new').addEventListener('click', ()=>{
     if(!confirm('¿Empezar de cero? Perderás los cambios no descargados.')) return;
+    setRevealState(false);
     editor.setComponents('');
     editor.setStyle('');
     headExtra = ''; bodyAttrs = ''; bodyScripts = [];
