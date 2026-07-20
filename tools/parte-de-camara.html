@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parte de Cámara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
+  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B; --good:#5EEAD4; --bad:#E85D5D;
+  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:40px 20px;}
+.wrap{max-width:1180px;margin:0 auto;}
+.sprockets{display:flex;gap:6px;margin-bottom:22px;}
+.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
+header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:16px;}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
+h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;}
+.sub{color:var(--text-dim);font-size:14px;margin-top:8px;}
+.toolbar{display:flex;gap:10px;}
+.btn{background:var(--accent);color:#161206;border:none;padding:11px 18px;border-radius:8px;font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.05em;cursor:pointer;text-transform:uppercase;}
+.btn.secondary{background:var(--panel-2);color:var(--text);border:1px solid var(--border);}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:20px;}
+.meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.field label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.field input{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:9px 10px;border-radius:6px;font-family:var(--mono);font-size:13px;}
+table{width:100%;border-collapse:collapse;margin-top:4px;}
+thead th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);padding:8px 6px;border-bottom:1px solid var(--border);}
+tbody td{padding:5px 6px;border-bottom:1px solid var(--panel-2);}
+tbody input, tbody textarea{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:7px 8px;border-radius:5px;font-family:var(--mono);font-size:12.5px;}
+tbody input[type=text].desc{font-family:var(--sans);}
+.take-status{display:flex;gap:4px;}
+.status-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--panel-2);color:var(--text-dim);font-family:var(--mono);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.status-btn.ok.active{background:var(--good);color:#0D2A26;border-color:var(--good);}
+.status-btn.ng.active{background:var(--bad);color:#2A0D0D;border-color:var(--bad);}
+.row-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;}
+.row-del:hover{color:var(--bad);}
+.add-row-btn{margin-top:12px;background:var(--panel-2);border:1px dashed var(--border);color:var(--text-dim);padding:9px;width:100%;border-radius:7px;font-family:var(--mono);font-size:12.5px;cursor:pointer;}
+.add-row-btn:hover{border-color:var(--accent);color:var(--accent);}
+footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:28px;font-family:var(--mono);}
+@media print{
+  body{background:#fff;color:#000;padding:0;}
+  .toolbar,.add-row-btn,.row-del{display:none !important;}
+  .sprockets{display:none;}
+  .panel{border-color:#ccc;background:#fff;}
+  .field input, tbody input, tbody textarea{background:#fff;border-color:#ccc;color:#000;}
+  thead th{color:#555;}
+}
+@media(max-width:900px){.meta-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <header>
+    <div>
+      <p class="eyebrow">Utilidad de producción</p>
+      <h1>Parte de Cámara</h1>
+      <p class="sub">Registro de tomas por jornada de rodaje — escena, toma, timecode, lente y estado.</p>
+    </div>
+    <div class="toolbar">
+      <button class="btn secondary" id="csvBtn">Exportar CSV</button>
+      <button class="btn secondary" id="printBtn">Imprimir</button>
+    </div>
+  </header>
+
+  <div class="panel">
+    <div class="meta-grid">
+      <div class="field"><label>Producción</label><input type="text" id="prod"></div>
+      <div class="field"><label>Fecha</label><input type="text" id="date" placeholder="DD/MM/AAAA"></div>
+      <div class="field"><label>Cámara</label><input type="text" id="cam" placeholder="Modelo / nº"></div>
+      <div class="field"><label>Operador</label><input type="text" id="op"></div>
+      <div class="field"><label>Tarjeta / rollo</label><input type="text" id="card"></div>
+      <div class="field"><label>Formato / fps</label><input type="text" id="fmt" placeholder="ej. 4K ProRes 25fps"></div>
+      <div class="field"><label>DIT / asistente</label><input type="text" id="dit"></div>
+      <div class="field"><label>Jornada</label><input type="text" id="day" placeholder="ej. 2 de 5"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:60px">Esc.</th>
+          <th style="width:60px">Toma</th>
+          <th style="width:90px">TC In</th>
+          <th style="width:90px">TC Out</th>
+          <th style="width:80px">Lente</th>
+          <th>Descripción / notas</th>
+          <th style="width:70px">Estado</th>
+          <th style="width:30px"></th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <button class="add-row-btn" id="addRow">+ Añadir toma</button>
+  </div>
+</div>
+<footer>Los datos se guardan solo en esta sesión — exporta el CSV o imprime al final de la jornada</footer>
+
+<script>
+const rows = document.getElementById('rows');
+
+function newRow(){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" class="scene"></td>
+    <td><input type="text" class="take"></td>
+    <td><input type="text" class="tcin" placeholder="00:00:00:00"></td>
+    <td><input type="text" class="tcout" placeholder="00:00:00:00"></td>
+    <td><input type="text" class="lens"></td>
+    <td><input type="text" class="desc"></td>
+    <td>
+      <div class="take-status">
+        <button type="button" class="status-btn ok">OK</button>
+        <button type="button" class="status-btn ng">NG</button>
+      </div>
+    </td>
+    <td><button class="row-del">×</button></td>
+  `;
+  tr.querySelectorAll('.status-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const already = btn.classList.contains('active');
+      tr.querySelectorAll('.status-btn').forEach(b=>b.classList.remove('active'));
+      if(!already) btn.classList.add('active');
+    });
+  });
+  tr.querySelector('.row-del').addEventListener('click',()=>tr.remove());
+  return tr;
+}
+
+document.getElementById('addRow').addEventListener('click',()=>rows.appendChild(newRow()));
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+
+document.getElementById('csvBtn').addEventListener('click',()=>{
+  const header = ['Escena','Toma','TC In','TC Out','Lente','Descripción','Estado'];
+  const lines = [header.join(';')];
+  rows.querySelectorAll('tr').forEach(tr=>{
+    const status = tr.querySelector('.status-btn.ok.active') ? 'OK' : (tr.querySelector('.status-btn.ng.active') ? 'NG' : '');
+    const vals = [
+      tr.querySelector('.scene').value,
+      tr.querySelector('.take').value,
+      tr.querySelector('.tcin').value,
+      tr.querySelector('.tcout').value,
+      tr.querySelector('.lens').value,
+      tr.querySelector('.desc').value.replace(/;/g,','),
+      status
+    ];
+    lines.push(vals.join(';'));
+  });
+  const meta = `Produccion:${document.getElementById('prod').value};Fecha:${document.getElementById('date').value};Camara:${document.getElementById('cam').value};Operador:${document.getElementById('op').value}`;
+  const csv = meta + '\n\n' + lines.join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `parte-camara-${document.getElementById('date').value||'jornada'}.csv`;
+  link.click();
+});
+
+for(let i=0;i<8;i++) rows.appendChild(newRow());
+</script>
+</body>
+</html>
