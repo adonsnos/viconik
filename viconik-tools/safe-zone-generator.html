@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Viconik · Guías de Zona Segura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --k: #111010; --w: #EDEBE7; --g: #8a8780; --l: #C8C5BF; --b: #E5E3DE;
+  --brd: rgba(17,16,16,.1);
+  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  --bebas: 'Bebas Neue', sans-serif; --serif: 'Playfair Display', serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--w); color:var(--k); font-family:var(--sans); line-height:1.65; overflow-x:hidden; font-size:18px; }
+a { color:inherit; text-decoration:none; }
+nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:.85rem 3.5rem; background:rgba(237,235,231,.96); backdrop-filter:blur(16px); border-bottom:1px solid var(--brd); }
+.nav-logo { display:flex; align-items:center; gap:.6rem; font-family:var(--serif); font-size:1.2rem; letter-spacing:.02em; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:14px; color:var(--g); transition:color .2s; }
+.nav-links a:hover { color:var(--k); }
+.nav-cta { font-family:var(--mono); font-size:12px; letter-spacing:.08em; background:var(--k); color:var(--w); padding:.5rem 1.25rem; transition:opacity .2s; }
+.nav-cta:hover { opacity:.72; }
+.tools-container { max-width:1200px; margin:0 auto; padding:7rem 2rem 4rem; }
+.tool-section { margin-bottom:3rem; }
+.tool-header { margin-bottom:2rem; border-bottom:1px solid var(--brd); padding-bottom:1rem; }
+.tool-header .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--g); margin-bottom:.5rem; display:flex; align-items:center; gap:.75rem; }
+.tool-header .eyebrow::before { content:''; width:32px; height:1px; background:var(--l); }
+.tool-header h2 { font-family:var(--bebas); font-size:clamp(2.2rem,4vw,3.2rem); letter-spacing:.02em; line-height:1.1; color:var(--k); margin-top:.25rem; }
+.panel { background:#fff; border:1px solid var(--brd); padding:2rem; transition:box-shadow .2s; }
+.panel:hover { box-shadow:0 12px 22px -12px rgba(0,0,0,.08); }
+.panel-title { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--g); margin-bottom:1.5rem; padding-bottom:.75rem; border-bottom:1px solid var(--brd); display:flex; align-items:center; gap:.75rem; }
+.panel-title i { color:var(--k); font-size:14px; }
+.two-col-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
+@media (max-width:1000px){ .two-col-grid{ grid-template-columns:1fr; gap:1.5rem; } }
+.param-group { display:flex; flex-direction:column; gap:1.2rem; }
+.param-row { display:flex; flex-direction:column; gap:.3rem; }
+.param-label { font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--g); letter-spacing:.05em; display:flex; align-items:center; gap:6px; }
+.inline-row { display:flex; gap:.5rem; align-items:center; }
+.inline-row input, .inline-row select { flex:1; }
+select, input[type="number"], input[type="text"], input[type="date"], textarea {
+  width:100%; padding:.65rem .9rem; background:#fff; border:1px solid var(--brd); border-radius:0;
+  font-family:var(--sans); font-size:14px; color:var(--k); transition:border .15s;
+}
+textarea { resize:vertical; min-height:70px; font-family:var(--sans); }
+select:focus, input:focus, textarea:focus { outline:none; border-color:var(--k); }
+.preset-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.3rem; }
+.preset-chip { font-family:var(--mono); font-size:10px; padding:.4rem .8rem; border:1px solid var(--brd); background:var(--b); color:var(--k); cursor:pointer; transition:all .15s; text-transform:uppercase; letter-spacing:.05em; }
+.preset-chip:hover, .preset-chip.active { background:var(--k); color:var(--w); border-color:var(--k); }
+.badge { font-family:var(--mono); font-size:9px; padding:3px 8px; background:var(--w); border:1px solid var(--brd); color:var(--g); text-transform:uppercase; }
+.table-wrapper { overflow-x:auto; border:1px solid var(--brd); background:#fff; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead tr { background:var(--k); color:var(--w); }
+th { font-family:var(--mono); font-size:10px; letter-spacing:.06em; font-weight:400; text-transform:uppercase; padding:.9rem 1rem; text-align:left; }
+td { padding:.7rem 1rem; border-bottom:1px solid var(--brd); color:var(--k); }
+td input, td textarea, td select { font-size:12.5px; padding:.4rem .5rem; }
+tbody tr:hover td { background:var(--b); }
+.btn-group { display:flex; gap:.75rem; flex-wrap:wrap; }
+.btn { padding:.7rem 1.1rem; border:1px solid var(--k); background:var(--k); color:var(--w); font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; cursor:pointer; transition:opacity .2s; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn:hover { opacity:.78; }
+.btn-secondary { background:transparent; color:var(--k); border:1px solid var(--brd); }
+.btn-secondary:hover { background:var(--b); opacity:1; }
+.info-box { background:var(--k); color:var(--w); padding:1.25rem; margin-top:1.5rem; display:flex; gap:1rem; align-items:flex-start; font-size:12px; line-height:1.6; }
+.info-box i { color:var(--l); font-size:1.2rem; }
+.hidden { display:none !important; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+.detail-item { background:#fff; border:1px solid var(--brd); padding:.8rem; text-align:left; }
+.detail-item .label-sm { font-family:var(--mono); font-size:9px; color:var(--g); text-transform:uppercase; }
+.detail-item .value-md { font-family:var(--mono); font-size:1.2rem; font-weight:500; margin-top:.2rem; }
+.row-del { background:none; border:none; color:var(--g); cursor:pointer; font-size:16px; }
+.row-del:hover { color:#a83232; }
+.add-row-btn { margin-top:.75rem; background:var(--b); border:1px dashed var(--brd); color:var(--g); padding:.7rem; width:100%; cursor:pointer; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; }
+.add-row-btn:hover { border-color:var(--k); color:var(--k); }
+footer { padding:1.5rem 3.5rem; border-top:1px solid var(--brd); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--g); }
+footer a { color:var(--g); transition:color .2s; }
+footer a:hover { color:var(--k); }
+@media print {
+  nav, footer, .btn, .add-row-btn, .row-del, .no-print { display:none !important; }
+  body { background:#fff; font-size:12px; }
+  .tools-container { padding:1rem; max-width:100%; }
+  .panel { box-shadow:none; break-inside:avoid; }
+}
+@media (max-width:960px) {
+  nav { padding:.85rem 1.5rem; }
+  .nav-links { display:none; }
+  .tools-container { padding:6rem 1.5rem 3rem; }
+  .panel { padding:1.5rem; }
+  footer { padding:1.25rem 1.5rem; flex-direction:column; text-align:center; }
+}
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111010">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
+}
+</script>
+</head><body>
+<nav>
+  <a href="index.html" class="nav-logo">Viconik</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Todas las herramientas</a></li>
+    <li><a href="viconik_calculators.html">Calculadoras</a></li>
+  </ul>
+  <a href="index.html" class="nav-cta">← Índice</a>
+</nav>
+<main class="tools-container">
+<style>
+.sw-row { display:flex; align-items:center; justify-content:space-between; padding:.6rem 0; border-top:1px solid var(--brd); }
+.sw-row:first-of-type { border-top:none; }
+.sw { position:relative; width:38px; height:21px; background:var(--b); border:1px solid var(--brd); cursor:pointer; }
+.sw::after { content:''; position:absolute; top:2px; left:2px; width:15px; height:15px; background:var(--g); transition:.15s; }
+.sw.on { border-color:var(--k); }
+.sw.on::after { transform:translateX(17px); background:var(--k); }
+.upload-btn { width:100%; padding:.7rem; border:1px dashed var(--brd); text-align:center; font-family:var(--mono); font-size:11.5px; color:var(--g); cursor:pointer; margin-top:1rem; background:var(--b); }
+.upload-btn:hover { border-color:var(--k); color:var(--k); }
+.canvas-wrap { display:flex; flex-direction:column; align-items:center; }
+canvas { max-width:100%; background:#000; border:1px solid var(--brd); }
+.legend { display:flex; gap:16px; flex-wrap:wrap; margin-top:1rem; font-family:var(--mono); font-size:11px; color:var(--g); }
+.legend div { display:flex; align-items:center; gap:6px; }
+.dot { width:9px; height:9px; }
+</style>
+
+<section class="tool-section">
+  <div class="tool-header">
+    <div class="eyebrow">Herramienta profesional</div>
+    <h2>Guías de Zona Segura</h2>
+    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Zonas de título y acción, más márgenes de interfaz por plataforma, superpuestos sobre el formato elegido. Exporta en PNG.</p>
+  </div>
+
+  <div class="two-col-grid">
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-crop-alt"></i> Parámetros</div>
+      <div class="param-row"><label class="param-label">Formato / relación de aspecto</label>
+        <select id="format">
+          <option value="1920x1080">16:9 — 1920×1080</option>
+          <option value="3840x2160">16:9 — 4K UHD</option>
+          <option value="1080x1920" selected>9:16 — Vertical 1080×1920</option>
+          <option value="1080x1080">1:1 — Cuadrado 1080×1080</option>
+          <option value="1080x1350">4:5 — Feed 1080×1350</option>
+          <option value="2048x858">2.39:1 — Cine</option>
+        </select>
+      </div>
+      <div class="param-row" style="margin-top:1rem;"><label class="param-label">Plataforma (zona de UI)</label>
+        <select id="platform">
+          <option value="none">Ninguna</option>
+          <option value="reels" selected>Instagram Reels / Stories</option>
+          <option value="feed">Instagram Feed</option>
+          <option value="tiktok">TikTok</option>
+          <option value="shorts">YouTube Shorts</option>
+          <option value="youtube">YouTube (horizontal)</option>
+          <option value="linkedin">LinkedIn</option>
+        </select>
+      </div>
+      <div style="margin-top:1rem;">
+        <div class="sw-row"><span>Zona de título (80%)</span><div class="sw on" id="swTitle"></div></div>
+        <div class="sw-row"><span>Zona de acción (90%)</span><div class="sw on" id="swAction"></div></div>
+        <div class="sw-row"><span>Centro / cruz</span><div class="sw" id="swCenter"></div></div>
+      </div>
+      <div class="upload-btn" id="uploadBtn">+ Cargar frame de referencia (opcional)</div>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-image"></i> Vista previa</div>
+      <div class="canvas-wrap">
+        <canvas id="canvas"></canvas>
+        <div class="legend">
+          <div><span class="dot" style="background:#F2A93B"></span>Zona de título</div>
+          <div><span class="dot" style="background:#5EEAD4"></span>Zona de acción</div>
+          <div><span class="dot" style="background:#E85D5D"></span>UI de plataforma</div>
+        </div>
+      </div>
+      <div class="btn-group" style="margin-top:1.5rem;">
+        <button class="btn" id="dlBtn"><i class="fas fa-download"></i> Descargar guía PNG</button>
+      </div>
+    </div>
+  </div>
+  <div class="info-box"><i class="fas fa-info-circle"></i><span>Zona de título 80% / zona de acción 90% según convención SMPTE. Verifica siempre con las specs oficiales de cada plataforma antes de la entrega final.</span></div>
+</section>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let refImage = null;
+const PLATFORM_MARGINS = {
+  none: null,
+  reels:   {top:0.13, bottom:0.22, left:0.05, right:0.16, label:'UI Reels/Stories'},
+  feed:    {top:0.06, bottom:0.10, left:0.04, right:0.04, label:'UI Feed'},
+  tiktok:  {top:0.10, bottom:0.20, left:0.04, right:0.16, label:'UI TikTok'},
+  shorts:  {top:0.12, bottom:0.20, left:0.04, right:0.14, label:'UI Shorts'},
+  youtube: {top:0.06, bottom:0.06, left:0.04, right:0.04, label:'UI YouTube'},
+  linkedin:{top:0.08, bottom:0.14, left:0.05, right:0.05, label:'UI LinkedIn'},
+};
+function draw(){
+  const [w,h] = document.getElementById('format').value.split('x').map(Number);
+  const maxW = 640;
+  const scale = Math.min(maxW/w, 640/h, 1);
+  canvas.width = w; canvas.height = h;
+  canvas.style.width = (w*scale)+'px';
+  canvas.style.height = (h*scale)+'px';
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = '#000'; ctx.fillRect(0,0,w,h);
+  if(refImage){
+    const ir = refImage.width/refImage.height, fr = w/h;
+    let dw,dh,dx,dy;
+    if(ir>fr){ dh=h; dw=h*ir; dx=(w-dw)/2; dy=0; } else { dw=w; dh=w/ir; dx=0; dy=(h-dh)/2; }
+    ctx.drawImage(refImage, dx, dy, dw, dh);
+    ctx.fillStyle='rgba(0,0,0,0.15)'; ctx.fillRect(0,0,w,h);
+  }
+  const lw = Math.max(2, w*0.0025);
+  if(document.getElementById('swAction').classList.contains('on')) drawInset(0.05, '#5EEAD4', lw, 'ZONA DE ACCIÓN 90%');
+  if(document.getElementById('swTitle').classList.contains('on')) drawInset(0.10, '#F2A93B', lw, 'ZONA DE TÍTULO 80%');
+  const platform = PLATFORM_MARGINS[document.getElementById('platform').value];
+  if(platform){
+    ctx.strokeStyle = '#E85D5D'; ctx.lineWidth = lw; ctx.setLineDash([w*0.015, w*0.01]);
+    const x = w*platform.left, y = h*platform.top;
+    const ww = w - w*platform.left - w*platform.right;
+    const hh = h - h*platform.top - h*platform.bottom;
+    ctx.strokeRect(x,y,ww,hh); ctx.setLineDash([]);
+    ctx.fillStyle = '#E85D5D'; ctx.font = `${Math.round(w*0.018)}px 'DM Mono', monospace`;
+    ctx.fillText(platform.label, x+8, y+w*0.024);
+  }
+  if(document.getElementById('swCenter').classList.contains('on')){
+    ctx.strokeStyle='rgba(255,255,255,0.4)'; ctx.lineWidth=lw*0.6;
+    ctx.beginPath(); ctx.moveTo(w/2-w*0.02,h/2); ctx.lineTo(w/2+w*0.02,h/2);
+    ctx.moveTo(w/2,h/2-w*0.02); ctx.lineTo(w/2,h/2+w*0.02); ctx.stroke();
+  }
+  function drawInset(margin, color, lineW, label){
+    ctx.strokeStyle = color; ctx.lineWidth = lineW;
+    const x=w*margin, y=h*margin, ww=w-2*w*margin, hh=h-2*h*margin;
+    ctx.strokeRect(x,y,ww,hh);
+    ctx.fillStyle = color; ctx.font = `${Math.round(w*0.018)}px 'DM Mono', monospace`;
+    ctx.fillText(label, x+8, y+w*0.024);
+  }
+}
+document.querySelectorAll('.sw').forEach(sw=>sw.addEventListener('click',()=>{sw.classList.toggle('on');draw();}));
+document.getElementById('format').addEventListener('change',draw);
+document.getElementById('platform').addEventListener('change',draw);
+document.getElementById('uploadBtn').addEventListener('click',()=>document.getElementById('fileInput').click());
+document.getElementById('fileInput').addEventListener('change',e=>{
+  const file = e.target.files[0]; if(!file) return;
+  const img = new Image();
+  img.onload = ()=>{ refImage = img; draw(); };
+  img.src = URL.createObjectURL(file);
+});
+document.getElementById('dlBtn').addEventListener('click',()=>{
+  const link = document.createElement('a');
+  link.download = 'zona-segura-guia.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+draw();
+</script>
+</main>
+<footer>
+  <span>Viconik · Herramientas profesionales de producción audiovisual</span>
+  <a href="index.html">Volver al índice de herramientas</a>
+</footer>
+</body></html>

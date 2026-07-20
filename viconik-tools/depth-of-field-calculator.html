@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Viconik · Profundidad de Campo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --k: #111010; --w: #EDEBE7; --g: #8a8780; --l: #C8C5BF; --b: #E5E3DE;
+  --brd: rgba(17,16,16,.1);
+  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  --bebas: 'Bebas Neue', sans-serif; --serif: 'Playfair Display', serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--w); color:var(--k); font-family:var(--sans); line-height:1.65; overflow-x:hidden; font-size:18px; }
+a { color:inherit; text-decoration:none; }
+nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:.85rem 3.5rem; background:rgba(237,235,231,.96); backdrop-filter:blur(16px); border-bottom:1px solid var(--brd); }
+.nav-logo { display:flex; align-items:center; gap:.6rem; font-family:var(--serif); font-size:1.2rem; letter-spacing:.02em; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:14px; color:var(--g); transition:color .2s; }
+.nav-links a:hover { color:var(--k); }
+.nav-cta { font-family:var(--mono); font-size:12px; letter-spacing:.08em; background:var(--k); color:var(--w); padding:.5rem 1.25rem; transition:opacity .2s; }
+.nav-cta:hover { opacity:.72; }
+.tools-container { max-width:1200px; margin:0 auto; padding:7rem 2rem 4rem; }
+.tool-section { margin-bottom:3rem; }
+.tool-header { margin-bottom:2rem; border-bottom:1px solid var(--brd); padding-bottom:1rem; }
+.tool-header .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--g); margin-bottom:.5rem; display:flex; align-items:center; gap:.75rem; }
+.tool-header .eyebrow::before { content:''; width:32px; height:1px; background:var(--l); }
+.tool-header h2 { font-family:var(--bebas); font-size:clamp(2.2rem,4vw,3.2rem); letter-spacing:.02em; line-height:1.1; color:var(--k); margin-top:.25rem; }
+.panel { background:#fff; border:1px solid var(--brd); padding:2rem; transition:box-shadow .2s; }
+.panel:hover { box-shadow:0 12px 22px -12px rgba(0,0,0,.08); }
+.panel-title { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--g); margin-bottom:1.5rem; padding-bottom:.75rem; border-bottom:1px solid var(--brd); display:flex; align-items:center; gap:.75rem; }
+.panel-title i { color:var(--k); font-size:14px; }
+.two-col-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
+@media (max-width:1000px){ .two-col-grid{ grid-template-columns:1fr; gap:1.5rem; } }
+.param-group { display:flex; flex-direction:column; gap:1.2rem; }
+.param-row { display:flex; flex-direction:column; gap:.3rem; }
+.param-label { font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--g); letter-spacing:.05em; display:flex; align-items:center; gap:6px; }
+.inline-row { display:flex; gap:.5rem; align-items:center; }
+.inline-row input, .inline-row select { flex:1; }
+select, input[type="number"], input[type="text"], input[type="date"], textarea {
+  width:100%; padding:.65rem .9rem; background:#fff; border:1px solid var(--brd); border-radius:0;
+  font-family:var(--sans); font-size:14px; color:var(--k); transition:border .15s;
+}
+textarea { resize:vertical; min-height:70px; font-family:var(--sans); }
+select:focus, input:focus, textarea:focus { outline:none; border-color:var(--k); }
+.preset-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.3rem; }
+.preset-chip { font-family:var(--mono); font-size:10px; padding:.4rem .8rem; border:1px solid var(--brd); background:var(--b); color:var(--k); cursor:pointer; transition:all .15s; text-transform:uppercase; letter-spacing:.05em; }
+.preset-chip:hover, .preset-chip.active { background:var(--k); color:var(--w); border-color:var(--k); }
+.badge { font-family:var(--mono); font-size:9px; padding:3px 8px; background:var(--w); border:1px solid var(--brd); color:var(--g); text-transform:uppercase; }
+.table-wrapper { overflow-x:auto; border:1px solid var(--brd); background:#fff; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead tr { background:var(--k); color:var(--w); }
+th { font-family:var(--mono); font-size:10px; letter-spacing:.06em; font-weight:400; text-transform:uppercase; padding:.9rem 1rem; text-align:left; }
+td { padding:.7rem 1rem; border-bottom:1px solid var(--brd); color:var(--k); }
+td input, td textarea, td select { font-size:12.5px; padding:.4rem .5rem; }
+tbody tr:hover td { background:var(--b); }
+.btn-group { display:flex; gap:.75rem; flex-wrap:wrap; }
+.btn { padding:.7rem 1.1rem; border:1px solid var(--k); background:var(--k); color:var(--w); font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; cursor:pointer; transition:opacity .2s; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn:hover { opacity:.78; }
+.btn-secondary { background:transparent; color:var(--k); border:1px solid var(--brd); }
+.btn-secondary:hover { background:var(--b); opacity:1; }
+.info-box { background:var(--k); color:var(--w); padding:1.25rem; margin-top:1.5rem; display:flex; gap:1rem; align-items:flex-start; font-size:12px; line-height:1.6; }
+.info-box i { color:var(--l); font-size:1.2rem; }
+.hidden { display:none !important; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+.detail-item { background:#fff; border:1px solid var(--brd); padding:.8rem; text-align:left; }
+.detail-item .label-sm { font-family:var(--mono); font-size:9px; color:var(--g); text-transform:uppercase; }
+.detail-item .value-md { font-family:var(--mono); font-size:1.2rem; font-weight:500; margin-top:.2rem; }
+.row-del { background:none; border:none; color:var(--g); cursor:pointer; font-size:16px; }
+.row-del:hover { color:#a83232; }
+.add-row-btn { margin-top:.75rem; background:var(--b); border:1px dashed var(--brd); color:var(--g); padding:.7rem; width:100%; cursor:pointer; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; }
+.add-row-btn:hover { border-color:var(--k); color:var(--k); }
+footer { padding:1.5rem 3.5rem; border-top:1px solid var(--brd); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--g); }
+footer a { color:var(--g); transition:color .2s; }
+footer a:hover { color:var(--k); }
+@media print {
+  nav, footer, .btn, .add-row-btn, .row-del, .no-print { display:none !important; }
+  body { background:#fff; font-size:12px; }
+  .tools-container { padding:1rem; max-width:100%; }
+  .panel { box-shadow:none; break-inside:avoid; }
+}
+@media (max-width:960px) {
+  nav { padding:.85rem 1.5rem; }
+  .nav-links { display:none; }
+  .tools-container { padding:6rem 1.5rem 3rem; }
+  .panel { padding:1.5rem; }
+  footer { padding:1.25rem 1.5rem; flex-direction:column; text-align:center; }
+}
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111010">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
+}
+</script>
+</head><body>
+<nav>
+  <a href="index.html" class="nav-logo">Viconik</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Todas las herramientas</a></li>
+    <li><a href="viconik_calculators.html">Calculadoras</a></li>
+  </ul>
+  <a href="index.html" class="nav-cta">← Índice</a>
+</nav>
+<main class="tools-container">
+<section class="tool-section">
+  <div class="tool-header">
+    <div class="eyebrow">Herramienta profesional</div>
+    <h2>Profundidad de Campo</h2>
+    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Calcula el rango de nitidez y la distancia hiperfocal según sensor, focal, apertura y distancia al sujeto.</p>
+  </div>
+
+  <div class="two-col-grid">
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-sliders-h"></i> Parámetros</div>
+      <div class="param-group">
+        <div class="param-row"><label class="param-label">Formato de sensor</label><select id="sensor"></select></div>
+        <div class="param-row"><label class="param-label">Distancia focal (mm)</label><input type="number" id="focal" value="35" step="1" min="1"></div>
+        <div class="param-row"><label class="param-label">Apertura (f/)</label><input type="number" id="aperture" value="2.8" step="0.1" min="0.5"></div>
+        <div class="param-row"><label class="param-label">Distancia al sujeto (m)</label><input type="number" id="distance" value="3" step="0.1" min="0.1"></div>
+      </div>
+      <div class="info-box" style="margin-top:1.5rem;"><i class="fas fa-info-circle"></i><span id="cocNote">—</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-crosshairs"></i> Resultado</div>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="label-sm">Límite cercano</div><div class="value-md" id="near">—</div></div>
+        <div class="detail-item"><div class="label-sm">Límite lejano</div><div class="value-md" id="far">—</div></div>
+        <div class="detail-item"><div class="label-sm">Profundidad total</div><div class="value-md" id="total">—</div></div>
+        <div class="detail-item"><div class="label-sm">Distancia hiperfocal</div><div class="value-md" id="hyper">—</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const SENSORS = [
+  {v:'ff', label:'Full Frame (36×24mm)', w:36, h:24},
+  {v:'s35', label:'Super 35 cine (24.89×18.66mm)', w:24.89, h:18.66},
+  {v:'apsc_c', label:'APS-C Canon (22.3×14.9mm)', w:22.3, h:14.9},
+  {v:'apsc_s', label:'APS-C Sony/Nikon (23.5×15.6mm)', w:23.5, h:15.6},
+  {v:'m43', label:'Micro Four Thirds (17.3×13mm)', w:17.3, h:13},
+  {v:'1inch', label:'1 pulgada (13.2×8.8mm)', w:13.2, h:8.8},
+];
+const sel = document.getElementById('sensor');
+SENSORS.forEach((s,i)=>{
+  const o = document.createElement('option'); o.value = s.v; o.textContent = s.label;
+  if(i===1) o.selected = true;
+  sel.appendChild(o);
+});
+function fmtM(v){
+  if(!isFinite(v)) return '∞';
+  if(v>=1000) return (v/1000).toFixed(2)+' km';
+  return v.toFixed(2)+' m';
+}
+function update(){
+  const s = SENSORS.find(x=>x.v===sel.value);
+  const diag = Math.sqrt(s.w*s.w + s.h*s.h);
+  const coc = diag/1500;
+  const f = parseFloat(document.getElementById('focal').value);
+  const N = parseFloat(document.getElementById('aperture').value);
+  const dist = parseFloat(document.getElementById('distance').value) * 1000;
+  if(!f||!N||!dist){ return; }
+  const H = (f*f)/(N*coc) + f;
+  let near = (H*dist)/(H+(dist-f));
+  let far = (H*dist)/(H-(dist-f));
+  if(dist >= H || far <= 0) far = Infinity;
+  const nearM = near/1000, farM = far/1000, hyperM = H/1000;
+  const totalM = isFinite(far) ? (farM-nearM) : Infinity;
+  document.getElementById('near').textContent = fmtM(nearM);
+  document.getElementById('far').textContent = fmtM(farM);
+  document.getElementById('total').textContent = isFinite(totalM) ? fmtM(totalM) : '∞';
+  document.getElementById('hyper').textContent = fmtM(hyperM);
+  document.getElementById('cocNote').textContent = `Círculo de confusión calculado: ${coc.toFixed(4)} mm (diagonal de sensor ${diag.toFixed(1)} mm), estimado como diagonal/1500.`;
+}
+['sensor','focal','aperture','distance'].forEach(id=>document.getElementById(id).addEventListener('input',update));
+update();
+</script>
+</main>
+<footer>
+  <span>Viconik · Herramientas profesionales de producción audiovisual</span>
+  <a href="index.html">Volver al índice de herramientas</a>
+</footer>
+</body></html>

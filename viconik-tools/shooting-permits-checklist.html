@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Viconik · Checklist de Permisos de Rodaje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --k: #111010; --w: #EDEBE7; --g: #8a8780; --l: #C8C5BF; --b: #E5E3DE;
+  --brd: rgba(17,16,16,.1);
+  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  --bebas: 'Bebas Neue', sans-serif; --serif: 'Playfair Display', serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--w); color:var(--k); font-family:var(--sans); line-height:1.65; overflow-x:hidden; font-size:18px; }
+a { color:inherit; text-decoration:none; }
+nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:.85rem 3.5rem; background:rgba(237,235,231,.96); backdrop-filter:blur(16px); border-bottom:1px solid var(--brd); }
+.nav-logo { display:flex; align-items:center; gap:.6rem; font-family:var(--serif); font-size:1.2rem; letter-spacing:.02em; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { font-size:14px; color:var(--g); transition:color .2s; }
+.nav-links a:hover { color:var(--k); }
+.nav-cta { font-family:var(--mono); font-size:12px; letter-spacing:.08em; background:var(--k); color:var(--w); padding:.5rem 1.25rem; transition:opacity .2s; }
+.nav-cta:hover { opacity:.72; }
+.tools-container { max-width:1200px; margin:0 auto; padding:7rem 2rem 4rem; }
+.tool-section { margin-bottom:3rem; }
+.tool-header { margin-bottom:2rem; border-bottom:1px solid var(--brd); padding-bottom:1rem; }
+.tool-header .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--g); margin-bottom:.5rem; display:flex; align-items:center; gap:.75rem; }
+.tool-header .eyebrow::before { content:''; width:32px; height:1px; background:var(--l); }
+.tool-header h2 { font-family:var(--bebas); font-size:clamp(2.2rem,4vw,3.2rem); letter-spacing:.02em; line-height:1.1; color:var(--k); margin-top:.25rem; }
+.panel { background:#fff; border:1px solid var(--brd); padding:2rem; transition:box-shadow .2s; }
+.panel:hover { box-shadow:0 12px 22px -12px rgba(0,0,0,.08); }
+.panel-title { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--g); margin-bottom:1.5rem; padding-bottom:.75rem; border-bottom:1px solid var(--brd); display:flex; align-items:center; gap:.75rem; }
+.panel-title i { color:var(--k); font-size:14px; }
+.two-col-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
+@media (max-width:1000px){ .two-col-grid{ grid-template-columns:1fr; gap:1.5rem; } }
+.param-group { display:flex; flex-direction:column; gap:1.2rem; }
+.param-row { display:flex; flex-direction:column; gap:.3rem; }
+.param-label { font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--g); letter-spacing:.05em; display:flex; align-items:center; gap:6px; }
+.inline-row { display:flex; gap:.5rem; align-items:center; }
+.inline-row input, .inline-row select { flex:1; }
+select, input[type="number"], input[type="text"], input[type="date"], textarea {
+  width:100%; padding:.65rem .9rem; background:#fff; border:1px solid var(--brd); border-radius:0;
+  font-family:var(--sans); font-size:14px; color:var(--k); transition:border .15s;
+}
+textarea { resize:vertical; min-height:70px; font-family:var(--sans); }
+select:focus, input:focus, textarea:focus { outline:none; border-color:var(--k); }
+.preset-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.3rem; }
+.preset-chip { font-family:var(--mono); font-size:10px; padding:.4rem .8rem; border:1px solid var(--brd); background:var(--b); color:var(--k); cursor:pointer; transition:all .15s; text-transform:uppercase; letter-spacing:.05em; }
+.preset-chip:hover, .preset-chip.active { background:var(--k); color:var(--w); border-color:var(--k); }
+.badge { font-family:var(--mono); font-size:9px; padding:3px 8px; background:var(--w); border:1px solid var(--brd); color:var(--g); text-transform:uppercase; }
+.table-wrapper { overflow-x:auto; border:1px solid var(--brd); background:#fff; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead tr { background:var(--k); color:var(--w); }
+th { font-family:var(--mono); font-size:10px; letter-spacing:.06em; font-weight:400; text-transform:uppercase; padding:.9rem 1rem; text-align:left; }
+td { padding:.7rem 1rem; border-bottom:1px solid var(--brd); color:var(--k); }
+td input, td textarea, td select { font-size:12.5px; padding:.4rem .5rem; }
+tbody tr:hover td { background:var(--b); }
+.btn-group { display:flex; gap:.75rem; flex-wrap:wrap; }
+.btn { padding:.7rem 1.1rem; border:1px solid var(--k); background:var(--k); color:var(--w); font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; cursor:pointer; transition:opacity .2s; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn:hover { opacity:.78; }
+.btn-secondary { background:transparent; color:var(--k); border:1px solid var(--brd); }
+.btn-secondary:hover { background:var(--b); opacity:1; }
+.info-box { background:var(--k); color:var(--w); padding:1.25rem; margin-top:1.5rem; display:flex; gap:1rem; align-items:flex-start; font-size:12px; line-height:1.6; }
+.info-box i { color:var(--l); font-size:1.2rem; }
+.hidden { display:none !important; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+.detail-item { background:#fff; border:1px solid var(--brd); padding:.8rem; text-align:left; }
+.detail-item .label-sm { font-family:var(--mono); font-size:9px; color:var(--g); text-transform:uppercase; }
+.detail-item .value-md { font-family:var(--mono); font-size:1.2rem; font-weight:500; margin-top:.2rem; }
+.row-del { background:none; border:none; color:var(--g); cursor:pointer; font-size:16px; }
+.row-del:hover { color:#a83232; }
+.add-row-btn { margin-top:.75rem; background:var(--b); border:1px dashed var(--brd); color:var(--g); padding:.7rem; width:100%; cursor:pointer; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; }
+.add-row-btn:hover { border-color:var(--k); color:var(--k); }
+footer { padding:1.5rem 3.5rem; border-top:1px solid var(--brd); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--g); }
+footer a { color:var(--g); transition:color .2s; }
+footer a:hover { color:var(--k); }
+@media print {
+  nav, footer, .btn, .add-row-btn, .row-del, .no-print { display:none !important; }
+  body { background:#fff; font-size:12px; }
+  .tools-container { padding:1rem; max-width:100%; }
+  .panel { box-shadow:none; break-inside:avoid; }
+}
+@media (max-width:960px) {
+  nav { padding:.85rem 1.5rem; }
+  .nav-links { display:none; }
+  .tools-container { padding:6rem 1.5rem 3rem; }
+  .panel { padding:1.5rem; }
+  footer { padding:1.25rem 1.5rem; flex-direction:column; text-align:center; }
+}
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111010">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
+}
+</script>
+</head><body>
+<nav>
+  <a href="index.html" class="nav-logo">Viconik</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Todas las herramientas</a></li>
+    <li><a href="viconik_calculators.html">Calculadoras</a></li>
+  </ul>
+  <a href="index.html" class="nav-cta">← Índice</a>
+</nav>
+<main class="tools-container">
+<style>
+.type-tabs { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.type-tab { font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; padding:.6rem 1rem; border:1px solid var(--brd); background:#fff; color:var(--g); cursor:pointer; }
+.type-tab.active { background:var(--k); color:var(--w); border-color:var(--k); }
+.progress-track { height:6px; background:var(--b); margin-bottom:1.5rem; }
+.progress-fill { height:100%; background:var(--k); transition:width .2s; }
+.check-item { display:flex; gap:12px; align-items:flex-start; padding:.9rem 0; border-bottom:1px solid var(--brd); }
+.check-item:last-child { border-bottom:none; }
+.check-item input[type=checkbox] { width:18px; height:18px; accent-color:var(--k); margin-top:2px; flex-shrink:0; }
+.check-item .body { flex:1; }
+.check-item .t { font-weight:500; font-size:14px; }
+.check-item .d { font-size:12.5px; color:var(--g); margin-top:2px; line-height:1.5; }
+</style>
+
+<section class="tool-section">
+  <div class="tool-header">
+    <div class="eyebrow">Herramienta profesional</div>
+    <h2>Checklist de permisos de rodaje</h2>
+    <p style="color:var(--g); max-width:700px; margin-top:.5rem;">Documentación habitual a gestionar según el tipo de localización, antes de la jornada de rodaje en España.</p>
+  </div>
+
+  <div class="type-tabs" id="typeTabs"></div>
+
+  <div class="panel">
+    <div class="panel-title"><i class="fas fa-clipboard-check"></i> Documentación a verificar <span class="badge" id="progressBadge" style="margin-left:auto;">0%</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div id="checklist"></div>
+  </div>
+
+  <div class="info-box"><i class="fas fa-info-circle"></i><span><strong>Esto no es asesoramiento legal.</strong> Los requisitos varían por ayuntamiento, comunidad autónoma y tipo de producción — confirma siempre con el organismo competente y, si el proyecto lo requiere, con un gestor de localizaciones o asesoría legal.</span></div>
+
+  <div class="btn-group" style="margin-top:1.5rem;">
+    <button class="btn btn-secondary" id="printBtn"><i class="fas fa-print"></i> Imprimir</button>
+  </div>
+</section>
+
+<script>
+const TYPES = {
+  publica: { label:'Vía pública', items:[
+    {t:'Autorización municipal de rodaje', d:'Solicitud ante el ayuntamiento o la film office local, con antelación suficiente.'},
+    {t:'Seguro de responsabilidad civil', d:'Póliza que cubra daños a terceros durante el rodaje en espacio público.'},
+    {t:'Plan de corte o afectación al tráfico', d:'Si se requiere cortar calles, aceras o afectar aparcamiento.'},
+    {t:'Notificación a policía local', d:'Cuando el rodaje implique tráfico, aglomeración o vía pública relevante.'},
+    {t:'Permiso de estacionamiento de vehículos de producción', d:'Zona reservada para vehículos técnicos, catering, camerinos.'},
+    {t:'Autorización de la Demarcación de Costas', d:'Si el rodaje se realiza en playa o dominio público marítimo-terrestre.'},
+  ]},
+  privada: { label:'Propiedad privada', items:[
+    {t:'Autorización escrita del propietario', d:'Documento firmado que acredite el consentimiento de uso del espacio.'},
+    {t:'Contrato de alquiler de localización', d:'Con condiciones, horario, tarifa y responsabilidades claras.'},
+    {t:'Seguro de responsabilidad civil y daños a terceros', d:'Cubre desperfectos ocasionados durante el rodaje.'},
+    {t:'Comunicación a la comunidad de propietarios', d:'Si el inmueble forma parte de un edificio con vecinos.'},
+    {t:'Fianza o depósito', d:'Si el propietario lo solicita como garantía.'},
+  ]},
+  interior: { label:'Interior comercial / oficina', items:[
+    {t:'Autorización del titular del local', d:'Comercio, oficina o establecimiento donde se rueda.'},
+    {t:'Coordinación de horario', d:'Rodaje fuera de horario de apertura si afecta a la actividad normal.'},
+    {t:'Seguro de rodaje', d:'Responsabilidad civil que cubra el espacio y sus instalaciones.'},
+    {t:'Plan de evacuación revisado', d:'Especialmente si se añade equipo, cableado o mobiliario temporal.'},
+  ]},
+  dron: { label:'Dron / UAS', items:[
+    {t:'Registro de operador UAS', d:'Ante AESA, con número de operador visible en la aeronave.'},
+    {t:'Certificado de competencia del piloto', d:'A1/A3, A2 o STS según categoría de la operación.'},
+    {t:'Seguro de responsabilidad civil específico para drones', d:'Obligatorio para operaciones profesionales.'},
+    {t:'Autorización de espacio aéreo', d:'Si se vuela en zona urbana, cerca de aeropuertos o espacio restringido.'},
+    {t:'Autorización del propietario del terreno de despegue/aterrizaje', d:'Del punto de operación en tierra.'},
+    {t:'Plan de vuelo y evaluación de riesgos', d:'Documentación operacional según categoría de vuelo.'},
+  ]},
+  menores: { label:'Menores en rodaje', items:[
+    {t:'Autorización de trabajo de menores', d:'Ante la autoridad laboral autonómica competente, si el rodaje se considera actividad laboral.'},
+    {t:'Autorización de padre/madre o tutor legal', d:'Consentimiento informado y firmado.'},
+    {t:'Presencia de profesor o educador', d:'Si el rodaje coincide con horario lectivo.'},
+    {t:'Límite de horas de rodaje según edad', d:'Jornadas y descansos adaptados a la normativa de menores.'},
+    {t:'Seguro específico que cubra al menor', d:'Adicional a la póliza general de producción.'},
+  ]},
+  natural: { label:'Espacio natural protegido', items:[
+    {t:'Autorización del organismo gestor', d:'Parque nacional, natural o espacio protegido correspondiente.'},
+    {t:'Limitación de equipo permitido', d:'Algunos espacios restringen vehículos, drones o generadores.'},
+    {t:'Restricciones por temporada o fauna', d:'Épocas de veda, nidificación o cría que limitan el acceso.'},
+    {t:'Tasa o canon de rodaje', d:'Si el espacio protegido lo exige para uso comercial.'},
+  ]},
+};
+
+let current = 'publica';
+const tabsEl = document.getElementById('typeTabs');
+Object.keys(TYPES).forEach(key=>{
+  const btn = document.createElement('div');
+  btn.className = 'type-tab' + (key===current?' active':'');
+  btn.textContent = TYPES[key].label;
+  btn.dataset.key = key;
+  btn.addEventListener('click',()=>{ current=key; render(); });
+  tabsEl.appendChild(btn);
+});
+
+function render(){
+  document.querySelectorAll('.type-tab').forEach(t=>t.classList.toggle('active', t.dataset.key===current));
+  const el = document.getElementById('checklist');
+  el.innerHTML = '';
+  TYPES[current].items.forEach((item,i)=>{
+    const row = document.createElement('div');
+    row.className = 'check-item';
+    row.innerHTML = `<input type="checkbox" id="chk_${current}_${i}"><div class="body"><label class="t" for="chk_${current}_${i}">${item.t}</label><div class="d">${item.d}</div></div>`;
+    row.querySelector('input').addEventListener('change', updateProgress);
+    el.appendChild(row);
+  });
+  updateProgress();
+}
+function updateProgress(){
+  const boxes = document.querySelectorAll('#checklist input[type=checkbox]');
+  const checked = document.querySelectorAll('#checklist input[type=checkbox]:checked').length;
+  const pct = boxes.length ? Math.round((checked/boxes.length)*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressBadge').textContent = pct+'%';
+}
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+render();
+</script>
+</main>
+<footer>
+  <span>Viconik · Herramientas profesionales de producción audiovisual</span>
+  <a href="index.html">Volver al índice de herramientas</a>
+</footer>
+</body></html>

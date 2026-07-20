@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Producción — Viconik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
+  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B;
+  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:60px 20px;}
+.wrap{max-width:920px;margin:0 auto;}
+.sprockets{display:flex;gap:6px;margin-bottom:22px;}
+.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
+header{margin-bottom:44px;}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 10px;}
+h1{margin:0;font-size:32px;font-weight:700;letter-spacing:-0.01em;}
+.sub{color:var(--text-dim);font-size:15px;margin-top:10px;max-width:56ch;line-height:1.6;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px;text-decoration:none;color:var(--text);display:block;transition:.15s;position:relative;overflow:hidden;}
+.card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.card .idx{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--text-dim);}
+.card h2{font-size:18px;margin:10px 0 8px;font-weight:600;}
+.card p{font-size:13px;color:var(--text-dim);line-height:1.55;margin:0;}
+.card .arrow{position:absolute;top:22px;right:22px;font-family:var(--mono);color:var(--accent);font-size:18px;opacity:0;transition:.15s;}
+.card:hover .arrow{opacity:1;}
+footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:44px;font-family:var(--mono);}
+@media(max-width:640px){.grid{grid-template-columns:1fr;}}
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111010">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
+}
+</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <header>
+    <p class="eyebrow">Viconik — Kit de producción</p>
+    <h1>Herramientas de Vídeo</h1>
+    <p class="sub">Un conjunto de utilidades ligeras y sin instalación para el trabajo diario de rodaje, montaje y entrega.</p>
+  </header>
+
+  <div class="grid">
+    <a class="card" href="timecode-calculator.html">
+      <span class="arrow">→</span>
+      <div class="idx">01 · CONVERSIÓN</div>
+      <h2>Calculadora de Timecode</h2>
+      <p>Convierte entre frame rates y suma o resta códigos de tiempo, con soporte para drop-frame.</p>
+    </a>
+    <a class="card" href="render-time-calculator.html">
+      <span class="arrow">→</span>
+      <div class="idx">02 · ESTIMACIÓN</div>
+      <h2>Tiempo de Renderizado</h2>
+      <p>Estimación de tiempo de exportación según duración, resolución, complejidad y hardware.</p>
+    </a>
+    <a class="card" href="safe-zone-generator.html">
+      <span class="arrow">→</span>
+      <div class="idx">03 · COMPOSICIÓN</div>
+      <h2>Guías de Zona Segura</h2>
+      <p>Zonas de título y acción, más márgenes de interfaz por plataforma, exportables en PNG.</p>
+    </a>
+    <a class="card" href="storyboard-rapido.html">
+      <span class="arrow">→</span>
+      <div class="idx">04 · PREPRODUCCIÓN</div>
+      <h2>Storyboard Rápido</h2>
+      <p>Dibuja, describe y ordena planos antes del rodaje. Exportable e imprimible.</p>
+    </a>
+    <a class="card" href="parte-de-camara.html">
+      <span class="arrow">→</span>
+      <div class="idx">05 · RODAJE</div>
+      <h2>Parte de Cámara</h2>
+      <p>Registro de tomas por jornada — escena, toma, timecode, lente y estado. Exporta a CSV.</p>
+    </a>
+    <a class="card" href="editor/index.html">
+      <span class="arrow">→</span>
+      <div class="idx">06 · DESARROLLO</div>
+      <h2>Editor HTML</h2>
+      <p>Editor de código con vista previa en vivo para prototipar y ajustar piezas HTML.</p>
+    </a>
+  </div>
+  <footer>Herramientas de uso libre — sin envío de datos a servidores externos</footer>
+</div>
+</body>
+</html>
