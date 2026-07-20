@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagrama de Iluminación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0E10; --panel:#17191D; --panel-2:#1E2126; --border:#2A2D33;
+  --text:#ECEAE5; --text-dim:#8B8F96; --accent:#F2A93B;
+  --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:40px 20px;}
+.wrap{max-width:1080px;margin:0 auto;}
+.sprockets{display:flex;gap:6px;margin-bottom:22px;}
+.sprockets span{width:8px;height:8px;border-radius:50%;background:var(--border);}
+header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;flex-wrap:wrap;gap:16px;}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;}
+h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-0.01em;}
+.sub{color:var(--text-dim);font-size:14px;margin-top:8px;max-width:60ch;line-height:1.5;}
+.btn{background:var(--accent);color:#161206;border:none;padding:10px 16px;border-radius:8px;font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase;}
+.btn.secondary{background:var(--panel-2);color:var(--text);border:1px solid var(--border);}
+.layout{display:grid;grid-template-columns:220px 1fr 220px;gap:16px;}
+.palette,.props{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.palette h2, .props h2{font-size:11px;margin:0 0 12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);}
+.tool-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;cursor:pointer;font-size:12.5px;margin-bottom:4px;border:1px solid transparent;}
+.tool-item:hover{background:var(--panel-2);border-color:var(--border);}
+.tool-item .ic{width:16px;height:16px;border-radius:3px;flex-shrink:0;}
+.canvas-wrap{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;}
+canvas{width:100%;background:#131519;border-radius:6px;cursor:grab;touch-action:none;}
+.props .row{margin-bottom:12px;}
+.props label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.props input, .props select{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:6px;font-family:var(--mono);font-size:12px;}
+.props .del-btn{width:100%;background:none;border:1px solid var(--border);color:#E85D5D;padding:8px;border-radius:6px;font-family:var(--mono);font-size:11.5px;cursor:pointer;margin-top:6px;}
+.empty-hint{color:var(--text-dim);font-family:var(--mono);font-size:11.5px;text-align:center;padding:30px 0;}
+footer{text-align:center;color:var(--text-dim);font-size:12px;margin-top:28px;font-family:var(--mono);}
+@media(max-width:860px){.layout{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="sprockets"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <header>
+    <div>
+      <p class="eyebrow">Utilidad de producción</p>
+      <h1>Diagrama de Iluminación</h1>
+      <p class="sub">Planta cenital para planificar posiciones de cámara, sujeto y luces. Arrastra los elementos; el ángulo respecto al eje cámara–sujeto se calcula automáticamente.</p>
+    </div>
+    <button class="btn secondary" id="dlBtn">Descargar PNG</button>
+  </header>
+
+  <div class="layout">
+    <div class="palette">
+      <h2>Añadir elemento</h2>
+      <div class="tool-item" data-type="camera"><span class="ic" style="background:#5EEAD4"></span>Cámara</div>
+      <div class="tool-item" data-type="subject"><span class="ic" style="background:#F2A93B"></span>Sujeto</div>
+      <div class="tool-item" data-type="key"><span class="ic" style="background:#FFD166"></span>Luz key</div>
+      <div class="tool-item" data-type="fill"><span class="ic" style="background:#8FB8E8"></span>Luz fill</div>
+      <div class="tool-item" data-type="back"><span class="ic" style="background:#C084FC"></span>Luz back/rim</div>
+      <div class="tool-item" data-type="practical"><span class="ic" style="background:#F2E27A"></span>Práctico</div>
+      <div class="tool-item" data-type="flag"><span class="ic" style="background:#555"></span>Flag / negro</div>
+      <div class="tool-item" data-type="bounce"><span class="ic" style="background:#EEE"></span>Rebote / bounce</div>
+    </div>
+
+    <div class="canvas-wrap">
+      <canvas id="canvas" width="640" height="500"></canvas>
+    </div>
+
+    <div class="props" id="props">
+      <h2>Propiedades</h2>
+      <div class="empty-hint" id="emptyHint">Selecciona un elemento del diagrama para ver y editar sus propiedades, o añade uno nuevo desde la izquierda.</div>
+      <div id="propFields" style="display:none;">
+        <div class="row"><label>Etiqueta</label><input type="text" id="pLabel"></div>
+        <div class="row"><label>Distancia al sujeto</label><input type="text" id="pDist" readonly></div>
+        <div class="row"><label>Ángulo respecto a cámara</label><input type="text" id="pAngle" readonly></div>
+        <button class="del-btn" id="delBtn">Eliminar elemento</button>
+      </div>
+    </div>
+  </div>
+</div>
+<footer>Escala orientativa — un metro equivale aproximadamente a 40px en el lienzo</footer>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const TYPES = {
+  camera:{color:'#5EEAD4', label:'Cámara', shape:'triangle'},
+  subject:{color:'#F2A93B', label:'Sujeto', shape:'circle'},
+  key:{color:'#FFD166', label:'Key', shape:'light'},
+  fill:{color:'#8FB8E8', label:'Fill', shape:'light'},
+  back:{color:'#C084FC', label:'Back', shape:'light'},
+  practical:{color:'#F2E27A', label:'Práctico', shape:'light'},
+  flag:{color:'#555555', label:'Flag', shape:'square'},
+  bounce:{color:'#EEEEEE', label:'Bounce', shape:'square'},
+};
+
+let objects = [
+  {id:1, type:'camera', x:320, y:420, label:'Cámara'},
+  {id:2, type:'subject', x:320, y:220, label:'Sujeto'},
+];
+let nextId = 3;
+let selected = null;
+let dragging = null;
+
+function drawGrid(){
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  for(let x=0;x<canvas.width;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+  for(let y=0;y<canvas.height;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+}
+
+function drawObject(o){
+  const t = TYPES[o.type];
+  ctx.save();
+  ctx.translate(o.x, o.y);
+  const isSel = selected && selected.id===o.id;
+  ctx.strokeStyle = isSel ? '#fff' : 'rgba(0,0,0,0.4)';
+  ctx.lineWidth = isSel ? 2.5 : 1.5;
+  ctx.fillStyle = t.color;
+
+  if(t.shape==='circle'){
+    ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  } else if(t.shape==='triangle'){
+    ctx.beginPath(); ctx.moveTo(0,-16); ctx.lineTo(14,12); ctx.lineTo(-14,12); ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else if(t.shape==='light'){
+    ctx.beginPath();
+    for(let i=0;i<8;i++){
+      const ang = (Math.PI*2/8)*i;
+      const r = i%2===0 ? 15 : 8;
+      ctx[i===0?'moveTo':'lineTo'](Math.cos(ang)*r, Math.sin(ang)*r);
+    }
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else {
+    ctx.fillRect(-13,-13,26,26); ctx.strokeRect(-13,-13,26,26);
+  }
+  ctx.restore();
+
+  ctx.fillStyle = '#ECEAE5';
+  ctx.font = "11px 'JetBrains Mono', monospace";
+  ctx.textAlign = 'center';
+  ctx.fillText(o.label, o.x, o.y+30);
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawGrid();
+  const cam = objects.find(o=>o.type==='camera');
+  const subj = objects.find(o=>o.type==='subject');
+  if(cam && subj){
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+    ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(cam.x,cam.y); ctx.lineTo(subj.x,subj.y); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  objects.forEach(o=>{
+    if(o.type!=='camera' && o.type!=='subject' && subj){
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.setLineDash([2,3]);
+      ctx.beginPath(); ctx.moveTo(o.x,o.y); ctx.lineTo(subj.x,subj.y); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  });
+  objects.forEach(drawObject);
+}
+
+function angleInfo(o){
+  const subj = objects.find(x=>x.type==='subject');
+  const cam = objects.find(x=>x.type==='camera');
+  if(!subj || !cam || o.id===subj.id) return {dist:'—', angle:'—'};
+  const dist = Math.hypot(o.x-subj.x, o.y-subj.y)/40;
+  if(o.id===cam.id) return {dist: dist.toFixed(1)+' m', angle:'0° (referencia)'};
+  const camAngle = Math.atan2(cam.y-subj.y, cam.x-subj.x);
+  const oAngle = Math.atan2(o.y-subj.y, o.x-subj.x);
+  let diff = (oAngle-camAngle) * 180/Math.PI;
+  diff = ((diff+180)%360+360)%360-180;
+  return {dist: dist.toFixed(1)+' m', angle: Math.abs(diff).toFixed(0)+'°'};
+}
+
+function hitTest(x,y){
+  for(let i=objects.length-1;i>=0;i--){
+    const o = objects[i];
+    if(Math.hypot(o.x-x,o.y-y) < 18) return o;
+  }
+  return null;
+}
+
+function canvasPos(e){
+  const r = canvas.getBoundingClientRect();
+  const cx = (e.touches?e.touches[0].clientX:e.clientX) - r.left;
+  const cy = (e.touches?e.touches[0].clientY:e.clientY) - r.top;
+  return {x: cx*(canvas.width/r.width), y: cy*(canvas.height/r.height)};
+}
+
+canvas.addEventListener('mousedown', e=>{
+  const p = canvasPos(e);
+  const hit = hitTest(p.x,p.y);
+  selected = hit; dragging = hit;
+  updateProps(); draw();
+});
+canvas.addEventListener('mousemove', e=>{
+  if(!dragging) return;
+  const p = canvasPos(e);
+  dragging.x = Math.max(20,Math.min(canvas.width-20,p.x));
+  dragging.y = Math.max(20,Math.min(canvas.height-20,p.y));
+  draw(); updateProps();
+});
+window.addEventListener('mouseup', ()=>{ dragging=null; });
+
+function updateProps(){
+  const fields = document.getElementById('propFields');
+  const hint = document.getElementById('emptyHint');
+  if(!selected){ fields.style.display='none'; hint.style.display='block'; return; }
+  fields.style.display='block'; hint.style.display='none';
+  document.getElementById('pLabel').value = selected.label;
+  const info = angleInfo(selected);
+  document.getElementById('pDist').value = info.dist;
+  document.getElementById('pAngle').value = info.angle;
+}
+
+document.getElementById('pLabel').addEventListener('input', e=>{
+  if(selected){ selected.label = e.target.value; draw(); }
+});
+document.getElementById('delBtn').addEventListener('click', ()=>{
+  if(!selected || selected.type==='camera' || selected.type==='subject') return;
+  objects = objects.filter(o=>o.id!==selected.id);
+  selected = null; updateProps(); draw();
+});
+
+document.querySelectorAll('.tool-item').forEach(item=>{
+  item.addEventListener('click', ()=>{
+    const type = item.dataset.type;
+    if((type==='camera'||type==='subject') && objects.find(o=>o.type===type)) return;
+    const t = TYPES[type];
+    objects.push({id:nextId++, type, x:100+Math.random()*100, y:100+Math.random()*100, label:t.label});
+    draw();
+  });
+});
+
+document.getElementById('dlBtn').addEventListener('click', ()=>{
+  const link = document.createElement('a');
+  link.download = 'diagrama-iluminacion.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+
+draw();
+</script>
+</body>
+</html>
