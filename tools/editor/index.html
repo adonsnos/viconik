@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Editor HTML — WYSIWYG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css">
+<style>
+  :root{
+    --bg: #121319;
+    --panel: #1b1d26;
+    --panel-2: #21232e;
+    --border: #2c2f3d;
+    --text: #eceaf5;
+    --text-muted: #8d90a3;
+    --accent: #ffb020;
+    --accent-dim: #4a3a1c;
+    --danger: #ff6b6b;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+
+  /* ---------- Top bar ---------- */
+  #topbar{
+    height:56px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 16px; background:var(--panel); border-bottom:1px solid var(--border);
+    position:relative; z-index:20;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand .dot{ width:9px; height:9px; border-radius:2px; background:var(--accent); }
+  .brand span{ font-family:var(--mono); font-weight:700; letter-spacing:0.02em; font-size:14px; }
+  .filename-readout{
+    font-family:var(--mono); font-size:12px; color:var(--text-muted);
+    padding:5px 10px; border:1px solid var(--border); border-radius:4px; background:var(--panel-2);
+    max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .bar-group{ display:flex; align-items:center; gap:8px; }
+  .btn{
+    font-family:var(--sans); font-size:13px; font-weight:600; color:var(--text);
+    background:var(--panel-2); border:1px solid var(--border); border-radius:6px;
+    padding:8px 14px; cursor:pointer; transition:background .15s, border-color .15s, color .15s;
+    display:inline-flex; align-items:center; gap:6px; white-space:nowrap;
+  }
+  .btn:hover{ border-color:#3a3d4e; background:#262936; }
+  .btn.primary{ background:var(--accent); color:#171208; border-color:var(--accent); }
+  .btn.primary:hover{ background:#ffc04d; }
+  .btn:disabled{ opacity:.4; cursor:not-allowed; }
+  .btn.active{ background:var(--accent-dim); border-color:var(--accent); color:var(--accent); }
+  .reveal-count{ font-family:var(--mono); font-size:11px; color:var(--accent); min-width:14px; }
+  .btn svg{ width:14px; height:14px; flex:none; }
+  .divider{ width:1px; height:24px; background:var(--border); margin:0 4px; }
+  #file-input{ display:none; }
+
+  .device-toggle{ display:flex; background:var(--panel-2); border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+  .device-toggle button{
+    background:transparent; border:none; color:var(--text-muted); padding:7px 10px; cursor:pointer;
+  }
+  .device-toggle button.active{ background:var(--accent-dim); color:var(--accent); }
+
+  /* ---------- Layout ---------- */
+  #app{ display:flex; height:calc(100% - 56px); }
+  #blocks-col{ width:170px; background:var(--panel); border-right:1px solid var(--border); overflow-y:auto; flex:none; }
+  #center-col{ flex:1; display:flex; flex-direction:column; min-width:0; background:#0d0e13; position:relative; }
+  #right-col{ width:280px; background:var(--panel); border-left:1px solid var(--border); overflow-y:auto; flex:none; }
+
+  .col-title{
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--text-muted); padding:14px 14px 8px;
+  }
+
+  #gjs{ flex:1; }
+
+  /* ---------- Empty state ---------- */
+  #empty-state{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:16px; text-align:center; padding:40px; z-index:5;
+  }
+  #empty-state.hidden{ display:none; }
+  #empty-state .icon{ width:56px; height:56px; color:var(--text-muted); }
+  #empty-state h2{ font-size:17px; margin:0; color:var(--text); font-weight:600; }
+  #empty-state p{ font-size:13px; color:var(--text-muted); max-width:340px; margin:0; line-height:1.5; }
+  #empty-state .dropzone{
+    border:1.5px dashed var(--border); border-radius:10px; padding:32px 48px; cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  #empty-state .dropzone:hover, #empty-state .dropzone.drag{ border-color:var(--accent); background:rgba(255,176,32,.05); }
+
+  /* ---------- Tabs (right col) ---------- */
+  .tabs{ display:flex; border-bottom:1px solid var(--border); }
+  .tab{
+    flex:1; text-align:center; padding:10px 0; font-size:12px; font-weight:600; color:var(--text-muted);
+    cursor:pointer; border-bottom:2px solid transparent; font-family:var(--sans);
+  }
+  .tab.active{ color:var(--accent); border-bottom-color:var(--accent); }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+
+  /* ---------- GrapesJS re-theme ---------- */
+  .gjs-one-bg{ background-color:var(--panel-2) !important; }
+  .gjs-two-color{ color:var(--text-muted) !important; }
+  .gjs-three-bg{ background-color:var(--accent) !important; color:#171208 !important; }
+  .gjs-four-color, .gjs-four-color-h:hover{ color:var(--accent) !important; }
+  .gjs-block{ background:var(--panel-2); border:1px solid var(--border); color:var(--text); width:auto; min-height:70px; }
+  .gjs-block:hover{ border-color:var(--accent); }
+  .gjs-block-label{ font-size:11px; }
+  .gjs-blocks-c{ display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:8px; }
+  .gjs-cv-canvas{ background:#0d0e13; top:0; width:100%; height:100%; }
+  .gjs-pn-panel{ background:transparent; }
+  .gjs-pn-commands, .gjs-pn-options, .gjs-pn-devices-c, .gjs-pn-views{ display:none !important; }
+  .gjs-layer{ color:var(--text); border-color:var(--border); }
+  .gjs-layer-title{ font-size:12px; }
+  .gjs-sm-sector .gjs-sm-title{ font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); background:transparent; }
+  .gjs-sm-label, .gjs-trt-trait .gjs-label{ font-size:11px; color:var(--text-muted); }
+  .gjs-field{ background:var(--bg); border-color:var(--border); color:var(--text); }
+  .gjs-field input, .gjs-field select, .gjs-field textarea{ color:var(--text); }
+  .gjs-radio-item-label{ font-size:11px; }
+  .gjs-clm-tags{ border-color:var(--border); }
+  .gjs-rte-toolbar{ background:var(--panel-2); border:1px solid var(--border); }
+  #right-col .gjs-pn-views-container{ position:static !important; width:100% !important; height:auto !important; overflow:visible; border:none; }
+  #blocks-col .gjs-blocks-c{ position:static; }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="brand"><span class="dot"></span><span>EDITOR&nbsp;HTML</span></div>
+
+  <div class="bar-group">
+    <span class="filename-readout" id="filename-readout">ningún archivo cargado</span>
+  </div>
+
+  <div class="bar-group">
+    <button class="btn" id="btn-reveal-hidden" title="Muestra temporalmente menús, modales, dropdowns, etc. que están ocultos por CSS/JS para poder seleccionarlos y editarlos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+      Ver ocultos
+    </button>
+    <span class="reveal-count" id="reveal-count"></span>
+    <div class="divider"></div>
+    <div class="device-toggle" id="device-toggle">
+      <button data-device="Desktop" class="active" title="Escritorio">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+      <button data-device="Tablet" title="Tablet">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/></svg>
+      </button>
+      <button data-device="Mobile portrait" title="Móvil">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/></svg>
+      </button>
+    </div>
+    <div class="divider"></div>
+    <button class="btn" id="btn-undo" title="Deshacer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6M3 13a9 9 0 1 0 3-7"/></svg>
+    </button>
+    <button class="btn" id="btn-redo" title="Rehacer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6M21 13a9 9 0 1 1-3-7"/></svg>
+    </button>
+    <div class="divider"></div>
+    <button class="btn" id="btn-new">Nuevo</button>
+    <input type="file" id="file-input" accept=".html,.htm" />
+    <button class="btn" id="btn-upload">Subir HTML</button>
+    <button class="btn primary" id="btn-download" disabled>Descargar HTML</button>
+  </div>
+</div>
+
+<div id="app">
+  <div id="blocks-col">
+    <div class="col-title">Bloques</div>
+    <div id="blocks"></div>
+  </div>
+
+  <div id="center-col">
+    <div id="empty-state">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+      <div class="dropzone" id="dropzone">
+        <h2>Sube un archivo .html para empezar</h2>
+        <p>Arrástralo aquí o haz clic para elegirlo. Se abre directamente en el navegador — no se envía a ningún servidor.</p>
+      </div>
+    </div>
+    <div id="gjs"></div>
+  </div>
+
+  <div id="right-col">
+    <div class="tabs">
+      <div class="tab active" data-tab="style">Estilo</div>
+      <div class="tab" data-tab="traits">Atributos</div>
+      <div class="tab" data-tab="layers">Capas</div>
+    </div>
+    <div class="tab-panel active" id="panel-style"></div>
+    <div class="tab-panel" id="panel-traits"></div>
+    <div class="tab-panel" id="panel-layers"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/grapesjs"></script>
+<script>
+(function(){
+
+  const editor = grapesjs.init({
+    container:'#gjs',
+    height:'100%',
+    fromElement:false,
+    storageManager:false,
+    dragMode:false,
+    blockManager:{ appendTo:'#blocks' },
+    layerManager:{ appendTo:'#panel-layers' },
+    traitManager:{ appendTo:'#panel-traits' },
+    selectorManager:{ appendTo:'#panel-style' },
+    styleManager:{
+      appendTo:'#panel-style',
+      sectors:[
+        { name:'Tamaño', open:true, properties:['width','height','min-height','margin','padding'] },
+        { name:'Tipografía', open:true, properties:['font-family','font-size','font-weight','letter-spacing','color','line-height','text-align'] },
+        { name:'Fondo y borde', open:false, properties:['background-color','border-radius','border','box-shadow'] },
+        { name:'Posición', open:false, properties:['display','position','top','right','bottom','left'] },
+        { name:'Extra', open:false, properties:['opacity','transition','transform'] },
+      ]
+    },
+    deviceManager:{
+      devices:[
+        { name:'Desktop', width:'' },
+        { name:'Tablet', width:'768px', widthMedia:'992px' },
+        { name:'Mobile portrait', width:'375px', widthMedia:'480px' },
+      ]
+    },
+    canvas:{ styles:[] },
+  });
+
+  // ---- Basic blocks so the user can add new elements too ----
+  const bm = editor.BlockManager;
+  bm.add('text', { label:'Texto', category:'Básico', content:'<p>Texto editable</p>', attributes:{class:'gjs-fonts gjs-f-text'} });
+  bm.add('heading', { label:'Título', category:'Básico', content:'<h2>Título</h2>' });
+  bm.add('image', { label:'Imagen', category:'Básico', select:true, content:{ type:'image' }, activate:true });
+  bm.add('button', { label:'Botón', category:'Básico', content:'<a href="#" style="display:inline-block;padding:10px 18px;background:#222;color:#fff;text-decoration:none;border-radius:6px;">Botón</a>' });
+  bm.add('div', { label:'Contenedor', category:'Básico', content:'<div style="padding:20px;min-height:60px;border:1px dashed #aaa;"></div>' });
+
+  // ---- Tabs ----
+  document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-'+tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ---- Device toggle ----
+  document.querySelectorAll('#device-toggle button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('#device-toggle button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      editor.setDevice(b.dataset.device);
+    });
+  });
+
+  // ---- Revelar elementos con estados ocultos (display:none, visibility:hidden, etc.) ----
+  // Solo toca el DOM en vivo del iframe del canvas: nunca modifica el modelo de
+  // componentes de GrapesJS, así que no afecta a lo que se exporta al descargar.
+  let revealActive = false;
+  const revealBtn = document.getElementById('btn-reveal-hidden');
+  const revealCount = document.getElementById('reveal-count');
+
+  function revealHiddenElements(){
+    const doc = editor.Canvas.getDocument();
+    const win = editor.Canvas.getWindow();
+    if(!doc || !win) return 0;
+    let count = 0;
+    doc.body.querySelectorAll('*').forEach(el=>{
+      const cs = win.getComputedStyle(el);
+      if(cs.display === 'none' || cs.visibility === 'hidden'){
+        el.setAttribute('data-was-hidden', '1');
+        el.style.setProperty('display', 'block', 'important');
+        el.style.setProperty('visibility', 'visible', 'important');
+        el.style.setProperty('opacity', '0.6', 'important');
+        el.style.setProperty('outline', '1px dashed #ffb020', 'important');
+        el.style.setProperty('outline-offset', '-1px', 'important');
+        count++;
+      }
+    });
+    return count;
+  }
+
+  function hideRevealedElements(){
+    const doc = editor.Canvas.getDocument();
+    if(!doc) return;
+    doc.body.querySelectorAll('[data-was-hidden="1"]').forEach(el=>{
+      el.style.removeProperty('display');
+      el.style.removeProperty('visibility');
+      el.style.removeProperty('opacity');
+      el.style.removeProperty('outline');
+      el.style.removeProperty('outline-offset');
+      el.removeAttribute('data-was-hidden');
+    });
+  }
+
+  function setRevealState(active){
+    revealActive = active;
+    revealBtn.classList.toggle('active', active);
+    if(active){
+      const n = revealHiddenElements();
+      revealCount.textContent = n > 0 ? n : '';
+      revealBtn.title = n > 0
+        ? `${n} elemento(s) oculto(s) revelados temporalmente (borde punteado). Haz clic en uno para editarlo.`
+        : 'No se detectaron elementos ocultos en esta vista.';
+    } else {
+      hideRevealedElements();
+      revealCount.textContent = '';
+    }
+  }
+
+  revealBtn.addEventListener('click', ()=> setRevealState(!revealActive));
+
+  // ---- Undo / redo ----
+  document.getElementById('btn-undo').addEventListener('click', ()=> editor.UndoManager.undo());
+  document.getElementById('btn-redo').addEventListener('click', ()=> editor.UndoManager.redo());
+
+  // ---- State kept for faithful export ----
+  let originalFilename = 'documento.html';
+  let headExtra = '';       // head content minus <style> and stylesheet <link> tags
+  let bodyAttrs = '';       // attributes of the original <body> tag
+  let bodyScripts = [];     // <script> tags originally in <body>, preserved verbatim
+  let docType = '<!DOCTYPE html>';
+
+  const emptyState = document.getElementById('empty-state');
+  const filenameReadout = document.getElementById('filename-readout');
+  const downloadBtn = document.getElementById('btn-download');
+
+  function loadHtmlString(htmlStr, filename){
+    setRevealState(false);
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlStr, 'text/html');
+
+    // Preserve head (meta, title, favicon, fonts, external stylesheets) minus <style> tags
+    const headClone = doc.head.cloneNode(true);
+    headClone.querySelectorAll('style').forEach(el=>el.remove());
+    headExtra = headClone.innerHTML.trim();
+
+    // Preserve external stylesheet hrefs so the canvas renders them visually
+    const cssLinks = Array.from(doc.head.querySelectorAll('link[rel="stylesheet"]')).map(l=>l.getAttribute('href')).filter(Boolean);
+
+    // Preserve <body> attributes (e.g. class, id, data-*)
+    bodyAttrs = Array.from(doc.body.attributes).map(a=>`${a.name}="${a.value}"`).join(' ');
+
+    // Pull out body scripts so GrapesJS doesn't choke on them; we re-append on export
+    const scriptEls = Array.from(doc.body.querySelectorAll('script'));
+    bodyScripts = scriptEls.map(s=>s.outerHTML);
+    scriptEls.forEach(el=>el.remove());
+
+    const styleTagsHtml = Array.from(doc.querySelectorAll('style')).map(s=>s.outerHTML).join('');
+    const bodyHtml = doc.body.innerHTML;
+
+    editor.setComponents(bodyHtml + styleTagsHtml);
+
+    // Inject external stylesheets into the canvas iframe so it renders faithfully
+    setTimeout(()=>{
+      const iframeDoc = editor.Canvas.getDocument();
+      if(iframeDoc){
+        cssLinks.forEach(href=>{
+          const link = iframeDoc.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = href;
+          iframeDoc.head.appendChild(link);
+        });
+      }
+    }, 50);
+
+    originalFilename = filename || 'documento.html';
+    filenameReadout.textContent = originalFilename;
+    filenameReadout.title = originalFilename;
+    downloadBtn.disabled = false;
+    emptyState.classList.add('hidden');
+  }
+
+  function buildFinalHtml(){
+    const css = editor.getCss();
+    const bodyInner = editor.getHtml();
+    const scripts = bodyScripts.join('\n');
+    return `${docType}
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+${headExtra}
+<style>
+${css}
+</style>
+</head>
+<body ${bodyAttrs}>
+${bodyInner}
+${scripts}
+</body>
+</html>`;
+  }
+
+  function downloadFinalHtml(){
+    const html = buildFinalHtml();
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = originalFilename.endsWith('.html') || originalFilename.endsWith('.htm') ? originalFilename : originalFilename + '.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // ---- File input / dropzone wiring ----
+  const fileInput = document.getElementById('file-input');
+  document.getElementById('btn-upload').addEventListener('click', ()=> fileInput.click());
+  document.getElementById('dropzone').addEventListener('click', ()=> fileInput.click());
+
+  fileInput.addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=> loadHtmlString(reader.result, file.name);
+    reader.readAsText(file);
+    fileInput.value = '';
+  });
+
+  const dropzone = document.getElementById('dropzone');
+  ['dragenter','dragover'].forEach(evt=>{
+    dropzone.addEventListener(evt, (e)=>{ e.preventDefault(); dropzone.classList.add('drag'); });
+  });
+  ['dragleave','drop'].forEach(evt=>{
+    dropzone.addEventListener(evt, (e)=>{ e.preventDefault(); dropzone.classList.remove('drag'); });
+  });
+  dropzone.addEventListener('drop', (e)=>{
+    const file = e.dataTransfer.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=> loadHtmlString(reader.result, file.name);
+    reader.readAsText(file);
+  });
+
+  document.getElementById('btn-download').addEventListener('click', downloadFinalHtml);
+
+  document.getElementById('btn-new').addEventListener('click', ()=>{
+    if(!confirm('¿Empezar de cero? Perderás los cambios no descargados.')) return;
+    setRevealState(false);
+    editor.setComponents('');
+    editor.setStyle('');
+    headExtra = ''; bodyAttrs = ''; bodyScripts = [];
+    originalFilename = 'documento.html';
+    filenameReadout.textContent = 'ningún archivo cargado';
+    downloadBtn.disabled = true;
+    emptyState.classList.remove('hidden');
+  });
+
+})();
+</script>
+</body>
+</html>
